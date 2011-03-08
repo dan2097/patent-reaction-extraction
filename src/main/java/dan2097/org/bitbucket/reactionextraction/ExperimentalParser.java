@@ -118,51 +118,56 @@ public class ExperimentalParser {
 		for (Paragraph paragraph : paragraphs) {
 //			System.out.println(paragraph.getUnTaggedString());
 //			System.out.println(paragraph.getTaggedSentencesDocument().toXML());
-			Reaction reaction = new Reaction();
 			Element taggedDocRoot = paragraph.getTaggedSentencesDocument().getRootElement();
-			System.out.println(paragraph.getUnTaggedString());
-			System.out.println(taggedDocRoot.toXML());
-//			for (String xpath : Xpaths.yieldXPaths) {
-//				Nodes synthesizedMolecules = taggedDocRoot.query(xpath);
-//				for (int i = 0; i < synthesizedMolecules.size(); i++) {
+//			System.out.println(paragraph.getUnTaggedString());
+//			System.out.println(taggedDocRoot.toXML());
+			List<Element> products = new ArrayList<Element>();
+			for (String xpath : Xpaths.yieldXPaths) {
+				Nodes synthesizedMolecules = taggedDocRoot.query(xpath);
+				for (int i = 0; i < synthesizedMolecules.size(); i++) {
+					products.add((Element) synthesizedMolecules.get(i));
 //					System.out.println(synthesizedMolecules.get(i).toXML());
 //					Chemical cm = moleculeToChemicalMap.get(synthesizedMolecules.get(i));
 //					if (cm != null && cm.getInchi()!=null && titleCompoundInChI.equals(cm.getInchi())){
 //						System.out.println("TITLE COMPOUND");
 //					}
-//				}
-//			}
-//			//List<Element> prepPhrases = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, ChemicalTaggerTags.PREPPHRASE_Container);
-//			List<Element> synthesizeBlocks = XOMTools.getDescendantElementsWithTagNameAndAttribute(taggedDocRoot, ChemicalTaggerTags.ACTIONPHRASE_Container, ChemicalTaggerAtrs.TYPE_ATR, ChemicalTaggerAtrs.SYNTHESIZE_TYPE_VAL);
-//			Element product =null;
-//			if (synthesizeBlocks.size()>0){
-//				Element synthesizeBlock = synthesizeBlocks.get(0);
-//				Nodes molecules = synthesizeBlock.query("//" + ChemicalTaggerTags.MOLECULE_Container);
-//				if (molecules.size()>0){
-//					product = (Element) molecules.get(0);
-//					Chemical chem = moleculeToChemicalMap.get(product);
-//					if (!ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(product.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-//						reaction.addProduct(chem);
-//						reaction.setPrimaryProduct(chem);
-//					}
-//					else{
-//						product =null;
-//					}
-//				}
-//			}
-//			if (product!=null){
-//				List<Element> molecules = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, ChemicalTaggerTags.MOLECULE_Container);
-//				molecules.remove(product);
-//				for (Element molecule : molecules) {
-//					if (!ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(molecule.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-//						reaction.addReactant(moleculeToChemicalMap.get(molecule));
-//					}
-//					else{
-//						reaction.addSpectator(moleculeToChemicalMap.get(molecule));
-//					}
-//				}
-//				reactions.add(reaction);
-//			}
+				}
+			}
+			List<Element> sentences = XOMTools.getChildElementsWithTagName(taggedDocRoot, ChemicalTaggerTags.SENTENCE_Container);
+			for (Element sentence : sentences) {
+				List<Element> molecules = XOMTools.getDescendantElementsWithTagName(sentence, ChemicalTaggerTags.MOLECULE_Container);
+				List<Element> stepProducts = new ArrayList<Element>();
+				for (Element product : products) {
+					if (molecules.contains(product)){
+						molecules.remove(product);
+						stepProducts.add(product);
+					}
+				}
+				if (molecules.size()>0){
+					Reaction reaction = new Reaction();
+					if (stepProducts.size()>0){
+						Element realMolecule = null;
+						for (Element product : stepProducts) {
+							if (product.getLocalName().equals(ChemicalTaggerTags.MOLECULE_Container)){
+								realMolecule =product;
+							}
+						}
+						if (realMolecule!=null){
+							reaction.addProduct(moleculeToChemicalMap.get(realMolecule));
+						}
+					}
+					for (Element molecule : molecules) {
+						if (!ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(molecule.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
+							reaction.addReactant(moleculeToChemicalMap.get(molecule));
+						}
+						else{
+							reaction.addSpectator(moleculeToChemicalMap.get(molecule));
+						}
+					}
+					ReactionDepicter.depictReaction(reaction);
+					reactions.add(reaction);
+				}
+			}
 		}
 		return reactions;
 	}
