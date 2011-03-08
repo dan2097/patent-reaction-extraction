@@ -16,21 +16,21 @@ public class ReactionDepicter {
 		renderer = new IndigoRenderer(indigo);
 	}
 	
-	public static void depictReaction(Reaction reaction){
+	public static void depictReaction(Reaction reaction, File f){
 		IndigoObject rxn = indigo.createReaction();
-		System.out.println("#####################");
-		for (Chemical product: reaction.getProducts()) {
-			if (product.getSmiles()!=null){
-				rxn.addProduct(indigo.loadMolecule(product.getSmiles()));
-				System.out.println("prod " + product.getSmiles());
-			}
-		}
-		for (Chemical reactant: reaction.getReactants()) {
-			if (reactant.getSmiles()!=null){
-				rxn.addReactant(indigo.loadMolecule(reactant.getSmiles()));
-				System.out.println("react " + reactant.getSmiles());
-			}
-		}
+//		System.out.println("#####################");
+//		for (Chemical product: reaction.getProducts()) {
+//			if (product.getSmiles()!=null){
+//				rxn.addProduct(indigo.loadMolecule(product.getSmiles()));
+//				System.out.println("prod " + product.getSmiles());
+//			}
+//		}
+//		for (Chemical reactant: reaction.getReactants()) {
+//			if (reactant.getSmiles()!=null){
+//				rxn.addReactant(indigo.loadMolecule(reactant.getSmiles()));
+//				System.out.println("react " + reactant.getSmiles());
+//			}
+//		}
 		if (rxn.countProducts()==0 && rxn.countReactants()==0){
 			return;
 		}
@@ -46,8 +46,7 @@ public class ReactionDepicter {
 		indigo.setOption("render-output-format", "png");
 		rxn.layout();
 		try{
-		File f = File.createTempFile("reaction", ".png", new File("C:/My Documents/workspace/PatentReactionExtractor/"));
-		renderer.renderToFile(rxn, f.getCanonicalPath());
+			renderer.renderToFile(rxn, f.getCanonicalPath());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
