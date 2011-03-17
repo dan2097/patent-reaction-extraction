@@ -49,7 +49,7 @@ public class Utils {
 		}
 		ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(in);
 		chemistrySentenceParser.parseTags();
-		return chemistrySentenceParser.getDocument();
+		return chemistrySentenceParser.makeXMLDocument();
 	}
 
 	/**

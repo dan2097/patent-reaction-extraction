@@ -31,6 +31,7 @@ public class ExperimentalSectionParser {
 	private final Map<String, Chemical> aliasToChemicalMap;
 	private final static Pattern matchIdentifier = Pattern.compile("((\\d+[a-z]?)|[\\(\\{\\[](\\d+[a-z]?|.*\\d+)[\\)\\}\\]])\\s*$");
 	private final Chemical titleCompound;
+	static int i=0;
 	
 	public ExperimentalSectionParser(Element headingEl, Map<String, Chemical> aliasToChemicalMap) {
 		String headingText = headingEl.getAttributeValue(XMLAtrs.TITLE);
@@ -186,6 +187,34 @@ public class ExperimentalSectionParser {
 							//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
 						}
 					}
+					List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
+					mols.removeAll(reactants);
+					mols.removeAll(products);
+					for (int i = mols.size()-1; i >=0; i--) {
+						Element mol = mols.get(i);
+						for (String xpath : Xpaths.moleculesToIgnoreXpaths) {
+							if (mol.query(xpath).size()>0){
+								mols.remove(i);
+								break;
+							}
+						}
+					}
+					for (String xpath : Xpaths.referencesToPreviousReactions) {
+						Nodes moleculesToRemove = sentence.query(xpath);
+						for (int i = 0; i < moleculesToRemove.size(); i++) {
+							mols.remove(moleculesToRemove.get(i));
+						}
+					}
+
+					if (!mols.isEmpty()){
+						System.out.println("##############");
+						System.out.println(sentence.toXML());
+						for (Element mol : mols) {
+						System.out.println(i++);
+							System.out.println(mol.toXML());
+						}
+					}
+					
 					if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
 						try {
 							File f = File.createTempFile("reaction", ".png", new File("C:/My Documents/workspace/PatentReactionExtractor/temp"));
