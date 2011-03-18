@@ -9,7 +9,8 @@ public class Reaction {
 
 	List<Chemical> reactants =new ArrayList<Chemical>();
 	List<Chemical> products =new ArrayList<Chemical>();
-	List<Chemical> solvents =new ArrayList<Chemical>();
+	/** Typically solvents or catalysts*/
+	List<Chemical> spectators =new ArrayList<Chemical>();
 	Chemical primaryProduct;
 
 	List<Chemical> getReactants() {
@@ -24,11 +25,11 @@ public class Reaction {
 	void addProduct(Chemical product) {
 		products.add(product);
 	}
-	List<Chemical> getSolvents() {
-		return solvents;
+	List<Chemical> getSpectators() {
+		return spectators;
 	}
-	void addSpectator(Chemical solvent) {
-		solvents.add(solvent);
+	void addSpectator(Chemical spectator) {
+		spectators.add(spectator);
 	}
 	Chemical getPrimaryProduct() {
 		return primaryProduct;
@@ -56,8 +57,8 @@ public class Reaction {
 		
 		Element spectatorList = new Element("spectatorList");
 		reaction.appendChild(spectatorList);
-		for (Chemical solvent : solvents) {
-			Element solventCml =solvent.toCML("m" +i++);
+		for (Chemical spectator : spectators) {
+			Element solventCml =spectator.toCML("m" +i++);
 			solventCml.setLocalName("spectator");
 			spectatorList.appendChild(solventCml);
 		}

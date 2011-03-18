@@ -25,6 +25,8 @@ public class Paragraph {
 		else{
 			taggedString = Utils.tagString(untaggedString);
 			taggedSentencesDocument = Utils.runChemicalSentenceParsingOnTaggedString(taggedString);
+			System.out.println(taggedString);
+			System.out.println(taggedSentencesDocument.toXML());
 			if (taggedSentencesDocument ==null){
 				throw new RuntimeException("Chemical tagger failed to tag a text string indicating a bug in chemical tagger");
 			}

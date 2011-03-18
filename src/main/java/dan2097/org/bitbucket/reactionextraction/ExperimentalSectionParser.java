@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
@@ -141,6 +142,16 @@ public class ExperimentalSectionParser {
 	private List<Reaction> determineReactions(List<Paragraph> paragraphs) {
 		List<Reaction> reactions = new ArrayList<Reaction>();
 		String titleCompoundInChI =titleCompound.getInchi();
+		if (!titleCompound.getName().equalsIgnoreCase("4-(4-Chlorobenzyl)thiophene-2-carbaldehyde")){
+			return null;
+		}
+		char[] name = titleCompound.getName().toCharArray();
+		for (int i = 0; i < name.length; i++) {
+			if (!Character.isLetter(name[i])){
+				name[i]='_';
+			}
+		}
+		String folderName = new String(name);
 		for (Paragraph paragraph : paragraphs) {
 			Element taggedDocRoot = paragraph.getTaggedSentencesDocument().getRootElement();
 			List<Element> sentences = XOMTools.getChildElementsWithTagName(taggedDocRoot, ChemicalTaggerTags.SENTENCE_Container);
@@ -152,84 +163,85 @@ public class ExperimentalSectionParser {
 						products.add((Element) synthesizedMolecules.get(i));
 					}
 				}
-				if (products.size() >0){
-					Set<Element> reactants = new HashSet<Element>();
-					for (Element product : products) {
-						for (String xpath : Xpaths.reactantXpaths) {
-							Nodes reactantMolecules = product.query(xpath);
-							for (int i = 0; i < reactantMolecules.size(); i++) {
-								reactants.add((Element) reactantMolecules.get(i));
-							}
+				Set<Element> reactants = new HashSet<Element>();
+				for (Element product : products) {
+					for (String xpath : Xpaths.reactantXpaths) {
+						Nodes reactantMolecules = product.query(xpath);
+						for (int i = 0; i < reactantMolecules.size(); i++) {
+							reactants.add((Element) reactantMolecules.get(i));
 						}
 					}
-			
-					Reaction reaction = new Reaction();
-					for (Element product : products) {
-						Chemical chem = moleculeToChemicalMap.get(product);
-						if (chem!=null){
-							reaction.addProduct(chem);
-						}
-						else{
-							//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
-						}
-					}
-					for (Element reactant : reactants) {
-						Chemical chem = moleculeToChemicalMap.get(reactant);
-						if (chem!=null){
-							if (!ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reactant.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-								reaction.addReactant(chem);
-							}
-							else{
-								reaction.addSpectator(chem);
-							}
-						}
-						else{
-							//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
-						}
-					}
-					List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
-					mols.removeAll(reactants);
-					mols.removeAll(products);
-					for (int i = mols.size()-1; i >=0; i--) {
-						Element mol = mols.get(i);
-						for (String xpath : Xpaths.moleculesToIgnoreXpaths) {
-							if (mol.query(xpath).size()>0){
-								mols.remove(i);
-								break;
-							}
-						}
-					}
-					for (String xpath : Xpaths.referencesToPreviousReactions) {
-						Nodes moleculesToRemove = sentence.query(xpath);
-						for (int i = 0; i < moleculesToRemove.size(); i++) {
-							mols.remove(moleculesToRemove.get(i));
-						}
-					}
-
-					if (!mols.isEmpty()){
-						System.out.println("##############");
-						System.out.println(sentence.toXML());
-						for (Element mol : mols) {
-						System.out.println(i++);
-							System.out.println(mol.toXML());
-						}
-					}
-					
-					if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
-						try {
-							File f = File.createTempFile("reaction", ".png", new File("C:/My Documents/workspace/PatentReactionExtractor/temp"));
-							ReactionDepicter.depictReaction(reaction, f);
-							File xml = new File("temp/"+f.getName().substring(0, f.getName().length()-4) +".xml");
-							FileOutputStream out = new FileOutputStream(xml);
-							IOUtils.write(sentence.toXML(), out);
-							IOUtils.closeQuietly(out);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-
-					reactions.add(reaction);
 				}
+		
+				Reaction reaction = new Reaction();
+				for (Element product : products) {
+					Chemical chem = moleculeToChemicalMap.get(product);
+					if (chem!=null){
+						reaction.addProduct(chem);
+					}
+					else{
+						//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
+					}
+				}
+				for (Element reactant : reactants) {
+					Chemical chem = moleculeToChemicalMap.get(reactant);
+					if (chem!=null){
+						if (!ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reactant.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
+							reaction.addReactant(chem);
+						}
+						else{
+							reaction.addSpectator(chem);
+						}
+					}
+					else{
+						//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
+					}
+				}
+				List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
+				mols.removeAll(reactants);
+				mols.removeAll(products);
+				for (int i = mols.size()-1; i >=0; i--) {
+					Element mol = mols.get(i);
+					for (String xpath : Xpaths.moleculesToIgnoreXpaths) {
+						if (mol.query(xpath).size()>0){
+							mols.remove(i);
+							break;
+						}
+					}
+				}
+				for (String xpath : Xpaths.referencesToPreviousReactions) {
+					Nodes moleculesToRemove = sentence.query(xpath);
+					for (int i = 0; i < moleculesToRemove.size(); i++) {
+						mols.remove(moleculesToRemove.get(i));
+					}
+				}
+
+				if (!mols.isEmpty()){
+					System.out.println("##############");
+					System.out.println(sentence.toXML());
+					for (Element mol : mols) {
+					System.out.println(i++);
+						System.out.println(mol.toXML());
+					}
+				}
+				
+				if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
+					try {
+						File folder  =new File("C:/My Documents/workspace/PatentReactionExtractor/temp/" +folderName);
+						if (!folder.exists()){
+							FileUtils.forceMkdir(folder);
+						}
+						File f = File.createTempFile("reaction", ".png", folder);
+						ReactionDepicter.depictReaction(reaction, f);
+						File xml = new File("temp/"+ folderName +"/"+f.getName().substring(0, f.getName().length()-4) +".xml");
+						FileOutputStream out = new FileOutputStream(xml);
+						IOUtils.write(sentence.toXML(), out);
+						IOUtils.closeQuietly(out);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				reactions.add(reaction);
 			}
 		}
 		return reactions;
