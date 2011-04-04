@@ -37,6 +37,12 @@ public class Reaction {
 	void setPrimaryProduct(Chemical primaryProduct) {
 		this.primaryProduct = primaryProduct;
 	}
+	
+	void importReaction(Reaction reactionToImport) {
+		reactants.addAll(reactionToImport.getReactants());
+		products.addAll(reactionToImport.getProducts());
+		spectators.addAll(reactionToImport.getSpectators());
+	}
 
 	public Element toCML() {
 		Element reaction = new Element("reaction");

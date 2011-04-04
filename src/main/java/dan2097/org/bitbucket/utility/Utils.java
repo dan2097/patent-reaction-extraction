@@ -22,7 +22,7 @@ public class Utils {
 	
 	private static ChemNameDictRegistry chemNameRegistery;
 	static{
-		chemNameRegistery = ChemNameDictRegistry.getInstance();
+		chemNameRegistery = new ChemNameDictRegistry();
 		chemNameRegistery.register(new OpsinDictionary());
 	}
 	/**
@@ -31,7 +31,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String tagString(String text) {
-		POSContainer posContainer = ChemistryPOSTagger.getInstance().runTaggers(text);
+		POSContainer posContainer = ChemistryPOSTagger.getDefaultInstance().runTaggers(text);
 		return posContainer.getTokenTagTupleAsString();
 	}
 	
@@ -79,7 +79,7 @@ public class Utils {
 			List<IdentifiedChemicalName> identifiedNames = DocumentToStructures.extractNames(text);
 			List<String> names = new ArrayList<String>();
 			for (IdentifiedChemicalName identifiedChemicalName : identifiedNames) {
-				names.add(identifiedChemicalName.getValue());
+				names.add(identifiedChemicalName.getChemicalName());
 			}
 			return names;
 		}
