@@ -16,7 +16,7 @@ public class ReactionDepicter {
 		renderer = new IndigoRenderer(indigo);
 	}
 	
-	public static void depictReaction(Reaction reaction, File f){
+	public static void depictReaction(Reaction reaction, File depictionFile){
 		IndigoObject rxn = indigo.createReaction();
 		//System.out.println("#####################");
 		for (Chemical product: reaction.getProducts()) {
@@ -53,7 +53,7 @@ public class ReactionDepicter {
 		indigo.setOption("render-output-format", "png");
 		rxn.layout();
 		try{
-			renderer.renderToFile(rxn, f.getCanonicalPath());
+			renderer.renderToFile(rxn, depictionFile.getCanonicalPath());
 		}
 		catch (Exception e) {
 			e.printStackTrace();

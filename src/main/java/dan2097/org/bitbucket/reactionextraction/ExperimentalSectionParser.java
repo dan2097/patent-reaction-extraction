@@ -12,21 +12,21 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Elements;
+import nu.xom.Nodes;
+import nu.xom.Serializer;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import uk.ac.cam.ch.wwmm.opsin.StreamSerializer;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Elements;
-import nu.xom.Nodes;
-import nu.xom.Serializer;
 
 public class ExperimentalSectionParser {
 
@@ -34,8 +34,8 @@ public class ExperimentalSectionParser {
 	private final Map<String, Chemical> aliasToChemicalMap;
 	private final static Pattern matchIdentifier = Pattern.compile("((\\d+[a-z]?)|[\\(\\{\\[](\\d+[a-z]?|.*\\d+)[\\)\\}\\]])\\s*$");
 	private final Chemical titleCompound;
-	static int i=0;
-	
+	private final List<Reaction> reactions = new ArrayList<Reaction>();
+
 	public ExperimentalSectionParser(Element headingEl, Map<String, Chemical> aliasToChemicalMap) {
 		String headingText = headingEl.getAttributeValue(XMLAtrs.TITLE);
 		titleCompound = extractChemicalFromHeading(headingText);
@@ -50,8 +50,16 @@ public class ExperimentalSectionParser {
 					generateMoleculeToChemicalMap(para);
 				}
 			}
-			determineReactions(paragraphs);
+			reactions.addAll(determineReactions(paragraphs));
 		}
+	}
+	
+	/**
+	 * Retrieves the reactions found by this experimental section parser
+	 * @return
+	 */
+	List<Reaction> getReactions() {
+		return reactions;
 	}
 
 	private Chemical extractChemicalFromHeading(String title) {
@@ -147,7 +155,6 @@ public class ExperimentalSectionParser {
 //		if (!titleCompound.getName().equalsIgnoreCase("4-(4-Chlorobenzyl)thiophene-2-carbaldehyde")){
 //			return null;
 //		}
-		String folderName = new String(String.valueOf(titleCompound.getName().hashCode()));
 		for (Paragraph paragraph : paragraphs) {
 			Reaction currentReaction = new Reaction();
 			Element taggedDocRoot = paragraph.getTaggedSentencesDocument().getRootElement();
@@ -252,26 +259,6 @@ public class ExperimentalSectionParser {
 			}
 			if (currentReaction.getProducts().size()>0 || currentReaction.getReactants().size()>0){
 				reactions.add(currentReaction);
-			}
-			for (Reaction r : reactions) {
-				if (r.getProducts().size()>0 || r.getReactants().size()>0){
-					try {
-						File folder  =new File("C:/My Documents/workspace/PatentReactionExtractor/temp/" +folderName);
-						if (!folder.exists()){
-							FileUtils.forceMkdir(folder);
-						}
-						File f = File.createTempFile("reaction", ".png", folder);
-						ReactionDepicter.depictReaction(r, f);
-						File xml = new File("temp/"+ folderName +"/"+f.getName().substring(0, f.getName().length()-4) +".xml");
-						FileOutputStream out = new FileOutputStream(xml);
-						Serializer serializer = new Serializer(out);
-						serializer.setIndent(2);
-						serializer.write(taggedDocRoot.getDocument());
-						IOUtils.closeQuietly(out);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
 			}
 		}
 		

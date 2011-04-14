@@ -23,8 +23,11 @@ public class Paragraph {
 			taggedSentencesDocument =new Document(new Element("Document"));
 		}
 		else{
+			System.out.println(untaggedString);
 			taggedString = Utils.tagString(untaggedString);
+			System.out.println(taggedString);
 			taggedSentencesDocument = Utils.runChemicalSentenceParsingOnTaggedString(taggedString);
+			System.out.println(taggedSentencesDocument.toXML());
 			if (taggedSentencesDocument ==null){
 				throw new RuntimeException("Chemical tagger failed to tag a text string indicating a bug in chemical tagger");
 			}
@@ -32,7 +35,7 @@ public class Paragraph {
 //		if (!isEmpty){//TODO remove this commented out code
 //			Elements sentences = taggedSentencesDocument.getRootElement().getChildElements("Sentence");
 //			boolean fail =false;
-//			for (int i = 0; i < sentences.size(); i++) {
+//			for (int i = 0; i < sentences.size(); i++) {"
 //				if (sentences.get(i).getValue().equals("")){
 //					fail=true;
 //				}

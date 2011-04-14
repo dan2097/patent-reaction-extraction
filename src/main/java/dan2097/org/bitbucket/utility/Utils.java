@@ -15,7 +15,7 @@ import nu.xom.Document;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
-import uk.ac.cam.ch.wwmm.oscar.chemnamedict.ChemNameDictRegistry;
+import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
 
 public class Utils {
@@ -58,7 +58,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToSmiles(String name) {
-		return chemNameRegistery.getShortestSMILES(name);
+		return chemNameRegistery.getShortestSmiles(name);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
-		Set<String> inchis = chemNameRegistery.getInChI(name);
+		Set<String> inchis = chemNameRegistery.getInchis(name);
 		if (!inchis.isEmpty()){
 			return inchis.iterator().next();
 		}
