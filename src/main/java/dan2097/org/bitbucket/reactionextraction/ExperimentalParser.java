@@ -15,6 +15,10 @@ public class ExperimentalParser {
 	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 	private final List<Reaction> documentReactions = new ArrayList<Reaction>();
 
+	List<Reaction> getDocumentReactions() {
+		return documentReactions;
+	}
+
 	public void parseExperimentalSection(Element headingElementToProcess) {
 		ExperimentalSectionParser sectionparser = new ExperimentalSectionParser(headingElementToProcess, aliasToChemicalMap);
 		documentReactions.addAll(sectionparser.getReactions());

@@ -1,6 +1,7 @@
 package dan2097.org.bitbucket.utility;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -10,20 +11,46 @@ import java.util.Set;
 
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
+import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
+
+import nu.xom.Attribute;
+import nu.xom.Builder;
 import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Node;
+import nu.xom.ParsingException;
+import nu.xom.ValidityException;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
 
 public class Utils {
 	
+	private static Builder xomBuilder;
 	private static ChemNameDictRegistry chemNameRegistery;
 	static{
 		chemNameRegistery = new ChemNameDictRegistry();
 		chemNameRegistery.register(new OpsinDictionary());
+		XMLReader xmlReader;
+		try{
+			xmlReader = XMLReaderFactory.createXMLReader();
+		}
+		catch (Exception e) {
+			throw new RuntimeException("No XML Reader could be initialised!");
+		}
+		try{
+			xmlReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Your system's default XML Reader does not support disabling DTD loading! Maybe try updating your version of java?");
+		}
+		xomBuilder = new Builder(xmlReader);
 	}
 	/**
 	 * Tags a string with parts of speech using chemical tagger. Where known the annotations will be more specific than those used for the Brown corpus
@@ -86,5 +113,63 @@ public class Utils {
 		catch (Exception e) {
 			return Collections.emptyList();
 		}
+	}
+
+	/**
+	 * Builds an XML document from an inputstream
+	 * @param inputStream
+	 * @return
+	 * @throws ValidityException
+	 * @throws ParsingException
+	 * @throws IOException
+	 */
+	public static Document buildXmlFile(InputStream inputStream) throws ValidityException, ParsingException, IOException {
+		return xomBuilder.build(inputStream);
+	}
+	
+	public static ExperimentalParser extractReactions(Document doc){
+		ExperimentalParser parser = new ExperimentalParser();
+		List<Element> headings = XOMTools.getDescendantElementsWithTagName(doc.getRootElement(), XMLTags.HEADING);
+		for (Element heading : headings) {
+	    	Element headingElementToProcess = new Element(XMLTags.HEADING);
+	    	headingElementToProcess.addAttribute(new Attribute(XMLAtrs.TITLE, heading.getValue()));
+	    	List<Element> paragraphs = getNextAdjacentSiblingsOfType(heading, XMLTags.P);
+	    	for (Element paragraph : paragraphs) {
+		        Element paragraphToProcess = new Element(paragraph);
+		        headingElementToProcess.appendChild(paragraphToProcess);
+			}
+	    	if (paragraphs.size()>0){
+		    	parser.parseExperimentalSection(headingElementToProcess);
+	    	}
+		}
+		return parser;
+	}
+	
+	/**
+	 * Returns an arrayList containing sibling elements of the given type after the given element.
+	 * @param currentElem: the element to look for following siblings of
+	 * @param type: the "localname" of the element type desired
+	 * @return
+	 */
+	private static List<Element> getNextAdjacentSiblingsOfType(Element currentElem, String type) {
+		List<Element> siblingElementsOfType= new ArrayList<Element>();
+		Element parent =(Element) currentElem.getParent();
+		if (parent==null){
+			return siblingElementsOfType;
+		}
+		Node nextSibling = XOMTools.getNextSibling(currentElem);
+		while (nextSibling !=null){
+			if (nextSibling instanceof Element){
+				if (((Element)nextSibling).getLocalName().equals(type)){
+					siblingElementsOfType.add(((Element)nextSibling));
+				}
+				else{
+					break;
+				}
+			}
+			nextSibling = XOMTools.getNextSibling(nextSibling);
+		}
+
+		return siblingElementsOfType;
 	}
 }
