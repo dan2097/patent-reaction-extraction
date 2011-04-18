@@ -31,4 +31,9 @@ public class XMLTags {
 	 * An identifier element as found in the name resolver's CML output
 	 */
 	public static final String IDENTIFIER = "identifier";
+	
+	/**
+	 * The rol the reaction extractor has assigned to a molecule/unnamed molecule/mixture
+	 */
+	public static final String MOLECULEROLE = "moleculeRole";
 }

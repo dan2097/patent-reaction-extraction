@@ -32,7 +32,7 @@
          <version>${restlet.version}</version>
       </dependency>
 		<dependency>
-			<groupId>chemicalTagger</groupId>
+			<groupId>uk.ac.cam.ch</groupId>
 			<artifactId>chemicalTagger</artifactId>
 			<version>1.1-SNAPSHOT</version>
 		</dependency>
@@ -66,6 +66,12 @@
 			<artifactId>jna</artifactId>
 			<version>1.0.9</version>
 		</dependency>
+		<dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <version>4.7</version>
+	  	  <scope>test</scope>
+	    </dependency>
 	</dependencies>
 	<properties>
 		<restlet.version>2.0.3</restlet.version>

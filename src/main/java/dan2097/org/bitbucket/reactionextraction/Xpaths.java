@@ -14,7 +14,7 @@ public class Xpaths {
 	static{
 		yieldXPaths = new ArrayList<String>();
 		/*A nounphrase containing the returned molecule at the start of a synthesize phrase followed by something thing like "is/was synthesised"*/
-		yieldXPaths.add(".//ActionPhrase[@type='Synthesize']/NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE or self::MIXTURE]");
+		yieldXPaths.add(".//ActionPhrase[@type='Synthesize']/NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE or self::MIXTURE]");
 		
 		/*A nounphrase containing the returned molecule in a yield phrase*/
 		yieldXPaths.add(".//ActionPhrase[@type='Yield']/descendant::*[name() = 'PrepPhrase' or name() = 'NounPhrase']/*[self::MOLECULE or self::UNNAMEDMOLECULE or self::MIXTURE]");
@@ -27,6 +27,8 @@ public class Xpaths {
 		reactantXpathsRel.add("../following-sibling::*[1]/VB-SYNTHESIZE/following-sibling::PrepPhrase/*[self::IN-BY or self::IN-FROM]/following-sibling::*[1]/*[self::MOLECULE or self::UNNAMEDMOLECULE or self::MIXTURE]");
 		/*Added*/
 		reactantXpathsAbs.add(".//ActionPhrase[@type='Add']//descendant::*[name() = 'PrepPhrase' or name() = 'NounPhrase']//*[self::MOLECULE or self::UNNAMEDMOLECULE or self::MIXTURE]");
+		/*Is/were/are added to reactant (match what the chemical is being added to). Must all be within same sentence as per other xqueries*/
+		reactantXpathsAbs.add(".//ActionPhrase[@type='Add']//descendant::*[name() = 'VBD' or name() = 'VBP' or name() = 'VBZ']/following-sibling::*[1][local-name()='VB-ADD']/following::TO/following::*[self::MOLECULE or self::UNNAMEDMOLECULE or self::MIXTURE][1]");
 	}
 	
 	static{

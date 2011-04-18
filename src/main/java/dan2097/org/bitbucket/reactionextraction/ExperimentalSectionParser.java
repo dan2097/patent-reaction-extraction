@@ -1,8 +1,5 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,14 +9,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
+import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Nodes;
-import nu.xom.Serializer;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
@@ -30,6 +26,7 @@ import dan2097.org.bitbucket.utility.XMLTags;
 
 public class ExperimentalSectionParser {
 
+	private static Logger LOG = Logger.getLogger(ExperimentalSectionParser.class);
 	private final Map<Element, Chemical> moleculeToChemicalMap = new HashMap<Element, Chemical>();
 	private final Map<String, Chemical> aliasToChemicalMap;
 	private final static Pattern matchIdentifier = Pattern.compile("((\\d+[a-z]?)|[\\(\\{\\[](\\d+[a-z]?|.*\\d+)[\\)\\}\\]])\\s*$");
@@ -152,19 +149,23 @@ public class ExperimentalSectionParser {
 	private List<Reaction> determineReactions(List<Paragraph> paragraphs) {
 		List<Reaction> reactions = new ArrayList<Reaction>();
 		String titleCompoundInChI =titleCompound.getInchi();
-//		if (!titleCompound.getName().equalsIgnoreCase("4-(4-Chlorobenzyl)thiophene-2-carbaldehyde")){
-//			return null;
-//		}
+		if (!titleCompound.getName().trim().equalsIgnoreCase("4-chloropyridine-2-carboxylic acid ethyl ester")){
+			return reactions;
+		}
 		for (Paragraph paragraph : paragraphs) {
 			Reaction currentReaction = new Reaction();
 			Element taggedDocRoot = paragraph.getTaggedSentencesDocument().getRootElement();
 			List<Element> sentences = XOMTools.getChildElementsWithTagName(taggedDocRoot, ChemicalTaggerTags.SENTENCE_Container);
 			for (Element sentence : sentences) {
+				int indexToReattachAt = taggedDocRoot.indexOf(sentence);
+				sentence.detach();
 				Set<Element> products = new HashSet<Element>();
 				for (String xpath : Xpaths.yieldXPaths) {
 					Nodes synthesizedMolecules = sentence.query(xpath);
 					for (int i = 0; i < synthesizedMolecules.size(); i++) {
-						products.add((Element) synthesizedMolecules.get(i));
+						Element synthesizedMolecule= (Element) synthesizedMolecules.get(i);
+						synthesizedMolecule.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "yielded"));
+						products.add(synthesizedMolecule);
 					}
 				}
 				Set<Element> reactants = new HashSet<Element>();
@@ -173,21 +174,27 @@ public class ExperimentalSectionParser {
 					for (String xpath : Xpaths.reactantXpathsRel) {
 						Nodes reactantMolecules = product.query(xpath);
 						for (int i = 0; i < reactantMolecules.size(); i++) {
-							reactants.add((Element) reactantMolecules.get(i));
+							Element reactantMol= (Element) reactantMolecules.get(i);
+							reactantMol.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "reactantRel"));
+							reactants.add(reactantMol);
 						}
 					}
 				}
 				for (String xpath : Xpaths.reactantXpathsAbs) {
 					Nodes reactantMolecules = sentence.query(xpath);
 					for (int i = 0; i < reactantMolecules.size(); i++) {
-						reactants.add((Element) reactantMolecules.get(i));
+						Element reactantMol= (Element) reactantMolecules.get(i);
+						reactantMol.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "reactantAbs"));
+						reactants.add(reactantMol);
 					}
 				}
 				
 				for (String xpath : Xpaths.spectatorXpathsAbs) {
 					Nodes spectatorMolecules = sentence.query(xpath);
 					for (int i = 0; i < spectatorMolecules.size(); i++) {
-						spectators.add((Element) spectatorMolecules.get(i));
+						Element spectatorMol= (Element) spectatorMolecules.get(i);
+						spectatorMol.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "spectator"));
+						spectators.add(spectatorMol);
 					}
 				}
 		
@@ -222,6 +229,11 @@ public class ExperimentalSectionParser {
 					}
 				}
 				List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
+				if (LOG.isTraceEnabled()){
+					for (Element mol : mols) {
+						LOG.trace(mol.toXML());
+					}
+				}
 				mols.removeAll(reactants);
 				mols.removeAll(products);
 				mols.removeAll(spectators);
@@ -240,15 +252,6 @@ public class ExperimentalSectionParser {
 						mols.remove(moleculesToRemove.get(i));
 					}
 				}
-
-//				if (!mols.isEmpty()){
-//					System.out.println("##############");
-//					System.out.println(sentence.toXML());
-//					for (Element mol : mols) {
-//					System.out.println(i++);
-//						System.out.println(mol.toXML());
-//					}
-//				}
 				if (!tempReaction.getProducts().isEmpty() && !currentReaction.getProducts().isEmpty()){
 					reactions.add(currentReaction);
 					currentReaction= tempReaction;
@@ -256,6 +259,7 @@ public class ExperimentalSectionParser {
 				else{
 					currentReaction.importReaction(tempReaction);
 				}
+				taggedDocRoot.insertChild(sentence, indexToReattachAt);
 			}
 			if (currentReaction.getProducts().size()>0 || currentReaction.getReactants().size()>0){
 				reactions.add(currentReaction);
