@@ -18,11 +18,8 @@ public class ChemicalPropertyDetermination {
 	
 	static void determineProperties(Chemical chemical, Element molecule){
 	    Elements quantityElements = molecule.getChildElements(ChemicalTaggerTags.QUANTITY_Container);
-		if (quantityElements.size()>1){
-			LOG.debug("More than 1 quantity element given for same chemical");
-		}
-		else if (quantityElements.size()>0){
-		    Element quantityElement = quantityElements.get(0);
+		for (int i = 0; i < quantityElements.size(); i++) {
+		    Element quantityElement = quantityElements.get(i);
 			determineMass(chemical, quantityElement);
 			determineAmount(chemical, quantityElement);
 			determineQuantity(chemical, quantityElement);
@@ -35,9 +32,14 @@ public class ChemicalPropertyDetermination {
 			LOG.debug("More than 1 volume given for same chemical");
 		}
 		else if (volumes.size()>0){
-			Element volume = volumes.get(0);
-			chemical.setVolumeValue(volume.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
-			chemical.setVolumeUnits(volume.getFirstChildElement(ChemicalTaggerTags.NN_VOL).getValue());
+			if (chemical.getVolumeValue()!=null){
+				LOG.debug("More than 1 volume given for same chemical");
+			}
+			else{
+				Element volume = volumes.get(0);
+				chemical.setVolumeValue(volume.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
+				chemical.setVolumeUnits(volume.getFirstChildElement(ChemicalTaggerTags.NN_VOL).getValue());
+			}
 		}
 	}
 
@@ -47,9 +49,14 @@ public class ChemicalPropertyDetermination {
 			LOG.debug("More than 1 amount given for same chemical");
 		}
 		else if (amounts.size()>0){
-			Element amount = amounts.get(0);
-			chemical.setAmountValue(amount.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
-			chemical.setAmountUnits(amount.getFirstChildElement(ChemicalTaggerTags.NN_AMOUNT).getValue());
+			if (chemical.getAmountValue()!=null){
+				LOG.debug("More than 1 amount given for same chemical");
+			}
+			else{
+				Element amount = amounts.get(0);
+				chemical.setAmountValue(amount.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
+				chemical.setAmountUnits(amount.getFirstChildElement(ChemicalTaggerTags.NN_AMOUNT).getValue());
+			}
 		}
 	}
 
@@ -59,9 +66,14 @@ public class ChemicalPropertyDetermination {
 			LOG.debug("More than 1 mass given for same chemical");
 		}
 		else if (masses.size()>0){
-			Element mass = masses.get(0);
-			chemical.setMassValue(mass.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
-			chemical.setMassUnits(mass.getFirstChildElement(ChemicalTaggerTags.NN_MASS).getValue());
+			if (chemical.getMassValue()!=null){
+				LOG.debug("More than 1 mass given for same chemical");
+			}
+			else{
+				Element mass = masses.get(0);
+				chemical.setMassValue(mass.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
+				chemical.setMassUnits(mass.getFirstChildElement(ChemicalTaggerTags.NN_MASS).getValue());
+			}
 		}
 	}
 }
