@@ -1,8 +1,8 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import nu.xom.Attribute;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -27,7 +29,7 @@ import dan2097.org.bitbucket.utility.XMLTags;
 public class ExperimentalSectionParser {
 
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionParser.class);
-	private final Map<Element, Chemical> moleculeToChemicalMap = new HashMap<Element, Chemical>();
+	private final BiMap<Element, Chemical>  moleculeToChemicalMap = HashBiMap.create();
 	private final Map<String, Chemical> aliasToChemicalMap;
 	private final static Pattern matchIdentifier = Pattern.compile("((\\d+[a-z]?)|[\\(\\{\\[](\\d+[a-z]?|.*\\d+)[\\)\\}\\]])\\s*$");
 	private final Chemical titleCompound;
@@ -45,12 +47,13 @@ public class ExperimentalSectionParser {
 				if (!para.getTaggedString().equals("")){
 					paragraphs.add(para);
 					generateMoleculeToChemicalMap(para);
+					ChemicalTypeAssigner.performPreliminaryTypeDetection(moleculeToChemicalMap);
 				}
 			}
 			reactions.addAll(determineReactions(paragraphs));
 		}
 	}
-	
+
 	/**
 	 * Retrieves the reactions found by this experimental section parser
 	 * @return
@@ -100,15 +103,29 @@ public class ExperimentalSectionParser {
 	}
 	
 	/**
-	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE tag
+	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE_Container/UNNAMEDMOLECULE_Container
 	 * @param molecule
 	 * @return
 	 */
 	private String findMoleculeName(Element molecule) {
-		if (!molecule.getLocalName().equals(ChemicalTaggerTags.MOLECULE_Container)) {
-			throw new IllegalArgumentException("argument was not a molecule");
+		String elName= molecule.getLocalName();
+		if (elName.equals(ChemicalTaggerTags.MOLECULE_Container)) {
+			return findMoleculeNameFromMoleculeEl(molecule);
 		}
-		
+		else if (elName.equals(ChemicalTaggerTags.UNNAMEDMOLECULE_Container)) {
+			return findMoleculeNameFromEl(molecule);
+		}
+		throw new IllegalArgumentException("Unexpected tag type:" + elName +" The following are allowed" +
+				ChemicalTaggerTags.MOLECULE_Container + ", "+ ChemicalTaggerTags.UNNAMEDMOLECULE_Container);
+	}
+	
+	
+	/**
+	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE tag
+	 * @param molecule
+	 * @return
+	 */
+	private String findMoleculeNameFromMoleculeEl(Element molecule) {
 		Element singleWordName = molecule.getFirstChildElement(ChemicalTaggerTags.OSCAR_CM);
 		if (singleWordName != null) {
 			return singleWordName.getValue();
@@ -128,16 +145,45 @@ public class ExperimentalSectionParser {
 		}
 		throw new RuntimeException("malformed molecule");
 	}
+	
+	/**
+	 * Returns the space concatenated value of the tags except those tags that are quantity tags of children thereof
+	 * @param molecule
+	 * @return
+	 */
+	private String findMoleculeNameFromEl(Element molecule) {
+		StringBuilder builder = new StringBuilder();
+		LinkedList<Element> stack = new LinkedList<Element>();
+		stack.add(molecule);
+		while (!stack.isEmpty()) {
+			Element currentEl =stack.removeFirst();
+			Elements els = currentEl.getChildElements();
+			if (els.size()>0){
+				for (int i = 0; i < els.size(); i++) {
+					Element elToConsider =els.get(i);
+					if (!elToConsider.getLocalName().equals(ChemicalTaggerTags.QUANTITY_Container)){
+						stack.add(elToConsider);
+					}
+				}
+			}
+			else{
+				builder.append(currentEl.getValue());
+				builder.append(' ');
+			}
+		}
+		builder.deleteCharAt(builder.length()-1);
+		return builder.toString();
+	}
 
 
 	/**
-	 * Creates a list of all MOLECULE elements
+	 * Creates a list of all MOLECULE or UNNAMEDMOLECULE elements
 	 * @return
 	 */
 	private List<Element> findAllMolecules(Paragraph paragraph) {
 		List <Element> mols = new ArrayList<Element>();
 		Document chemicalTaggerResult =paragraph.getTaggedSentencesDocument();
-		Nodes molecules = chemicalTaggerResult.query("//" + ChemicalTaggerTags.MOLECULE_Container);
+		Nodes molecules = chemicalTaggerResult.query("//*[self::MOLECULE or self::UNNAMEDMOLECULE]");
 		for (int i = 0; i < molecules.size(); i++) {
 			Element molecule = (Element) molecules.get(i);
 			mols.add(molecule);
@@ -148,10 +194,6 @@ public class ExperimentalSectionParser {
 
 	private List<Reaction> determineReactions(List<Paragraph> paragraphs) {
 		List<Reaction> reactions = new ArrayList<Reaction>();
-		String titleCompoundInChI =titleCompound.getInchi();
-		if (!titleCompound.getName().trim().equalsIgnoreCase("4-chloropyridine-2-carboxylic acid ethyl ester")){
-			return reactions;
-		}
 		for (Paragraph paragraph : paragraphs) {
 			Reaction currentReaction = new Reaction();
 			Element taggedDocRoot = paragraph.getTaggedSentencesDocument().getRootElement();
@@ -159,99 +201,50 @@ public class ExperimentalSectionParser {
 			for (Element sentence : sentences) {
 				int indexToReattachAt = taggedDocRoot.indexOf(sentence);
 				sentence.detach();
-				Set<Element> products = new HashSet<Element>();
-				for (String xpath : Xpaths.yieldXPaths) {
-					Nodes synthesizedMolecules = sentence.query(xpath);
-					for (int i = 0; i < synthesizedMolecules.size(); i++) {
-						Element synthesizedMolecule= (Element) synthesizedMolecules.get(i);
-						synthesizedMolecule.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "yielded"));
-						products.add(synthesizedMolecule);
-					}
-				}
-				Set<Element> reactants = new HashSet<Element>();
-				Set<Element> spectators = new HashSet<Element>();
-				for (Element product : products) {
-					for (String xpath : Xpaths.reactantXpathsRel) {
-						Nodes reactantMolecules = product.query(xpath);
-						for (int i = 0; i < reactantMolecules.size(); i++) {
-							Element reactantMol= (Element) reactantMolecules.get(i);
-							reactantMol.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "reactantRel"));
-							reactants.add(reactantMol);
-						}
-					}
-				}
-				for (String xpath : Xpaths.reactantXpathsAbs) {
-					Nodes reactantMolecules = sentence.query(xpath);
-					for (int i = 0; i < reactantMolecules.size(); i++) {
-						Element reactantMol= (Element) reactantMolecules.get(i);
-						reactantMol.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "reactantAbs"));
-						reactants.add(reactantMol);
-					}
-				}
-				
-				for (String xpath : Xpaths.spectatorXpathsAbs) {
-					Nodes spectatorMolecules = sentence.query(xpath);
-					for (int i = 0; i < spectatorMolecules.size(); i++) {
-						Element spectatorMol= (Element) spectatorMolecules.get(i);
-						spectatorMol.addAttribute(new Attribute(XMLTags.MOLECULEROLE, "spectator"));
-						spectators.add(spectatorMol);
-					}
-				}
+				Set<Element> products = identifyProducts(sentence);
+				identifyReactants(sentence, products);
+				identifySpectators(sentence);
 		
-				Reaction tempReaction = new Reaction();
-				for (Element product : products) {
-					Chemical chem = moleculeToChemicalMap.get(product);
-					if (chem!=null){
-						tempReaction.addProduct(chem);
+				List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
+				List<Chemical> chemicals = new ArrayList<Chemical>();
+				for (Element mol : mols) {
+					Chemical cm = moleculeToChemicalMap.get(mol);
+					if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(mol.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
+						cm.setRole(ChemicalRole.spectator);
+					}
+					if (cm.getType()!= ChemicalType.falsePositive){
+						chemicals.add(cm);
 					}
 					else{
-						//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
+						LOG.trace(cm.getName() +" is believed to be a false positive and has been ignored");
 					}
 				}
-				for (Element reactant : reactants) {
-					Chemical chem = moleculeToChemicalMap.get(reactant);
-					if (chem!=null){
-						if (!ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reactant.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-							tempReaction.addReactant(chem);
+				Reaction tempReaction = new Reaction();
+				List<Chemical> unassignedChemicals = new ArrayList<Chemical>();
+				for (Chemical chemical : chemicals) {
+					if (chemical.getType() ==ChemicalType.exact){
+						if (chemical.getRole() == ChemicalRole.product){
+							tempReaction.addProduct(chemical);
+						}
+						else if (chemical.getRole() == ChemicalRole.reactant){
+							tempReaction.addReactant(chemical);
+						}
+						else if (chemical.getRole() == ChemicalRole.spectator){
+							tempReaction.addSpectator(chemical);
 						}
 						else{
-							tempReaction.addSpectator(chem);
+							unassignedChemicals.add(chemical);
 						}
+					}
+					else if (chemical.getType() ==ChemicalType.exactReference){
+						//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
+						LOG.debug(chemical.getName() +" is believed to be a back reference");
 					}
 					else{
-						//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
+						unassignedChemicals.add(chemical);
 					}
 				}
-				for (Element spectator : spectators) {
-					Chemical chem = moleculeToChemicalMap.get(spectator);
-					if (chem!=null){
-						tempReaction.addSpectator(chem);
-					}
-				}
-				List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
-				if (LOG.isTraceEnabled()){
-					for (Element mol : mols) {
-						LOG.trace(mol.toXML());
-					}
-				}
-				mols.removeAll(reactants);
-				mols.removeAll(products);
-				mols.removeAll(spectators);
-				for (int i = mols.size()-1; i >=0; i--) {
-					Element mol = mols.get(i);
-					for (String xpath : Xpaths.moleculesToIgnoreXpaths) {
-						if (mol.query(xpath).size()>0){
-							mols.remove(i);
-							break;
-						}
-					}
-				}
-				for (String xpath : Xpaths.referencesToPreviousReactions) {
-					Nodes moleculesToRemove = sentence.query(xpath);
-					for (int i = 0; i < moleculesToRemove.size(); i++) {
-						mols.remove(moleculesToRemove.get(i));
-					}
-				}
+				unassignedChemicals =removeChemicalsKnownToBeIrrelevant(unassignedChemicals, sentence);
 				if (!tempReaction.getProducts().isEmpty() && !currentReaction.getProducts().isEmpty()){
 					reactions.add(currentReaction);
 					currentReaction= tempReaction;
@@ -267,5 +260,102 @@ public class ExperimentalSectionParser {
 		}
 		
 		return reactions;
+	}
+
+	/**
+	 * Given a list of unassignable chemicals checks whether these chemicals appear in places known to not fit into the rigid roles this program attempts to assign e.g. work-up
+	 * @param unassignedChemicals
+	 * @param sentence
+	 * @return
+	 */
+	private List<Chemical> removeChemicalsKnownToBeIrrelevant(List<Chemical> unassignedChemicals, Element sentence) {
+		for (int i = unassignedChemicals.size()-1; i >=0; i--) {
+			Element mol = moleculeToChemicalMap.inverse().get(unassignedChemicals.get(i));
+			for (String xpath : Xpaths.moleculesToIgnoreXpaths) {
+				if (mol.query(xpath).size()>0){
+					unassignedChemicals.remove(i);
+					break;
+				}
+			}
+		}
+		for (String xpath : Xpaths.referencesToPreviousReactions) {
+			Nodes moleculesToRemove = sentence.query(xpath);
+			for (int i = 0; i < moleculesToRemove.size(); i++) {
+				unassignedChemicals.remove(moleculeToChemicalMap.get(moleculesToRemove.get(i)));
+			}
+		}
+		return unassignedChemicals;
+	}
+
+	/**
+	 * Identifies products using yieldXpaths
+	 * @param sentence
+	 * @return 
+	 */
+	private Set<Element> identifyProducts(Element sentence) {
+		Set<Element> products = new HashSet<Element>();
+		for (String xpath : Xpaths.yieldXPaths) {
+			Nodes synthesizedMolecules = sentence.query(xpath);
+			for (int i = 0; i < synthesizedMolecules.size(); i++) {
+				Element synthesizedMolecule= (Element) synthesizedMolecules.get(i);
+				products.add(synthesizedMolecule);
+				Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
+				if (chem.getRole()==null){
+					chem.setXpathUsedToIdentify(xpath);
+					chem.setRole(ChemicalRole.product);
+				}
+			}
+		}
+		return products;
+	}
+	
+	/**
+	 * Identifiers reactants using reactantXpathsRel and reactantXpathsAbs
+	 * @param sentence
+	 * @param products
+	 */
+	private void identifyReactants(Element sentence, Set<Element> products) {
+		for (Element product : products) {
+			for (String xpath : Xpaths.reactantXpathsRel) {
+				Nodes reactantMolecules = product.query(xpath);
+				for (int i = 0; i < reactantMolecules.size(); i++) {
+					Element reactantMol= (Element) reactantMolecules.get(i);
+					Chemical chem = moleculeToChemicalMap.get(reactantMol);
+					if (chem.getRole()==null){
+						chem.setXpathUsedToIdentify(xpath);
+						chem.setRole(ChemicalRole.reactant);
+					}
+				}
+			}
+		}
+		for (String xpath : Xpaths.reactantXpathsAbs) {
+			Nodes reactantMolecules = sentence.query(xpath);
+			for (int i = 0; i < reactantMolecules.size(); i++) {
+				Element reactantMol= (Element) reactantMolecules.get(i);
+				Chemical chem = moleculeToChemicalMap.get(reactantMol);
+				if (chem.getRole()==null){
+					chem.setXpathUsedToIdentify(xpath);
+					chem.setRole(ChemicalRole.reactant);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Identifies spectator molecules using spectatorXpathsAbs
+	 * @param sentence
+	 */
+	private void identifySpectators(Element sentence) {
+		for (String xpath : Xpaths.spectatorXpathsAbs) {
+			Nodes spectatorMolecules = sentence.query(xpath);
+			for (int i = 0; i < spectatorMolecules.size(); i++) {
+				Element spectatorMol= (Element) spectatorMolecules.get(i);
+				Chemical chem = moleculeToChemicalMap.get(spectatorMol);
+				if (chem.getRole()==null){
+					chem.setXpathUsedToIdentify(xpath);
+					chem.setRole(ChemicalRole.spectator);
+				}
+			}
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.util.regex.Pattern;
+
 import nu.xom.Attribute;
 import nu.xom.Element;
 import dan2097.org.bitbucket.utility.InchiNormaliser;
@@ -7,6 +9,7 @@ import dan2097.org.bitbucket.utility.Utils;
 
 public class Chemical{
 
+	private final static Pattern matchSlash = Pattern.compile("/");
 	private final String name;
 	private final String smiles;
 	private final String inchi;
@@ -16,10 +19,11 @@ public class Chemical{
 	private String amountUnits;
 	private String volumeValue;
 	private String volumeUnits;
+	private ChemicalRole role = null;
+	private ChemicalType type = null;
+	private String xpathUsedToIdentify = null;
 
 
-//	private Element cml;
-	
 	public Chemical(String name) {
 		this.name = name;
 		smiles = Utils.resolveNameToSmiles(name);
@@ -31,9 +35,7 @@ public class Chemical{
 			inchi =null;
 		}
 	}
-	
-	
-	
+
 	String getName() {
 		return name;
 	}
@@ -135,6 +137,69 @@ public class Chemical{
 		this.volumeUnits = volumeUnits;
 	}
 	
+	/**
+	 * Gets the type assigned to a chemical or null
+	 * A type indicates whether the name describes an exact compound, fragment, class etc.
+	 * @return
+	 */
+	ChemicalType getType() {
+		return type;
+	}
+
+	void setType(ChemicalType type) {
+		this.type = type;
+	}
+	
+	/**
+	 * Gets the role assigned to a chemical or null
+	 * A role is one of product, reactant or spectator
+	 * @return
+	 */
+	ChemicalRole getRole() {
+		return role;
+	}
+
+	void setRole(ChemicalRole role) {
+		this.role = role;
+	}
+
+	/**
+	 * For debugging purposes.
+	 * @return
+	 */
+	String getXpathUsedToIdentify() {
+		return xpathUsedToIdentify;
+	}
+
+	void setXpathUsedToIdentify(String xpathUsedToIdentify) {
+		this.xpathUsedToIdentify = xpathUsedToIdentify;
+	}
+	
+	/**
+	 * If the InChI is available and describes a molecule with exactly one atom returns true
+	 * else returns false
+	 * @return
+	 */
+	boolean hasMonoAtomicInChI(){
+		if (inchi!=null){
+			String formula = matchSlash.split(inchi)[1];
+			int upperCaseCount =0;
+			for (int i = 0; i < formula.length(); i++) {
+				char c = formula.charAt(i);
+				if (Character.isDigit(c)){
+					return false;
+				}
+				else if (Character.isUpperCase(c)){
+					upperCaseCount++;
+				}
+			}
+			if (upperCaseCount==1){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public Element toCML(String id){
 		Element reactant = new Element("reactant");
 		Element molecule = new Element("molecule");
