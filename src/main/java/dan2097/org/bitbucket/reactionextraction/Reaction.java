@@ -11,7 +11,6 @@ public class Reaction {
 	List<Chemical> products =new ArrayList<Chemical>();
 	/** Typically solvents or catalysts*/
 	List<Chemical> spectators =new ArrayList<Chemical>();
-	Chemical primaryProduct;
 
 	List<Chemical> getReactants() {
 		return reactants;
@@ -30,12 +29,6 @@ public class Reaction {
 	}
 	void addSpectator(Chemical spectator) {
 		spectators.add(spectator);
-	}
-	Chemical getPrimaryProduct() {
-		return primaryProduct;
-	}
-	void setPrimaryProduct(Chemical primaryProduct) {
-		this.primaryProduct = primaryProduct;
 	}
 	
 	void importReaction(Reaction reactionToImport) {

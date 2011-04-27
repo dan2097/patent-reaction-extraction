@@ -11,14 +11,16 @@ public class Chemical{
 
 	private final static Pattern matchSlash = Pattern.compile("/");
 	private final String name;
-	private final String smiles;
-	private final String inchi;
+	private String smiles;
+	private String inchi;
 	private String massValue;
 	private String massUnits;
 	private String amountValue;
 	private String amountUnits;
+	private String molarityValue;
 	private String volumeValue;
 	private String volumeUnits;
+	private Double percentYield;
 	private ChemicalRole role = null;
 	private ChemicalType type = null;
 	private String xpathUsedToIdentify = null;
@@ -48,12 +50,20 @@ public class Chemical{
 		return smiles;
 	}
 	
+	void setSmiles(String smiles) {
+		this.smiles = smiles;
+	}
+
 	/**
 	 * A canonical identifier for this chemical. Null if structure is unavailable
 	 * @return
 	 */
 	String getInchi() {
 		return inchi;
+	}
+	
+	void setInchi(String inchi) {
+		this.inchi = inchi;
 	}
 	
 	/**
@@ -109,6 +119,20 @@ public class Chemical{
 	void setAmountUnits(String amountUnits) {
 		this.amountUnits = amountUnits;
 	}
+	
+	/**
+	 * Gets a value for the concentration. Assumed to be in moles
+	 * Typically, but not always, this can be expressed as a float
+	 * (or null if unavailable)
+	 * @return
+	 */
+	String getMolarity() {
+		return molarityValue;
+	}
+
+	void setMolarityValue(String molarityValue) {
+		this.molarityValue = molarityValue;
+	}
 
 	/**
 	 * Gets a value for the volume. Meaningless without reference to volume units
@@ -135,6 +159,19 @@ public class Chemical{
 
 	void setVolumeUnits(String volumeUnits) {
 		this.volumeUnits = volumeUnits;
+	}
+	
+	/**
+	 * Gets the percent yield as a double
+	 * (or null if unavailable)
+	 * @return
+	 */
+	Double getPercentYield() {
+		return percentYield;
+	}
+
+	void setPercentYield(double percentYield) {
+		this.percentYield = percentYield;
 	}
 	
 	/**
@@ -215,6 +252,14 @@ public class Chemical{
 			amount.appendChild(String.valueOf(amountValue));
 			if (amountUnits!=null){
 				amount.addAttribute(new Attribute("units", amountUnits));
+			}
+			reactant.appendChild(amount);
+		}
+		if (molarityValue!=null){
+			Element amount = new Element("amount");
+			amount.appendChild(String.valueOf(molarityValue));
+			if (amountUnits!=null){
+				amount.addAttribute(new Attribute("units", "mols"));
 			}
 			reactant.appendChild(amount);
 		}

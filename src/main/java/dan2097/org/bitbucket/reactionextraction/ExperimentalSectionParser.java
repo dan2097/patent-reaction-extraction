@@ -237,8 +237,23 @@ public class ExperimentalSectionParser {
 						}
 					}
 					else if (chemical.getType() ==ChemicalType.exactReference){
-						//TODO resolve symbolic chemical names (could however be an unresolvable chemical name)
-						LOG.debug(chemical.getName() +" is believed to be a back reference");
+						if (attemptToResolveBackReference(chemical)){
+							if (chemical.getRole() == ChemicalRole.product){
+								tempReaction.addProduct(chemical);
+							}
+							else if (chemical.getRole() == ChemicalRole.reactant){
+								tempReaction.addReactant(chemical);
+							}
+							else if (chemical.getRole() == ChemicalRole.spectator){
+								tempReaction.addSpectator(chemical);
+							}
+							else{
+								unassignedChemicals.add(chemical);
+							}
+						}
+						else {
+							LOG.debug(chemical.getName() +" is believed to be a back reference but could not be resolved");
+						}
 					}
 					else{
 						unassignedChemicals.add(chemical);
@@ -260,6 +275,16 @@ public class ExperimentalSectionParser {
 		}
 		
 		return reactions;
+	}
+
+	private boolean attemptToResolveBackReference(Chemical chemical) {
+		if (chemical.getName().equalsIgnoreCase("title compound")){
+			chemical.setSmiles(titleCompound.getSmiles());
+			chemical.setInchi(titleCompound.getInchi());
+			chemical.setRole(ChemicalRole.product);
+			return true;
+		}
+		return false;
 	}
 
 	/**
