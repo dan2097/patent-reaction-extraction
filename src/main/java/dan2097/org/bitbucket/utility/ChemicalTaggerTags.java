@@ -350,6 +350,9 @@ public class ChemicalTaggerTags {
 	/** contains one or more cardinal numbers and NN-MOLAR */
 	public static final String MOLAR_Container = "MOLAR";
 	
+	/** contains a PERCENT_Container and NN-YIELD */
+	public static final String YIELD_Container = "YIELD";
+	
 	public static final String APPARATUS_Container = "APPARATUS";
 	
 	/** Something to do with multiple measurement types*/

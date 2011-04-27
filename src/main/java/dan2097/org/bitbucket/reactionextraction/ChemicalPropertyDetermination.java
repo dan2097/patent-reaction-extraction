@@ -22,7 +22,9 @@ public class ChemicalPropertyDetermination {
 		    Element quantityElement = quantityElements.get(i);
 			determineMass(chemical, quantityElement);
 			determineAmount(chemical, quantityElement);
+			determineMolarity(chemical, quantityElement);
 			determineQuantity(chemical, quantityElement);
+			determineYield(chemical, quantityElement);
 		}
 	}
 
@@ -59,6 +61,29 @@ public class ChemicalPropertyDetermination {
 			}
 		}
 	}
+	
+	private static void determineMolarity(Chemical chemical, Element quantityElement) {
+		Elements molarAmounts = quantityElement.getChildElements(ChemicalTaggerTags.MOLAR_Container);
+		if (molarAmounts.size()>1){
+			LOG.debug("More than 1 molarity given for same chemical");
+		}
+		else if (molarAmounts.size()>0){
+			if (chemical.getAmountValue()!=null){
+				LOG.debug("More than 1 molarity given for same chemical");
+			}
+			else{
+				Element molarity = molarAmounts.get(0);
+				Element cd = molarity.getFirstChildElement(ChemicalTaggerTags.CD);
+				if (cd!=null){
+					chemical.setMolarityValue(molarity.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
+				}
+				else{//units are included in the NN_MOLAR
+					String molarStr =molarity.getFirstChildElement(ChemicalTaggerTags.NN_MOLAR).getValue();
+					chemical.setMolarityValue(molarStr.substring(0, molarStr.length()-1));
+				}
+			}
+		}
+	}
 
 	private static void determineMass(Chemical chemical, Element quantityElement) {
 		Elements masses = quantityElement.getChildElements(ChemicalTaggerTags.MASS_Container);
@@ -73,6 +98,29 @@ public class ChemicalPropertyDetermination {
 				Element mass = masses.get(0);
 				chemical.setMassValue(mass.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
 				chemical.setMassUnits(mass.getFirstChildElement(ChemicalTaggerTags.NN_MASS).getValue());
+			}
+		}
+	}
+	
+	private static void determineYield(Chemical chemical, Element quantityElement) {
+		Elements yields = quantityElement.getChildElements(ChemicalTaggerTags.YIELD_Container);
+		if (yields.size()>1){
+			LOG.debug("More than 1 yield given for same chemical");
+		}
+		else if (yields.size()>0){
+			if (chemical.getPercentYield()!=null){
+				LOG.debug("More than 1 yield given for same chemical");
+			}
+			else{
+				Element yield = yields.get(0);
+				String value = yield.query(".//" + ChemicalTaggerTags.CD).get(0).getValue();
+				try{ 
+					float f = Float.parseFloat(value);
+					chemical.setPercentYield(f);
+				}
+				catch (NumberFormatException e) {
+					LOG.debug("Yield was not a numeric percentage");
+				}
 			}
 		}
 	}
