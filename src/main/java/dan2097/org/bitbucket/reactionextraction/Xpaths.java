@@ -28,7 +28,7 @@ public class Xpaths {
 		/*Added*/
 		reactantXpathsAbs.add(".//ActionPhrase[@type='Add']//descendant::*[name() = 'PrepPhrase' or name() = 'NounPhrase']//*[self::MOLECULE or self::UNNAMEDMOLECULE]");
 		/*Is/were/are added to reactant (match what the chemical is being added to). Must all be within same sentence as per other xqueries*/
-		reactantXpathsAbs.add(".//ActionPhrase[@type='Add']//descendant::*[name() = 'VBD' or name() = 'VBP' or name() = 'VBZ']/following-sibling::*[1][local-name()='VB-ADD']/following::TO/following::*[self::MOLECULE or self::UNNAMEDMOLECULE][1]");
+		//reactantXpathsAbs.add(".//ActionPhrase[@type='Add']//descendant::*[name() = 'VBD' or name() = 'VBP' or name() = 'VBZ']/following-sibling::*[1][local-name()='VB-ADD']/following::TO/following::*[self::MOLECULE or self::UNNAMEDMOLECULE][1]");
 		/*foo is/were/are dissolved in*/
 		reactantXpathsAbs.add(".//ActionPhrase[@type='Dissolve']//MOLECULE[following::*[name() = 'VBD' or name() = 'VBP' or name() = 'VBZ'][following-sibling::*[1][name()='VB-DISSOLVE']]]");
 	}
