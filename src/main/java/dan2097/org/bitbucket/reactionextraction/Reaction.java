@@ -7,28 +7,50 @@ import nu.xom.Element;
 
 public class Reaction {
 
-	List<Chemical> reactants =new ArrayList<Chemical>();
-	List<Chemical> products =new ArrayList<Chemical>();
+	private List<Chemical> reactants =new ArrayList<Chemical>();
+	private List<Chemical> products =new ArrayList<Chemical>();
 	/** Typically solvents or catalysts*/
-	List<Chemical> spectators =new ArrayList<Chemical>();
+	private List<Chemical> spectators =new ArrayList<Chemical>();
+	List<Paragraph> input;
 
+	public void setInput(List<Paragraph> taggedSentencesDocument) {
+		input =taggedSentencesDocument;	
+	}
+	public List<Paragraph> getInput() {
+		return input;
+	}
+	
 	List<Chemical> getReactants() {
 		return reactants;
 	}
 	void addReactant(Chemical reactant) {
 		reactants.add(reactant);
 	}
+	
+	boolean removeReactant(Chemical reactant) {
+		return reactants.remove(reactant);
+	}
+	
 	List<Chemical> getProducts() {
 		return products;
 	}
 	void addProduct(Chemical product) {
 		products.add(product);
 	}
+	
+	boolean removeProduct(Chemical product) {
+		return products.remove(product);
+	}
+	
 	List<Chemical> getSpectators() {
 		return spectators;
 	}
 	void addSpectator(Chemical spectator) {
 		spectators.add(spectator);
+	}
+	
+	boolean removeSpectator(Chemical spectator) {
+		return spectators.remove(spectator);
 	}
 	
 	void importReaction(Reaction reactionToImport) {

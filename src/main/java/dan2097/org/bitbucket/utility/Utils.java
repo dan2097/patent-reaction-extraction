@@ -14,6 +14,8 @@ import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import com.ggasoftware.indigo.Indigo;
+
 import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 
 import nu.xom.Attribute;
@@ -28,6 +30,7 @@ import nu.xom.ValidityException;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
+import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
@@ -36,6 +39,7 @@ public class Utils {
 	
 	private static Builder xomBuilder;
 	private static ChemNameDictRegistry chemNameRegistery;
+	public static Indigo indigo = new Indigo();
 	static{
 		chemNameRegistery = new ChemNameDictRegistry();
 		chemNameRegistery.register(new OpsinDictionary());

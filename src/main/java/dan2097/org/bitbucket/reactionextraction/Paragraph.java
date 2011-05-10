@@ -27,12 +27,12 @@ public class Paragraph {
 		}
 		else{
 			taggedString = Utils.tagString(untaggedString);
-			LOG.trace(taggedString);
+			//LOG.trace(taggedString);
 			taggedSentencesDocument = Utils.runChemicalSentenceParsingOnTaggedString(taggedString);
 			if (taggedSentencesDocument ==null){
 				throw new RuntimeException("Chemical tagger failed to tag a text string indicating a bug in chemical tagger");
 			}
-			if (LOG.isTraceEnabled()){LOG.trace(taggedSentencesDocument.toXML());};
+			//if (LOG.isTraceEnabled()){LOG.trace(taggedSentencesDocument.toXML());};
 		}
 	}
 

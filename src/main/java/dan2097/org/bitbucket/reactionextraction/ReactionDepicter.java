@@ -41,14 +41,16 @@ public class ReactionDepicter {
 		if (rxn.countProducts()==0 && rxn.countReactants()==0){
 			return;
 		}
-		if (rxn.countProducts()>0 && rxn.countReactants()>0){
-			try{
-				rxn.automap("discard");
-			}
-			catch (Exception e) {
-				return;
-			}
-		}
+ //reaction mapping is currently disabled
+//		if (rxn.countProducts()>0 && rxn.countReactants()>0){
+//			try{
+//				rxn.automap("discard");
+//			}
+//			catch (Exception e) {
+//				e.printStackTrace();
+//				return;
+//			}
+//		}
 		
 		indigo.setOption("render-output-format", "png");
 		rxn.layout();
