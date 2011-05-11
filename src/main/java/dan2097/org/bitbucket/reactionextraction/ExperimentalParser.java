@@ -3,7 +3,6 @@ package dan2097.org.bitbucket.reactionextraction;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,7 @@ public class ExperimentalParser {
 	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 	private final List<Reaction> documentReactions = new ArrayList<Reaction>();
 
-	List<Reaction> getDocumentReactions() {
+	public List<Reaction> getDocumentReactions() {
 		return documentReactions;
 	}
 
@@ -43,13 +42,10 @@ public class ExperimentalParser {
 				try {
 					File f = new File(directory, "reaction" + i + ".png");
 					ReactionDepicter.depictReaction(reaction, f);
-						FileOutputStream in = new FileOutputStream(new File(directory, "reactionsrc" + i + ".xml"));
+						FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
 					    Serializer serializer = new Serializer(in);
 						serializer.setIndent(2);
-						List<Paragraph> paras = reaction.getInput();
-						for (Paragraph paragraph : paras) {
-							serializer.write(paragraph.getTaggedSentencesDocument());
-						}
+						serializer.write(reaction.getInput().getTaggedSentencesDocument());
 						IOUtils.closeQuietly(in);
 						
 					FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + i + ".cml"));

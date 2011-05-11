@@ -58,7 +58,7 @@ public class ChemicalSenseApplication {
 			}
 		}
 		for (Chemical catalyst : reactantsToReclassify) {
-			catalyst.setRole(ChemicalRole.spectator);
+			catalyst.setRole(ChemicalRole.catalyst);
 			reaction.removeReactant(catalyst);
 			reaction.addSpectator(catalyst);
 		}

@@ -11,16 +11,16 @@ public class Reaction {
 	private List<Chemical> products =new ArrayList<Chemical>();
 	/** Typically solvents or catalysts*/
 	private List<Chemical> spectators =new ArrayList<Chemical>();
-	List<Paragraph> input;
+	Paragraph inputPara;
 
-	public void setInput(List<Paragraph> taggedSentencesDocument) {
-		input =taggedSentencesDocument;	
+	public void setInput(Paragraph inputPara) {
+		this.inputPara =inputPara;	
 	}
-	public List<Paragraph> getInput() {
-		return input;
+	public Paragraph getInput() {
+		return inputPara;
 	}
 	
-	List<Chemical> getReactants() {
+	public List<Chemical> getReactants() {
 		return reactants;
 	}
 	void addReactant(Chemical reactant) {
@@ -31,7 +31,7 @@ public class Reaction {
 		return reactants.remove(reactant);
 	}
 	
-	List<Chemical> getProducts() {
+	public List<Chemical> getProducts() {
 		return products;
 	}
 	void addProduct(Chemical product) {
@@ -42,7 +42,7 @@ public class Reaction {
 		return products.remove(product);
 	}
 	
-	List<Chemical> getSpectators() {
+	public List<Chemical> getSpectators() {
 		return spectators;
 	}
 	void addSpectator(Chemical spectator) {

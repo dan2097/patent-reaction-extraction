@@ -1,11 +1,14 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 
 import nu.xom.Element;
-import nu.xom.Elements;
 
 /**
  * Determine a chemicals properties e.g. quantity, phase etc. from local semantic information
@@ -17,9 +20,8 @@ public class ChemicalPropertyDetermination {
 	static Logger LOG = Logger.getLogger(ChemicalPropertyDetermination.class);
 	
 	static void determineProperties(Chemical chemical, Element molecule){
-	    Elements quantityElements = molecule.getChildElements(ChemicalTaggerTags.QUANTITY_Container);
-		for (int i = 0; i < quantityElements.size(); i++) {
-		    Element quantityElement = quantityElements.get(i);
+		List<Element> quantityElements = XOMTools.getDescendantElementsWithTagName(molecule, ChemicalTaggerTags.QUANTITY_Container);
+		for (Element quantityElement : quantityElements) {
 			determineMass(chemical, quantityElement);
 			determineAmount(chemical, quantityElement);
 			determineMolarity(chemical, quantityElement);
@@ -29,7 +31,7 @@ public class ChemicalPropertyDetermination {
 	}
 
 	private static void determineQuantity(Chemical chemical, Element quantityElement) {
-		Elements volumes = quantityElement.getChildElements(ChemicalTaggerTags.VOLUME_Container);
+		List<Element> volumes = XOMTools.getDescendantElementsWithTagName(quantityElement, ChemicalTaggerTags.VOLUME_Container);
 		if (volumes.size()>1){
 			LOG.debug("More than 1 volume given for same chemical");
 		}
@@ -46,7 +48,7 @@ public class ChemicalPropertyDetermination {
 	}
 
 	private static void determineAmount(Chemical chemical, Element quantityElement) {
-		Elements amounts = quantityElement.getChildElements(ChemicalTaggerTags.AMOUNT_Container);
+		List<Element> amounts = XOMTools.getDescendantElementsWithTagName(quantityElement, ChemicalTaggerTags.AMOUNT_Container);
 		if (amounts.size()>1){
 			LOG.debug("More than 1 amount given for same chemical");
 		}
@@ -63,7 +65,7 @@ public class ChemicalPropertyDetermination {
 	}
 	
 	private static void determineMolarity(Chemical chemical, Element quantityElement) {
-		Elements molarAmounts = quantityElement.getChildElements(ChemicalTaggerTags.MOLAR_Container);
+		List<Element> molarAmounts = XOMTools.getDescendantElementsWithTagName(quantityElement, ChemicalTaggerTags.MOLAR_Container);
 		if (molarAmounts.size()>1){
 			LOG.debug("More than 1 molarity given for same chemical");
 		}
@@ -86,7 +88,7 @@ public class ChemicalPropertyDetermination {
 	}
 
 	private static void determineMass(Chemical chemical, Element quantityElement) {
-		Elements masses = quantityElement.getChildElements(ChemicalTaggerTags.MASS_Container);
+		List<Element> masses = XOMTools.getDescendantElementsWithTagName(quantityElement, ChemicalTaggerTags.MASS_Container);
 		if (masses.size()>1){
 			LOG.debug("More than 1 mass given for same chemical");
 		}
@@ -103,7 +105,7 @@ public class ChemicalPropertyDetermination {
 	}
 	
 	private static void determineYield(Chemical chemical, Element quantityElement) {
-		Elements yields = quantityElement.getChildElements(ChemicalTaggerTags.YIELD_Container);
+		List<Element> yields = XOMTools.getDescendantElementsWithTagName(quantityElement, ChemicalTaggerTags.YIELD_Container);
 		if (yields.size()>1){
 			LOG.debug("More than 1 yield given for same chemical");
 		}
