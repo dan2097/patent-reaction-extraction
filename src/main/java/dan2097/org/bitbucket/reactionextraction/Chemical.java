@@ -12,6 +12,7 @@ public class Chemical{
 	private final static Pattern matchSlash = Pattern.compile("/");
 	private final String name;
 	private String smiles;
+	private String smarts;
 	private String inchi;
 	private String massValue;
 	private String massUnits;
@@ -46,19 +47,31 @@ public class Chemical{
 	 * A highly interoperable structural identifier. Null if structure is unavailable
 	 * @return
 	 */
-	String getSmiles() {
+	public String getSmiles() {
 		return smiles;
 	}
 	
 	void setSmiles(String smiles) {
 		this.smiles = smiles;
 	}
+	
+	/**
+	 * A description of molecular functionality. Mutually exclusive with the presence of smiles. Null if unavailable
+	 * @return
+	 */
+	public String getSmarts() {
+		return smarts;
+	}
+	
+	void setSmarts(String smarts) {
+		this.smarts = smarts;
+	}
 
 	/**
 	 * A canonical identifier for this chemical. Null if structure is unavailable
 	 * @return
 	 */
-	String getInchi() {
+	public String getInchi() {
 		return inchi;
 	}
 	
@@ -72,7 +85,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getMassValue() {
+	public String getMassValue() {
 		return massValue;
 	}
 
@@ -85,7 +98,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getMassUnits() {
+	public String getMassUnits() {
 		return massUnits;
 	}
 
@@ -99,7 +112,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getAmountValue() {
+	public String getAmountValue() {
 		return amountValue;
 	}
 
@@ -112,7 +125,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getAmountUnits() {
+	public String getAmountUnits() {
 		return amountUnits;
 	}
 
@@ -126,7 +139,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getMolarity() {
+	public String getMolarity() {
 		return molarityValue;
 	}
 
@@ -140,7 +153,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getVolumeValue() {
+	public String getVolumeValue() {
 		return volumeValue;
 	}
 
@@ -153,7 +166,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	String getVolumeUnits() {
+	public String getVolumeUnits() {
 		return volumeUnits;
 	}
 
@@ -166,7 +179,7 @@ public class Chemical{
 	 * (or null if unavailable)
 	 * @return
 	 */
-	Double getPercentYield() {
+	public Double getPercentYield() {
 		return percentYield;
 	}
 
@@ -179,7 +192,7 @@ public class Chemical{
 	 * A type indicates whether the name describes an exact compound, fragment, class etc.
 	 * @return
 	 */
-	ChemicalType getType() {
+	public ChemicalType getType() {
 		return type;
 	}
 
@@ -192,7 +205,7 @@ public class Chemical{
 	 * A role is one of product, reactant or spectator
 	 * @return
 	 */
-	ChemicalRole getRole() {
+	public ChemicalRole getRole() {
 		return role;
 	}
 
@@ -204,7 +217,7 @@ public class Chemical{
 	 * For debugging purposes.
 	 * @return
 	 */
-	String getXpathUsedToIdentify() {
+	public String getXpathUsedToIdentify() {
 		return xpathUsedToIdentify;
 	}
 

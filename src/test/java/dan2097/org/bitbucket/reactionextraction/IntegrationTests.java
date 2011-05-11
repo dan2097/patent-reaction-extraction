@@ -83,7 +83,7 @@ public class IntegrationTests{
 		assertEquals(null, spectator.getMassValue());
 		assertEquals(null, spectator.getMolarity());
 		assertEquals("ethanol", spectator.getName());
-		assertEquals(ChemicalRole.spectator, spectator.getRole());
+		assertEquals(ChemicalRole.solvent, spectator.getRole());
 		assertEquals(ChemicalType.exact, spectator.getType());
 		assertEquals("ml", spectator.getVolumeUnits());
 		assertEquals("400", spectator.getVolumeValue());
@@ -148,7 +148,7 @@ public class IntegrationTests{
 		assertEquals(null, spectator.getMassValue());
 		assertEquals(null, spectator.getMolarity());
 		assertEquals("CH2Cl2", spectator.getName());
-		assertEquals(ChemicalRole.spectator, spectator.getRole());
+		assertEquals(ChemicalRole.solvent, spectator.getRole());
 		assertEquals(ChemicalType.exact, spectator.getType());
 		assertEquals("mL", spectator.getVolumeUnits());
 		assertEquals("10", spectator.getVolumeValue());

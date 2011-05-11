@@ -184,111 +184,59 @@ public class ExperimentalSectionParser {
 	}
 
 
+	/**
+	 * Master method for extracting reactions from a list of paragraphs
+	 * @param paragraphs
+	 * @return
+	 */
 	private List<Reaction> determineReactions(List<Paragraph> paragraphs) {
 		List<Reaction> reactions = new ArrayList<Reaction>();
 		for (Paragraph paragraph : paragraphs) {
 			Reaction currentReaction = new Reaction();
-			Element taggedDocRoot = paragraph.getTaggedSentencesDocument().getRootElement();
-			List<Element> sentences = XOMTools.getChildElementsWithTagName(taggedDocRoot, ChemicalTaggerTags.SENTENCE_Container);
-			for (Element sentence : sentences) {
-				int indexToReattachAt = taggedDocRoot.indexOf(sentence);
-				sentence.detach();
-				Set<Element> products = identifyProducts(sentence);
-				identifyReactants(sentence, products);
-				identifySpectators(sentence);
-		
-				List<Element> mols = XOMTools.getDescendantElementsWithTagNames(sentence, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
-				List<Chemical> chemicals = new ArrayList<Chemical>();
-				for (Element mol : mols) {
-					Chemical cm = moleculeToChemicalMap.get(mol);
-					if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(mol.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-						cm.setRole(ChemicalRole.spectator);
-					}
-					if (cm.getType()!= ChemicalType.falsePositive){
-						chemicals.add(cm);
-					}
-					else{
-						LOG.trace(cm.getName() +" is believed to be a false positive and has been ignored");
-					}
-				}
+			paragraph.segmentIntoSections(moleculeToChemicalMap);
+			for (Element phrase : paragraph.getSynthesisPhrases()) {
 				Reaction tempReaction = new Reaction();
-				List<Chemical> unassignedChemicals = new ArrayList<Chemical>();
-				for (Chemical chemical : chemicals) {
-					if (chemical.getType() ==ChemicalType.exact){
-						if (chemical.getRole() == ChemicalRole.product){
-							tempReaction.addProduct(chemical);
-							if (LOG.isTraceEnabled()){
-								LOG.trace(chemical.getName() +" was assigned as a product");
-							}
-						}
-						else if (chemical.getRole() == ChemicalRole.reactant){
-							tempReaction.addReactant(chemical);
-							if (LOG.isTraceEnabled()){
-								LOG.trace(chemical.getName() +" was assigned as a reactant");
-								LOG.trace(chemical.getXpathUsedToIdentify());
-							}
-						}
-						else if (chemical.getRole() == ChemicalRole.spectator){
-							tempReaction.addSpectator(chemical);
-							if (LOG.isTraceEnabled()){
-								LOG.trace(chemical.getName() +" was assigned as a spectator");
-							}
-						}
-						else{
-							unassignedChemicals.add(chemical);
-						}
+				Set<Element> reagents = findAllReagents(phrase);
+				Set<Element> products = identifyProducts(phrase);
+				reagents.removeAll(products);
+				Set<Element> chemicals = new HashSet<Element>(products);
+				chemicals.addAll(reagents);
+				resolveBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
+				preliminaryClassifyReagentsAsReactantsAndSolvents(reagents);
+				for (Element chemical : chemicals) {
+					Chemical chemChem = moleculeToChemicalMap.get(chemical);
+					if (ChemicalRole.product.equals(chemChem.getRole())){
+						tempReaction.addProduct(chemChem);
 					}
-					else if (chemical.getType() ==ChemicalType.exactReference){
-						if (attemptToResolveBackReference(chemical, reactions)){
-							if (chemical.getRole() == ChemicalRole.product){
-								tempReaction.addProduct(chemical);
-								if (LOG.isTraceEnabled()){
-									LOG.trace(chemical.getName() +" was assigned as a product via a back reference");
-								}
-							}
-							else if (chemical.getRole() == ChemicalRole.reactant){
-								tempReaction.addReactant(chemical);
-								if (LOG.isTraceEnabled()){
-									LOG.trace(chemical.getName() +" was assigned as a reactant via a back reference");
-								}
-							}
-							else if (chemical.getRole() == ChemicalRole.spectator){
-								tempReaction.addSpectator(chemical);
-								if (LOG.isTraceEnabled()){
-									LOG.trace(chemical.getName() +" was assigned as a spectator via a back reference");
-								}
-							}
-							else{
-								unassignedChemicals.add(chemical);
-							}
-						}
-						else {
-							LOG.debug(chemical.getName() +" is believed to be a back reference but could not be resolved");
-						}
+					else if (ChemicalRole.reactant.equals(chemChem.getRole())){
+						tempReaction.addReactant(chemChem);
 					}
-					else{
-						unassignedChemicals.add(chemical);
+					else if (ChemicalRole.solvent.equals(chemChem.getRole())){
+						tempReaction.addSpectator(chemChem);
+					}
+					else if (!ChemicalType.falsePositive.equals(chemChem.getType())){
+						LOG.debug("Role not assigned to: " +chemChem.getName());
 					}
 				}
-				unassignedChemicals =removeChemicalsKnownToBeIrrelevant(unassignedChemicals, sentence);
-				if (LOG.isDebugEnabled()){
-					for (Chemical chemical : unassignedChemicals) {
-						LOG.debug(chemical.getName() +" was not assigned a role");
-					}
-				}
+		
 				if (!tempReaction.getProducts().isEmpty() && !currentReaction.getProducts().isEmpty()){
-					currentReaction.setInput(paragraphs);
+					currentReaction.setInput(paragraph);
 					reactions.add(currentReaction);
 					currentReaction= tempReaction;
 				}
 				else{
 					currentReaction.importReaction(tempReaction);
 				}
-				
-				taggedDocRoot.insertChild(sentence, indexToReattachAt);
+			}
+			for (Element sentence : paragraph.getWorkupPhrases()) {
+				Set<Element> products = identifyProducts(sentence);
+				for (Element product : products) {
+					Chemical productChem = moleculeToChemicalMap.get(product);
+					currentReaction.addProduct(productChem);
+				}
 			}
 			if (currentReaction.getProducts().size()>0 || currentReaction.getReactants().size()>0){
-				currentReaction.setInput(paragraphs);
+				currentReaction.setInput(paragraph);
 				reactions.add(currentReaction);
 			}
 		}
@@ -296,6 +244,61 @@ public class ExperimentalSectionParser {
 			new ChemicalSenseApplication(reaction).reassignMisCategorisedReagents();
 		}
 		return reactions;
+	}
+
+	private void preliminaryClassifyReagentsAsReactantsAndSolvents(Set<Element> reagents) {
+		for (Element reagent : reagents) {
+			Chemical cm = moleculeToChemicalMap.get(reagent);
+			if (cm.getType()== ChemicalType.falsePositive){
+				LOG.trace(cm.getName() +" is believed to be a false positive and has been ignored");
+			}
+			else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reagent.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
+				cm.setRole(ChemicalRole.solvent);
+			}
+			else if (cm.getVolumeValue()!=null && cm.getAmountValue()==null){
+				cm.setRole(ChemicalRole.solvent);
+			}
+			else {
+				cm.setRole(ChemicalRole.reactant);
+			}
+		}
+	}
+
+	private Set<Element> findAllReagents(Element el) {
+		List<Element> mols = XOMTools.getDescendantElementsWithTagNames(el, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
+		return new HashSet<Element>(mols);
+	}
+
+	/**
+	 * Identifies products using yieldXpaths
+	 * @param phrase
+	 * @return 
+	 */
+	private Set<Element> identifyProducts(Element phrase) {
+		Set<Element> products = new HashSet<Element>();
+		for (String xpath : Xpaths.yieldXPaths) {
+			Nodes synthesizedMolecules = phrase.query(xpath);
+			for (int i = 0; i < synthesizedMolecules.size(); i++) {
+				Element synthesizedMolecule= (Element) synthesizedMolecules.get(i);
+				products.add(synthesizedMolecule);
+				Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
+				if (chem.getRole()==null){
+					chem.setXpathUsedToIdentify(xpath);
+					chem.setRole(ChemicalRole.product);
+				}
+			}
+		}
+		return products;
+	}
+
+	private void resolveBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
+		for (Element chemical : chemicals) {
+			Chemical chemChem = moleculeToChemicalMap.get(chemical);
+			if (chemChem.getType() ==ChemicalType.exactReference){
+				attemptToResolveBackReference(chemChem, reactions);
+			}
+		}
+		
 	}
 
 	boolean attemptToResolveBackReference(Chemical chemical, List<Reaction> reactionsToConsider) {
@@ -308,9 +311,10 @@ public class ExperimentalSectionParser {
 		if (chemical.getSmiles()!=null){
 			boolean success = attemptToResolveViaSubstructureMatch(chemical, reactionsToConsider);
 			if (success){
+				chemical.setRole(ChemicalRole.reactant);
 				return true;
 			}
-			//The <name of compound> could be also be specific
+			//The <name of compound> could also be specific
 			Element molecule = moleculeToChemicalMap.inverse().get(chemical);
 			Element previous = Utils.getPreviousElement(molecule);
 			if (previous !=null && previous.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
@@ -339,112 +343,9 @@ public class ExperimentalSectionParser {
 			Chemical anaphoraChem = chemicalMatches.get(0);
 			backReference.setSmiles(anaphoraChem.getSmiles());
 			backReference.setInchi(anaphoraChem.getInchi());
-			backReference.setRole(ChemicalRole.reactant);
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * Given a list of unassignable chemicals checks whether these chemicals appear in places known to not fit into the rigid roles this program attempts to assign e.g. work-up
-	 * @param unassignedChemicals
-	 * @param sentence
-	 * @return
-	 */
-	private List<Chemical> removeChemicalsKnownToBeIrrelevant(List<Chemical> unassignedChemicals, Element sentence) {
-		for (int i = unassignedChemicals.size()-1; i >=0; i--) {
-			Element mol = moleculeToChemicalMap.inverse().get(unassignedChemicals.get(i));
-			for (String xpath : Xpaths.moleculesToIgnoreXpaths) {
-				if (mol.query(xpath).size()>0){
-					if (LOG.isTraceEnabled()){
-						LOG.trace(unassignedChemicals.get(i).getName() +" was believed to be ignorable");
-					}
-					unassignedChemicals.remove(i);
-					break;
-				}
-			}
-		}
-		for (String xpath : Xpaths.referencesToPreviousReactions) {
-			Nodes moleculesToRemove = sentence.query(xpath);
-			for (int i = 0; i < moleculesToRemove.size(); i++) {
-				if (LOG.isTraceEnabled()){
-					LOG.trace(moleculeToChemicalMap.get(moleculesToRemove.get(i)).getName() +" was believed to be a reference to a previous reaction");
-				}
-				unassignedChemicals.remove(moleculeToChemicalMap.get(moleculesToRemove.get(i)));
-			}
-		}
-		return unassignedChemicals;
-	}
-
-	/**
-	 * Identifies products using yieldXpaths
-	 * @param sentence
-	 * @return 
-	 */
-	private Set<Element> identifyProducts(Element sentence) {
-		Set<Element> products = new HashSet<Element>();
-		for (String xpath : Xpaths.yieldXPaths) {
-			Nodes synthesizedMolecules = sentence.query(xpath);
-			for (int i = 0; i < synthesizedMolecules.size(); i++) {
-				Element synthesizedMolecule= (Element) synthesizedMolecules.get(i);
-				products.add(synthesizedMolecule);
-				Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-				if (chem.getRole()==null){
-					chem.setXpathUsedToIdentify(xpath);
-					chem.setRole(ChemicalRole.product);
-				}
-			}
-		}
-		return products;
-	}
-	
-	/**
-	 * Identifiers reactants using reactantXpathsRel and reactantXpathsAbs
-	 * @param sentence
-	 * @param products
-	 */
-	private void identifyReactants(Element sentence, Set<Element> products) {
-		for (Element product : products) {
-			for (String xpath : Xpaths.reactantXpathsRel) {
-				Nodes reactantMolecules = product.query(xpath);
-				for (int i = 0; i < reactantMolecules.size(); i++) {
-					Element reactantMol= (Element) reactantMolecules.get(i);
-					Chemical chem = moleculeToChemicalMap.get(reactantMol);
-					if (chem.getRole()==null){
-						chem.setXpathUsedToIdentify(xpath);
-						chem.setRole(ChemicalRole.reactant);
-					}
-				}
-			}
-		}
-		for (String xpath : Xpaths.reactantXpathsAbs) {
-			Nodes reactantMolecules = sentence.query(xpath);
-			for (int i = 0; i < reactantMolecules.size(); i++) {
-				Element reactantMol= (Element) reactantMolecules.get(i);
-				Chemical chem = moleculeToChemicalMap.get(reactantMol);
-				if (chem.getRole()==null){
-					chem.setXpathUsedToIdentify(xpath);
-					chem.setRole(ChemicalRole.reactant);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Identifies spectator molecules using spectatorXpathsAbs
-	 * @param sentence
-	 */
-	private void identifySpectators(Element sentence) {
-		for (String xpath : Xpaths.spectatorXpathsAbs) {
-			Nodes spectatorMolecules = sentence.query(xpath);
-			for (int i = 0; i < spectatorMolecules.size(); i++) {
-				Element spectatorMol= (Element) spectatorMolecules.get(i);
-				Chemical chem = moleculeToChemicalMap.get(spectatorMol);
-				if (chem.getRole()==null){
-					chem.setXpathUsedToIdentify(xpath);
-					chem.setRole(ChemicalRole.spectator);
-				}
-			}
-		}
-	}
 }

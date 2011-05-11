@@ -16,7 +16,7 @@ public class ChemicalTypeAssigner {
 	private static Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchClassQualifier = Pattern.compile("compound[s]?", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchHydrogenNMR = Pattern.compile("\\d+H");
+	private static Pattern matchNMR = Pattern.compile("\\d+H|.*[nN][mM][rR]$");
 	/**
 	 * Assigns a preliminary type to each chemical based on local textual information
 	 * @param moleculeToChemicalMap
@@ -27,7 +27,7 @@ public class ChemicalTypeAssigner {
 			Element mol = entry.getKey();
 			Chemical chem = entry.getValue();
 			String chemicalName = chem.getName();
-			if (matchHydrogenNMR.matcher(chemicalName).matches()){
+			if (matchNMR.matcher(chemicalName).matches()){
 				chem.setType(ChemicalType.falsePositive);
 			}
 			else if (matchPluralEnding.matcher(chemicalName).matches()){

@@ -3,5 +3,6 @@ package dan2097.org.bitbucket.reactionextraction;
 public enum ChemicalRole {
 	product,
 	reactant,
-	spectator
+	solvent,
+	catalyst
 }
