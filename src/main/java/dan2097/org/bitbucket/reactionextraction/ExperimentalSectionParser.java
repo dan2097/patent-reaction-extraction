@@ -1,6 +1,7 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -194,9 +195,16 @@ public class ExperimentalSectionParser {
 		for (Paragraph paragraph : paragraphs) {
 			Reaction currentReaction = new Reaction();
 			paragraph.segmentIntoSections(moleculeToChemicalMap);
-			for (Element phrase : paragraph.getSynthesisPhrases()) {
+			Map<Element, PhraseType> phraseMap = paragraph.getPhraseMap();
+			for (Element phrase : phraseMap.keySet()) {
 				Reaction tempReaction = new Reaction();
-				Set<Element> reagents = findAllReagents(phrase);
+				Set<Element> reagents;
+				if (phraseMap.get(phrase).equals(PhraseType.synthesis)){
+					reagents = findAllReagents(phrase);
+				}
+				else{
+					reagents = Collections.emptySet();
+				}
 				Set<Element> products = identifyProducts(phrase);
 				reagents.removeAll(products);
 				Set<Element> chemicals = new HashSet<Element>(products);
@@ -219,20 +227,11 @@ public class ExperimentalSectionParser {
 					}
 				}
 		
-				if (!tempReaction.getProducts().isEmpty() && !currentReaction.getProducts().isEmpty()){
+				currentReaction.importReaction(tempReaction);
+				if (!currentReaction.getProducts().isEmpty()){
 					currentReaction.setInput(paragraph);
 					reactions.add(currentReaction);
-					currentReaction= tempReaction;
-				}
-				else{
-					currentReaction.importReaction(tempReaction);
-				}
-			}
-			for (Element sentence : paragraph.getWorkupPhrases()) {
-				Set<Element> products = identifyProducts(sentence);
-				for (Element product : products) {
-					Chemical productChem = moleculeToChemicalMap.get(product);
-					currentReaction.addProduct(productChem);
+					currentReaction = new Reaction();
 				}
 			}
 			if (currentReaction.getProducts().size()>0 || currentReaction.getReactants().size()>0){
