@@ -239,6 +239,10 @@ public class ExperimentalSectionParser {
 				reactions.add(currentReaction);
 			}
 		}
+		Reaction lastReaction = reactions.get(reactions.size()-1);
+		if (lastReaction.getProducts().size()==0){//product was probably implicitly the title compound
+			lastReaction.addProduct(titleCompound);
+		}
 		for (Reaction reaction : reactions) {
 			new ChemicalSenseApplication(reaction).reassignMisCategorisedReagents();
 		}
