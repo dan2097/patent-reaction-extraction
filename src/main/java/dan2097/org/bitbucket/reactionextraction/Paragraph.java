@@ -2,7 +2,9 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -25,9 +27,7 @@ public class Paragraph {
 	private final String untaggedString;
 	private final String taggedString;
 	private final Document taggedSentencesDocument;
-	private final List<Element> synthesisPhrases = new ArrayList<Element>();
-	private final List<Element> workupPhrases = new ArrayList<Element>();
-	private final List<Element> characterisationPhrases = new ArrayList<Element>();
+	private final Map<Element, PhraseType> phraseToAssignment = new LinkedHashMap<Element, PhraseType>();
 	private static final List<String> WORKUP_PHRASES = Arrays.asList("Concentrate", "Degass", "Dry", "Extract", "Filter", "Partition", "Precipitate", "Purify", "Recover", "Remove", "Wash");
 	private static final String[] CONTAINER_ELS = new String[]{ACTIONPHRASE_Container, UNMATCHED_Container, NOUN_PHRASE_Container, VERBPHRASE_Container, ATMOSPHEREPHRASE_Container, TIMEPHRASE_Container,TEMPPHRASE_Container, PREPPHRASE_Container, ROLEPREPPHRASE_Container};
 
@@ -74,16 +74,8 @@ public class Paragraph {
 		return taggedSentencesDocument;
 	}
 
-	List<Element> getSynthesisPhrases() {
-		return synthesisPhrases;
-	}
-
-	List<Element> getWorkupPhrases() {
-		return workupPhrases;
-	}
-
-	List<Element> getCharacterisationPhrases() {
-		return characterisationPhrases;
+	 Map<Element, PhraseType> getPhraseMap() {
+		return phraseToAssignment;
 	}
 
 	void segmentIntoSections(BiMap<Element, Chemical> moleculeToChemicalMap) {
@@ -101,7 +93,7 @@ public class Paragraph {
 					}
 				}
 				if (workup){
-					workupPhrases.add(phrase);
+					phraseToAssignment.put(phrase, PhraseType.workup);
 					inWorkup = true;
 				}
 				else{
@@ -110,7 +102,7 @@ public class Paragraph {
 					}
 					
 					if (inWorkup){
-						workupPhrases.add(phrase);
+						phraseToAssignment.put(phrase, PhraseType.workup);
 						if (phrase.getLocalName().equals(ACTIONPHRASE_Container)){
 							String phraseType = phrase.getAttributeValue(ChemicalTaggerAtrs.TYPE_ATR);
 							if (phraseType.equals("Synthesize") || phraseType.equals("Yield")){
@@ -119,7 +111,7 @@ public class Paragraph {
 						}
 					}
 					else{
-						synthesisPhrases.add(phrase);
+						phraseToAssignment.put(phrase, PhraseType.synthesis);
 					}
 				}
 			}
