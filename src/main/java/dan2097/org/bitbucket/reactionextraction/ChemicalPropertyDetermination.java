@@ -77,14 +77,7 @@ public class ChemicalPropertyDetermination {
 			}
 			else{
 				Element molarity = molarAmounts.get(0);
-				Element cd = molarity.getFirstChildElement(ChemicalTaggerTags.CD);
-				if (cd!=null){
-					chemical.setMolarityValue(molarity.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
-				}
-				else{//units are included in the NN_MOLAR
-					String molarStr =molarity.getFirstChildElement(ChemicalTaggerTags.NN_MOLAR).getValue();
-					chemical.setMolarityValue(molarStr.substring(0, molarStr.length()-1));
-				}
+				chemical.setMolarityValue(molarity.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
 			}
 		}
 	}

@@ -152,8 +152,5 @@ public class IntegrationTests{
 		assertEquals(ChemicalType.exact, spectator.getType());
 		assertEquals("mL", spectator.getVolumeUnits());
 		assertEquals("10", spectator.getVolumeValue());
-		
-		System.out.println(reaction.toCML().toXML());
-		ReactionDepicter.depictReaction(reaction, new File("yay.png"));
 	}
 }

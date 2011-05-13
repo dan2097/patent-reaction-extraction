@@ -3,6 +3,7 @@ package dan2097.org.bitbucket.reactionextraction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -207,7 +208,7 @@ public class ExperimentalSectionParser {
 				}
 				Set<Element> products = identifyProducts(phrase);
 				reagents.removeAll(products);
-				Set<Element> chemicals = new HashSet<Element>(products);
+				Set<Element> chemicals = new LinkedHashSet<Element>(products);
 				chemicals.addAll(reagents);
 				resolveBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
 				preliminaryClassifyReagentsAsReactantsAndSolvents(reagents);
@@ -260,7 +261,8 @@ public class ExperimentalSectionParser {
 			else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reagent.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 				cm.setRole(ChemicalRole.solvent);
 			}
-			else if (cm.getVolumeValue()!=null && cm.getAmountValue()==null){
+			else if (cm.getVolumeValue()!=null && !cm.getVolumeValue().contains(".") && cm.getAmountValue()==null){
+				//solvents will be liquids but typically with imprecise volume and no amount given
 				cm.setRole(ChemicalRole.solvent);
 			}
 			else {
@@ -271,7 +273,7 @@ public class ExperimentalSectionParser {
 
 	private Set<Element> findAllReagents(Element el) {
 		List<Element> mols = XOMTools.getDescendantElementsWithTagNames(el, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
-		return new HashSet<Element>(mols);
+		return new LinkedHashSet<Element>(mols);
 	}
 
 	/**
@@ -280,7 +282,7 @@ public class ExperimentalSectionParser {
 	 * @return 
 	 */
 	private Set<Element> identifyProducts(Element phrase) {
-		Set<Element> products = new HashSet<Element>();
+		Set<Element> products = new LinkedHashSet<Element>();
 		for (String xpath : Xpaths.yieldXPaths) {
 			Nodes synthesizedMolecules = phrase.query(xpath);
 			for (int i = 0; i < synthesizedMolecules.size(); i++) {
