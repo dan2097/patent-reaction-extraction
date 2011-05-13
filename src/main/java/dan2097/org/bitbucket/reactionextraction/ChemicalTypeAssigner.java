@@ -27,7 +27,7 @@ public class ChemicalTypeAssigner {
 			Element mol = entry.getKey();
 			Chemical chem = entry.getValue();
 			String chemicalName = chem.getName();
-			if (matchNMR.matcher(chemicalName).matches()){
+			if (isFalsePositive(chem, mol)){
 				chem.setType(ChemicalType.falsePositive);
 			}
 			else if (matchPluralEnding.matcher(chemicalName).matches()){
@@ -65,5 +65,14 @@ public class ChemicalTypeAssigner {
 				chem.setType(ChemicalType.exact);
 			}
 		}
+	}
+	private static boolean isFalsePositive(Chemical chem, Element mol) {
+		if (matchNMR.matcher(chem.getName()).matches()){
+			return true;
+		}
+		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
+			return true;
+		}
+		return false;
 	}
 }
