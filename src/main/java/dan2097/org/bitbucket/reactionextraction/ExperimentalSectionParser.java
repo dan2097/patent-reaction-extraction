@@ -240,12 +240,7 @@ public class ExperimentalSectionParser {
 				reactions.add(currentReaction);
 			}
 		}
-		if (reactions.size()>0){
-			Reaction lastReaction = reactions.get(reactions.size()-1);
-			if (lastReaction.getProducts().size()==0){//product was probably implicitly the title compound
-				lastReaction.addProduct(titleCompound);
-			}
-		}
+		addImplicitTitleCompoundToFinalReactionIfRequired(reactions);
 		for (Reaction reaction : reactions) {
 			new ChemicalSenseApplication(reaction).reassignMisCategorisedReagents();
 		}
@@ -353,6 +348,29 @@ public class ExperimentalSectionParser {
 			return true;
 		}
 		return false;
+	}
+
+	private void addImplicitTitleCompoundToFinalReactionIfRequired(List<Reaction> reactions) {
+		if (reactions.size()>0){
+			Reaction lastReaction = reactions.get(reactions.size()-1);
+			if (lastReaction.getProducts().size()==0){//product was probably implicitly the title compound
+				boolean titleCompoundUsedAsProduct =false;
+				if (titleCompound.getInchi()!=null){
+					reactionLoop: for (int i = 0; i < reactions.size()-1; i++) {
+						Reaction reaction =reactions.get(i);
+						for (Chemical product : reaction.getProducts()) {
+							if (titleCompound.getInchi().equals(product.getInchi())){
+								titleCompoundUsedAsProduct =true;
+								break reactionLoop;
+							}
+						}
+					}
+				}
+				if (!titleCompoundUsedAsProduct){
+					lastReaction.addProduct(titleCompound);
+				}
+			}
+		}
 	}
 
 }
