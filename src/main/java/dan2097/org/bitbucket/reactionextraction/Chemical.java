@@ -22,6 +22,7 @@ public class Chemical{
 	private String volumeValue;
 	private String volumeUnits;
 	private Double percentYield;
+	private Double stoichiometry;
 	private ChemicalRole role = null;
 	private ChemicalType type = null;
 	private String xpathUsedToIdentify = null;
@@ -188,6 +189,19 @@ public class Chemical{
 	}
 	
 	/**
+	 * Returns the stoichiometry of this chemical.
+	 * 1 by default
+	 * @return
+	 */
+	public double getStoichiometry() {
+		return stoichiometry;
+	}
+
+	void setStoichiometry(double stoichiometry) {
+		this.stoichiometry = stoichiometry;
+	}
+
+	/**
 	 * Gets the type assigned to a chemical or null
 	 * A type indicates whether the name describes an exact compound, fragment, class etc.
 	 * @return
@@ -291,6 +305,10 @@ public class Chemical{
 				amount.addAttribute(new Attribute("units", massUnits));
 			}
 			reactant.appendChild(amount);
+		}
+		
+		if (stoichiometry !=null){
+			reactant.addAttribute(new Attribute("count", String.valueOf(stoichiometry)));
 		}
 		return reactant;
 	}

@@ -3,7 +3,7 @@ package dan2097.org.bitbucket.reactionextraction;
 import static junit.framework.Assert.*;
 
 import org.junit.Test;
-public class AliasDetection {
+public class AliasDetectionTest {
 
 	@Test
 	public void aliasFromTitleText1() {
