@@ -6,9 +6,12 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.xml.sax.XMLReader;
@@ -16,7 +19,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.ggasoftware.indigo.Indigo;
 
+import dan2097.org.bitbucket.reactionextraction.Chemical;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
+import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
+import dan2097.org.bitbucket.reactionextraction.Reaction;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
@@ -30,7 +36,6 @@ import nu.xom.ValidityException;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
-import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
@@ -231,5 +236,31 @@ public class Utils {
 			children =previous.getChildElements();
 		}
 		return previous;
+	}
+	
+	public static Chemical extractChemicalFromHeading(String title) {
+		if (title==null){
+			throw new IllegalArgumentException("Input title text was null");
+		}
+		List<String> name = getSystematicChemicalNamesFromText(title);
+		if (name.size()==1){
+			return new Chemical(name.get(0));
+		}
+		return null;
+	}
+	
+	/**
+	 * Convenience method for creating an experimental section parser
+	 * @param title
+	 * @param content
+	 * @return
+	 */
+	public static ExperimentalSectionParser createExperimentalSectionParser(String title, String content){
+		Chemical titleCompound = extractChemicalFromHeading(title);
+		List<Element> paragraphEls = new ArrayList<Element>();
+		Element paragraph = new Element(XMLTags.P);
+		paragraph.appendChild(content);
+		paragraphEls.add(paragraph);
+		return new ExperimentalSectionParser(titleCompound, paragraphEls, new HashMap<String, Chemical>());
 	}
 }

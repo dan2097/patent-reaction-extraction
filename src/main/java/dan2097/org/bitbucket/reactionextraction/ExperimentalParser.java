@@ -15,6 +15,12 @@ import nu.xom.Serializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
+import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XMLAtrs;
+import dan2097.org.bitbucket.utility.XMLTags;
+
 public class ExperimentalParser {
 	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 	private final List<Reaction> documentReactions = new ArrayList<Reaction>();
@@ -24,7 +30,13 @@ public class ExperimentalParser {
 	}
 
 	public void parseExperimentalSection(Element headingElementToProcess) {
-		ExperimentalSectionParser sectionparser = new ExperimentalSectionParser(headingElementToProcess, aliasToChemicalMap);
+		String title = headingElementToProcess.getAttributeValue(XMLAtrs.TITLE);
+		Chemical titleCompound = Utils.extractChemicalFromHeading(title);
+		String alias = TitleTextAliasExtractor.findAlias(title);
+		if (alias !=null){
+			aliasToChemicalMap.put(alias, titleCompound);
+		}
+		ExperimentalSectionParser sectionparser = new ExperimentalSectionParser(titleCompound, XOMTools.getChildElementsWithTagName(headingElementToProcess, XMLTags.P), aliasToChemicalMap);
 		sectionparser.parseForReactions();
 		documentReactions.addAll(sectionparser.getReactions());
 	}

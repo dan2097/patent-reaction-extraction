@@ -66,11 +66,17 @@ public class ChemicalTypeAssigner {
 			}
 		}
 	}
+
 	private static boolean isFalsePositive(Chemical chem, Element mol) {
-		if (matchNMR.matcher(chem.getName()).matches()){
+		String chemicalName = chem.getName();
+		if (matchNMR.matcher(chemicalName).matches()){
 			return true;
 		}
 		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
+			return true;
+		}
+		String chemicalNameLc = chemicalName.toLowerCase();
+		if (chemicalNameLc.contains("=") || chemicalNameLc.startsWith("silica")){
 			return true;
 		}
 		return false;

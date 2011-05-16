@@ -42,12 +42,8 @@ public class Xpaths {
 	
 	static{
 		moleculesToIgnoreXpaths = new ArrayList<String>();
-		/*In a purify or filtration action phrase*/
-		moleculesToIgnoreXpaths.add("./ancestor::ActionPhrase[@type='Purify' or @type='Filter' or @type='Dry' or @type='Precipitate' or @type='Wash' or @type='Extract']");
 		/*Nested with a molecule e.g. a numerical reference*/
 		moleculesToIgnoreXpaths.add("./ancestor::MOLECULE");
-		/*Ignore silica, silica gel and the like*/
-		moleculesToIgnoreXpaths.add(".[//OSCAR-CM[starts-with(.,'silica')]]");
 		//method/procedure numbers
 		moleculesToIgnoreXpaths.add(".[preceding-sibling::*[1][local-name()='NN-METHOD']]");//note that we can't restrict to unnamed molecules as things like "1A" are OSCAR-CMs
 	}
