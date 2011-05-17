@@ -33,7 +33,11 @@ public class ExperimentalSectionParser {
 	private final Chemical titleCompound;
 	private final List<Element> paragraphEls;
 	private final List<Reaction> reactions = new ArrayList<Reaction>();
-
+	/*A yield phrase*/
+	private final String yieldPhraseProduct = ".[descendant-or-self::ActionPhrase[@type='Yield']]//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	/*A synthesize phrase containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
+	private final String synthesizePhraseProduct = ".[descendant-or-self::ActionPhrase[@type='Synthesize']]/NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	
 	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
 		this.titleCompound = titleCompound;
 		this.paragraphEls = paragraphEls;
@@ -181,13 +185,14 @@ public class ExperimentalSectionParser {
 			for (Element phrase : phraseMap.keySet()) {
 				Reaction tempReaction = new Reaction();
 				Set<Element> reagents;
-				if (phraseMap.get(phrase).equals(PhraseType.synthesis)){
+				boolean inSynthesis = phraseMap.get(phrase).equals(PhraseType.synthesis);
+				if (inSynthesis){
 					reagents = findAllReagents(phrase);
 				}
 				else{
 					reagents = Collections.emptySet();
 				}
-				Set<Element> products = identifyProducts(phrase);
+				Set<Element> products = identifyProducts(phrase, inSynthesis);
 				reagents.removeAll(products);
 				Set<Element> chemicals = new LinkedHashSet<Element>(products);
 				chemicals.addAll(reagents);
@@ -255,20 +260,29 @@ public class ExperimentalSectionParser {
 	/**
 	 * Identifies products using yieldXpaths
 	 * @param phrase
+	 * @param inSynthesis 
 	 * @return 
 	 */
-	private Set<Element> identifyProducts(Element phrase) {
+	private Set<Element> identifyProducts(Element phrase, boolean inSynthesis) {
 		Set<Element> products = new LinkedHashSet<Element>();
-		for (String xpath : Xpaths.yieldXPaths) {
-			Nodes synthesizedMolecules = phrase.query(xpath);
-			for (int i = 0; i < synthesizedMolecules.size(); i++) {
-				Element synthesizedMolecule= (Element) synthesizedMolecules.get(i);
-				products.add(synthesizedMolecule);
-				Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-				if (chem.getRole()==null){
-					chem.setXpathUsedToIdentify(xpath);
-					chem.setRole(ChemicalRole.product);
-				}
+		Nodes synthesizePhraseMolecules = phrase.query(synthesizePhraseProduct);
+		for (int i = 0; i < synthesizePhraseMolecules.size(); i++) {
+			Element synthesizedMolecule= (Element) synthesizePhraseMolecules.get(i);
+			products.add(synthesizedMolecule);
+			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
+			if (chem.getRole()==null){
+				chem.setXpathUsedToIdentify(synthesizePhraseProduct);
+				chem.setRole(ChemicalRole.product);
+			}
+		}
+		Nodes yieldPhraseMolecules = phrase.query(yieldPhraseProduct);
+		for (int i = 0; i < yieldPhraseMolecules.size(); i++) {
+			Element synthesizedMolecule= (Element) yieldPhraseMolecules.get(i);
+			products.add(synthesizedMolecule);
+			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
+			if (chem.getRole()==null){
+				chem.setXpathUsedToIdentify(yieldPhraseProduct);
+				chem.setRole(ChemicalRole.product);
 			}
 		}
 		return products;
