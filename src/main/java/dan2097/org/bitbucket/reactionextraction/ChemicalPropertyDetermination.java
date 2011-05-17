@@ -112,8 +112,8 @@ public class ChemicalPropertyDetermination {
 				Element yield = yields.get(0);
 				String value = yield.query(".//" + ChemicalTaggerTags.CD).get(0).getValue();
 				try{ 
-					float f = Float.parseFloat(value);
-					chemical.setPercentYield(f);
+					double d = Double.parseDouble(value);
+					chemical.setPercentYield(d);
 				}
 				catch (NumberFormatException e) {
 					LOG.debug("Yield was not a numeric percentage");
