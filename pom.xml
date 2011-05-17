@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>uk.ac.cam.ch.wwmm</groupId>
+    <artifactId>wwmm-parent</artifactId>
+    <version>3</version>
+  </parent>
 	<groupId>dan2097.org.bitbucket</groupId>
 	<artifactId>reactionExtraction</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<repositories>
-	  <repository>
-	    <id>ucc</id>
-	    <url>https://maven.ch.cam.ac.uk/m2repo</url>
-	  </repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
