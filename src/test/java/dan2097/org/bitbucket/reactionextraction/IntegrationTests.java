@@ -1,6 +1,5 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.io.File;
 import java.util.List;
 
 import static junit.framework.Assert.*;

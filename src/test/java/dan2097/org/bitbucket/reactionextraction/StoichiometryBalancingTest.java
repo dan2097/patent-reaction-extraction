@@ -3,10 +3,7 @@ package dan2097.org.bitbucket.reactionextraction;
 import static junit.framework.Assert.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import nu.xom.Element;
 
 import org.junit.Test;
 
