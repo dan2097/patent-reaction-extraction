@@ -35,8 +35,8 @@ public class ExperimentalSectionParser {
 	private final List<Reaction> reactions = new ArrayList<Reaction>();
 	/*A yield phrase*/
 	private final String yieldPhraseProduct = ".[descendant-or-self::ActionPhrase[@type='Yield']]//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
-	/*A synthesize phrase containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
-	private final String synthesizePhraseProduct = ".[descendant-or-self::ActionPhrase[@type='Synthesize']]/NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
+	private final String synthesizePhraseProduct = ".[descendant-or-self::NounPhrase][following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	
 	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
 		this.titleCompound = titleCompound;
@@ -182,6 +182,7 @@ public class ExperimentalSectionParser {
 			Reaction currentReaction = new Reaction();
 			paragraph.segmentIntoSections(moleculeToChemicalMap);
 			Map<Element, PhraseType> phraseMap = paragraph.getPhraseMap();
+			boolean reagentsExpectedAfterProduct = false;
 			for (Element phrase : phraseMap.keySet()) {
 				Reaction tempReaction = new Reaction();
 				Set<Element> reagents;
@@ -192,9 +193,19 @@ public class ExperimentalSectionParser {
 				else{
 					reagents = Collections.emptySet();
 				}
-				Set<Element> products = identifyProducts(phrase, inSynthesis);
+				Set<Element> productAfterReagants = identifyYieldedProduct(phrase, inSynthesis);
+				if (productAfterReagants.size() >0 ){
+					reagentsExpectedAfterProduct = false;
+				}
+				Set<Element> productBeforeReagents = identifyProductBeforeReagents(phrase);
+				if (productBeforeReagents.size() >0 ){
+					reagentsExpectedAfterProduct = true;
+				}
+				Set<Element> products = new LinkedHashSet<Element>(productAfterReagants);
+				products.addAll(productBeforeReagents);
 				reagents.removeAll(products);
-				Set<Element> chemicals = new LinkedHashSet<Element>(products);
+				Set<Element> chemicals = new LinkedHashSet<Element>();
+				chemicals.addAll(products);
 				chemicals.addAll(reagents);
 				resolveBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
 				preliminaryClassifyReagentsAsReactantsAndSolvents(reagents);
@@ -215,7 +226,7 @@ public class ExperimentalSectionParser {
 				}
 		
 				currentReaction.importReaction(tempReaction);
-				if (!currentReaction.getProducts().isEmpty()){
+				if (!currentReaction.getProducts().isEmpty() && !reagentsExpectedAfterProduct){
 					currentReaction.setInput(paragraph);
 					reactions.add(currentReaction);
 					currentReaction = new Reaction();
@@ -258,30 +269,54 @@ public class ExperimentalSectionParser {
 	}
 
 	/**
-	 * Identifies products using yieldXpaths
+	 * Identifies products using yieldPhraseProduct
 	 * @param phrase
 	 * @param inSynthesis 
 	 * @return 
 	 */
-	private Set<Element> identifyProducts(Element phrase, boolean inSynthesis) {
+	private Set<Element> identifyYieldedProduct(Element phrase, boolean inSynthesis) {
+		Set<Element> products = new LinkedHashSet<Element>();
+		Nodes yieldPhraseMolecules = phrase.query(yieldPhraseProduct);
+		boolean foundProductWithQuantity =false;
+		for (int i = 0; i < yieldPhraseMolecules.size(); i++) {
+			Element synthesizedMolecule= (Element) yieldPhraseMolecules.get(i);
+			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
+			if (chem.getType().equals(ChemicalType.falsePositive)){
+				continue;
+			}
+			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
+			if (foundProductWithQuantity && !hasQuantity){
+				continue;//skip erroneous characterisation chemicals
+			}
+			if (hasQuantity){
+				foundProductWithQuantity =true;
+			}
+			products.add(synthesizedMolecule);
+			if (chem.getRole()==null){
+				chem.setXpathUsedToIdentify(yieldPhraseProduct);
+				chem.setRole(ChemicalRole.product);
+			}
+		}
+		return products;
+	}
+	
+	/**
+	 * Identifies products using synthesizePhraseProduct
+	 * @param phrase
+	 * @return 
+	 */
+	private Set<Element> identifyProductBeforeReagents(Element phrase) {
 		Set<Element> products = new LinkedHashSet<Element>();
 		Nodes synthesizePhraseMolecules = phrase.query(synthesizePhraseProduct);
 		for (int i = 0; i < synthesizePhraseMolecules.size(); i++) {
 			Element synthesizedMolecule= (Element) synthesizePhraseMolecules.get(i);
-			products.add(synthesizedMolecule);
 			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
+			if (chem.getType().equals(ChemicalType.falsePositive)){
+				continue;
+			}
+			products.add(synthesizedMolecule);
 			if (chem.getRole()==null){
 				chem.setXpathUsedToIdentify(synthesizePhraseProduct);
-				chem.setRole(ChemicalRole.product);
-			}
-		}
-		Nodes yieldPhraseMolecules = phrase.query(yieldPhraseProduct);
-		for (int i = 0; i < yieldPhraseMolecules.size(); i++) {
-			Element synthesizedMolecule= (Element) yieldPhraseMolecules.get(i);
-			products.add(synthesizedMolecule);
-			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-			if (chem.getRole()==null){
-				chem.setXpathUsedToIdentify(yieldPhraseProduct);
 				chem.setRole(ChemicalRole.product);
 			}
 		}
