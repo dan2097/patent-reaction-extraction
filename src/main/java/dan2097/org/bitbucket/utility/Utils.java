@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.xml.sax.XMLReader;
@@ -22,7 +20,6 @@ import com.ggasoftware.indigo.Indigo;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
-import dan2097.org.bitbucket.reactionextraction.Reaction;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
