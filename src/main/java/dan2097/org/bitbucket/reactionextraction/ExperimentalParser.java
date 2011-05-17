@@ -38,7 +38,9 @@ public class ExperimentalParser {
 		}
 		ExperimentalSectionParser sectionparser = new ExperimentalSectionParser(titleCompound, XOMTools.getChildElementsWithTagName(headingElementToProcess, XMLTags.P), aliasToChemicalMap);
 		sectionparser.parseForReactions();
-		documentReactions.addAll(sectionparser.getReactions());
+		List<Reaction> reactions = sectionparser.getReactions();
+		new ReactionStoichiometryDeterminer(reactions).processReactionStoichiometry();
+		documentReactions.addAll(reactions);
 	}
 
 	public void serialize(File directory) throws IOException {

@@ -184,7 +184,7 @@ public class Chemical{
 		return percentYield;
 	}
 
-	void setPercentYield(double percentYield) {
+	void setPercentYield(Double percentYield) {
 		this.percentYield = percentYield;
 	}
 	
@@ -193,11 +193,11 @@ public class Chemical{
 	 * 1 by default
 	 * @return
 	 */
-	public double getStoichiometry() {
+	public Double getStoichiometry() {
 		return stoichiometry;
 	}
 
-	void setStoichiometry(double stoichiometry) {
+	void setStoichiometry(Double stoichiometry) {
 		this.stoichiometry = stoichiometry;
 	}
 
