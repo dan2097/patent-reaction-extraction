@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -37,6 +38,8 @@ public class ExperimentalSectionParser {
 	private final String yieldPhraseProduct = ".[descendant-or-self::ActionPhrase[@type='Yield']]//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
 	private final String synthesizePhraseProduct = ".[descendant-or-self::NounPhrase][following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	
+	private final Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?litre[s]?", Pattern.CASE_INSENSITIVE);
 	
 	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
 		this.titleCompound = titleCompound;
@@ -253,7 +256,7 @@ public class ExperimentalSectionParser {
 			else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reagent.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 				cm.setRole(ChemicalRole.solvent);
 			}
-			else if (cm.getVolumeValue()!=null && !cm.getVolumeValue().contains(".") && cm.getAmountValue()==null){//TODO check units
+			else if (cm.getVolumeValue()!=null && cm.getAmountValue()==null && volumeIsInprecise(cm)){//TODO check units
 				//solvents will be liquids but typically with imprecise volume and no amount given
 				cm.setRole(ChemicalRole.solvent);
 			}
@@ -261,6 +264,21 @@ public class ExperimentalSectionParser {
 				cm.setRole(ChemicalRole.reactant);
 			}
 		}
+	}
+
+	private boolean volumeIsInprecise(Chemical cm) {
+		String value = cm.getVolumeValue();
+		String units = cm.getVolumeUnits();
+		if (value==null || units ==null){
+			return true;
+		}
+		if (matchCentiLitresOrLarger.matcher(units).matches()){
+			return true;
+		}
+		if (value.contains(".")){
+			return false;
+		}
+		return true;
 	}
 
 	private Set<Element> findAllReagents(Element el) {
