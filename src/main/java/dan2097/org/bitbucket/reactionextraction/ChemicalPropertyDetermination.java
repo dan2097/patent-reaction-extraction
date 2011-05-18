@@ -24,15 +24,17 @@ public class ChemicalPropertyDetermination {
 	    List<Element> quantityElements = XOMTools.getDescendantElementsWithTagName(molecule, ChemicalTaggerTags.QUANTITY_Container);
 		for (int i = 0; i < quantityElements.size(); i++) {
 		    Element quantityElement = quantityElements.get(i);
-			determineMass(chemical, quantityElement);
+			determineVolume(chemical, quantityElement);
 			determineAmount(chemical, quantityElement);
+			determineMass(chemical, quantityElement);
 			determineMolarity(chemical, quantityElement);
-			determineQuantity(chemical, quantityElement);
+			determineEquivalents(chemical, quantityElement);
+			determinepH(chemical, quantityElement);
 			determineYield(chemical, quantityElement);
 		}
 	}
 
-	private static void determineQuantity(Chemical chemical, Element quantityElement) {
+	private static void determineVolume(Chemical chemical, Element quantityElement) {
 		Elements volumes = quantityElement.getChildElements(ChemicalTaggerTags.VOLUME_Container);
 		if (volumes.size()>1){
 			LOG.debug("More than 1 volume given for same chemical");
@@ -66,22 +68,6 @@ public class ChemicalPropertyDetermination {
 		}
 	}
 	
-	private static void determineMolarity(Chemical chemical, Element quantityElement) {
-		Elements molarAmounts = quantityElement.getChildElements(ChemicalTaggerTags.MOLAR_Container);
-		if (molarAmounts.size()>1){
-			LOG.debug("More than 1 molarity given for same chemical");
-		}
-		else if (molarAmounts.size()>0){
-			if (chemical.getAmountValue()!=null){
-				LOG.debug("More than 1 molarity given for same chemical");
-			}
-			else{
-				Element molarity = molarAmounts.get(0);
-				chemical.setMolarityValue(molarity.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
-			}
-		}
-	}
-
 	private static void determineMass(Chemical chemical, Element quantityElement) {
 		Elements masses = quantityElement.getChildElements(ChemicalTaggerTags.MASS_Container);
 		if (masses.size()>1){
@@ -98,7 +84,68 @@ public class ChemicalPropertyDetermination {
 			}
 		}
 	}
+
+	private static void determineMolarity(Chemical chemical, Element quantityElement) {
+		Elements molarAmounts = quantityElement.getChildElements(ChemicalTaggerTags.MOLAR_Container);
+		if (molarAmounts.size()>1){
+			LOG.debug("More than 1 molarity given for same chemical");
+		}
+		else if (molarAmounts.size()>0){
+			if (chemical.getAmountValue()!=null){
+				LOG.debug("More than 1 molarity given for same chemical");
+			}
+			else{
+				Element molarity = molarAmounts.get(0);
+				chemical.setMolarityValue(molarity.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
+			}
+		}
+	}
 	
+	private static void determinepH(Chemical chemical, Element quantityElement) {
+		Elements pH_els = quantityElement.getChildElements(ChemicalTaggerTags.PH_Container);
+		if (pH_els.size()>1){
+			LOG.debug("More than 1 pH given for same chemical");
+		}
+		else if (pH_els.size()>0){
+			if (chemical.getpH()!=null){
+				LOG.debug("More than 1 pH given for same chemical");
+			}
+			else{
+				String ph = pH_els.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
+				try{ 
+					double d = Double.parseDouble(ph);
+					chemical.setpH(d);
+				}
+				catch (NumberFormatException e) {
+					LOG.debug("pH was not numeric!");
+				}
+			}
+		}
+	}
+	
+	private static void determineEquivalents(Chemical chemical, Element quantityElement) {
+		Elements equivalentsEls = quantityElement.getChildElements(ChemicalTaggerTags.EQUIVALENT_Container);
+		if (equivalentsEls.size()>1){
+			LOG.debug("More than 1 value for equivalents given for same chemical");
+		}
+		else if (equivalentsEls.size()>0){
+			if (chemical.getEquivalents()!=null){
+				LOG.debug("More than 1 value for equivalents given for same chemical");
+			}
+			else{
+				String equivalentVal = equivalentsEls.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
+				try{ 
+					double d = Double.parseDouble(equivalentVal);
+					chemical.setEquivalents(d);
+				}
+				catch (NumberFormatException e) {
+					LOG.debug("equivalents value was not numeric!");
+				}
+			}
+		}
+	}
+
+
 	private static void determineYield(Chemical chemical, Element quantityElement) {
 		Elements yields = quantityElement.getChildElements(ChemicalTaggerTags.YIELD_Container);
 		if (yields.size()>1){

@@ -67,6 +67,7 @@ public class ChemicalTaggerTags {
 	public static final String NN_VOL = "NN-VOL";
 	public static final String NN_CHEMENTITY = "NN-CHEMENTITY";
 	public static final String NN_TEMP = "NN-TEMP";
+	public static final String NN_PH = "NN-PH";
 	public static final String NN_FLASH = "NN-FLASH";
 	public static final String NN_GENERAL = "NN-GENERAL";
 	public static final String NN_METHOD = "NN-METHOD";
@@ -349,6 +350,9 @@ public class ChemicalTaggerTags {
 	
 	/** contains one or more cardinal numbers and NN-MOLAR */
 	public static final String MOLAR_Container = "MOLAR";
+	
+	/** contains an NN-PH followed by a CD */
+	public static final String PH_Container = "PH";
 	
 	/**contains one or more cardinal numbers and NN-EQ  */
 	public static final String EQUIVALENT_Container = "EQUIVALENT";
