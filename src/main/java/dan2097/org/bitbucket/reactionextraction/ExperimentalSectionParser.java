@@ -35,9 +35,9 @@ public class ExperimentalSectionParser {
 	private final List<Element> paragraphEls;
 	private final List<Reaction> reactions = new ArrayList<Reaction>();
 	/*A yield phrase*/
-	private final String yieldPhraseProduct = ".[descendant-or-self::ActionPhrase[@type='Yield']]//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	private final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
-	private final String synthesizePhraseProduct = ".[descendant-or-self::NounPhrase][following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	private final String synthesizePhraseProduct = "self::node()/descendant-or-self::NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	
 	private final Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?litre[s]?", Pattern.CASE_INSENSITIVE);
 	
