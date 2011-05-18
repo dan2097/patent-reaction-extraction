@@ -253,7 +253,7 @@ public class ExperimentalSectionParser {
 			else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reagent.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 				cm.setRole(ChemicalRole.solvent);
 			}
-			else if (cm.getVolumeValue()!=null && !cm.getVolumeValue().contains(".") && cm.getAmountValue()==null){
+			else if (cm.getVolumeValue()!=null && !cm.getVolumeValue().contains(".") && cm.getAmountValue()==null){//TODO check units
 				//solvents will be liquids but typically with imprecise volume and no amount given
 				cm.setRole(ChemicalRole.solvent);
 			}

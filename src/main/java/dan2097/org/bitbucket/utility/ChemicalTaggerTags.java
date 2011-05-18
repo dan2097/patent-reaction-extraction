@@ -350,6 +350,9 @@ public class ChemicalTaggerTags {
 	/** contains one or more cardinal numbers and NN-MOLAR */
 	public static final String MOLAR_Container = "MOLAR";
 	
+	/**contains one or more cardinal numbers and NN-EQ  */
+	public static final String EQUIVALENT_Container = "EQUIVALENT";
+	
 	/** contains a PERCENT_Container and NN-YIELD */
 	public static final String YIELD_Container = "YIELD";
 	
@@ -371,6 +374,9 @@ public class ChemicalTaggerTags {
 	public static final String QUANTITY_Container = "QUANTITY";
 
 	public static final String OSCARONT_Container = "OSCARONT";
+	
+	/**Contains a procedure e.g. "example 1"*/
+	public static final String PROCEDURE_Container = "PROCEDURE";
 	
 	/**Holds phrases/punctuation that together form the action phrase*/
 	public static final String ACTIONPHRASE_Container = "ActionPhrase";
