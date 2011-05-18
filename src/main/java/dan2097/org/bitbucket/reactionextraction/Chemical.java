@@ -21,6 +21,8 @@ public class Chemical{
 	private String molarityValue;
 	private String volumeValue;
 	private String volumeUnits;
+	private Double equivalents;
+	private Double pH;
 	private Double percentYield;
 	private Double stoichiometry;
 	private ChemicalRole role = null;
@@ -175,6 +177,22 @@ public class Chemical{
 		this.volumeUnits = volumeUnits;
 	}
 	
+	public Double getEquivalents() {
+		return equivalents;
+	}
+
+	void setEquivalents(Double equivalents) {
+		this.equivalents = equivalents;
+	}
+
+	public Double getpH() {
+		return pH;
+	}
+
+	void setpH(Double pH) {
+		this.pH = pH;
+	}
+
 	/**
 	 * Gets the percent yield as a double
 	 * (or null if unavailable)
@@ -306,11 +324,44 @@ public class Chemical{
 			}
 			reactant.appendChild(amount);
 		}
-		
 		if (stoichiometry !=null){
 			reactant.addAttribute(new Attribute("count", String.valueOf(stoichiometry)));
 		}
+
+		if (equivalents!=null){
+			Element amount = new Element("amount");
+			amount.appendChild(String.valueOf(equivalents));
+			amount.addAttribute(new Attribute("units", "equivalents"));
+			reactant.appendChild(amount);
+		}
+		
+		if (pH!=null){
+			Element amount = new Element("amount");
+			amount.appendChild(String.valueOf(pH));
+			amount.addAttribute(new Attribute("units", "pH"));
+			reactant.appendChild(amount);
+		}
+		
+		if (percentYield!=null){
+			Element amount = new Element("amount");
+			amount.appendChild(String.valueOf(percentYield));
+			amount.addAttribute(new Attribute("units", "percent yield"));
+			reactant.appendChild(amount);
+		}
+		
+		if (smiles!=null){
+			Element identifier = new Element("identifier");
+			identifier.appendChild(smiles);
+			identifier.addAttribute(new Attribute("title", "SMILES"));
+			reactant.appendChild(identifier);
+		}
+		
+		if (inchi!=null){
+			Element identifier = new Element("identifier");
+			identifier.appendChild(inchi);
+			identifier.addAttribute(new Attribute("title", "InChI"));
+			reactant.appendChild(identifier);
+		}
 		return reactant;
 	}
-	
 }
