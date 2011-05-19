@@ -197,6 +197,9 @@ public class ExperimentalSectionParser {
 					reagents = Collections.emptySet();
 				}
 				Set<Element> productAfterReagants = identifyYieldedProduct(phrase, inSynthesis);
+				if (productAfterReagants.size() >0 && currentReaction.getReactants().size()==0 && isBackReference(productAfterReagants)){
+					productAfterReagants.clear();
+				}
 				if (productAfterReagants.size() >0 ){
 					reagentsExpectedAfterProduct = false;
 				}
@@ -245,6 +248,16 @@ public class ExperimentalSectionParser {
 			new ChemicalSenseApplication(reaction).reassignMisCategorisedReagents();
 		}
 		return reactions;
+	}
+
+	private boolean isBackReference(Set<Element> yieldedCompounds) {
+		if (yieldedCompounds.size()==1){
+			Chemical cm = moleculeToChemicalMap.get(yieldedCompounds.iterator().next());
+			if (cm.getType().equals(ChemicalType.exactReference)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void preliminaryClassifyReagentsAsReactantsAndSolvents(Set<Element> reagents) {
@@ -358,8 +371,24 @@ public class ExperimentalSectionParser {
 			chemical.setRole(ChemicalRole.product);
 			return true;
 		}
-		if (chemical.getSmiles()!=null){
-			boolean success = attemptToResolveViaSubstructureMatch(chemical, reactionsToConsider);
+		if (chemical.getSmarts()!=null){
+			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmarts(), chemical, reactionsToConsider);
+			if (success){
+				chemical.setRole(ChemicalRole.reactant);
+				return true;
+			}
+			if (FunctionalGroupDefinitions.functionalGroupToSmartsMap.containsKey(chemical.getName().toLowerCase())){
+				//The <name of compound> could also be specific
+				Element molecule = moleculeToChemicalMap.inverse().get(chemical);
+				Element previous = Utils.getPreviousElement(molecule);
+				if (previous !=null && previous.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
+					chemical.setType(ChemicalType.exact);
+					return true;
+				}
+			}
+		}
+		else if (chemical.getSmiles()!=null){
+			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmiles(), chemical, reactionsToConsider);
 			if (success){
 				chemical.setRole(ChemicalRole.reactant);
 				return true;
@@ -375,8 +404,8 @@ public class ExperimentalSectionParser {
 		return false;
 	}
 
-	private boolean attemptToResolveViaSubstructureMatch(Chemical backReference, List<Reaction> reactionsToConsider) {
-		IndigoObject query = indigo.loadSmarts(backReference.getSmiles());
+	private boolean attemptToResolveViaSmartsMatch(String smarts, Chemical backReference, List<Reaction> reactionsToConsider) {
+		IndigoObject query = indigo.loadSmarts(smarts);
 		List<Chemical> chemicalMatches = new ArrayList<Chemical>();
 		for (Reaction reaction : reactionsToConsider) {
 			List<Chemical> products = reaction.getProducts();

@@ -40,6 +40,7 @@ public class Chemical{
 		else{
 			inchi =null;
 		}
+		smarts = FunctionalGroupDefinitions.getSmartsFromChemicalName(name);
 	}
 
 	String getName() {

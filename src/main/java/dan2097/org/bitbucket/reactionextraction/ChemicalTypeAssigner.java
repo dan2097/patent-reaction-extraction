@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
 
@@ -26,44 +28,56 @@ public class ChemicalTypeAssigner {
 		for (Entry<Element, Chemical> entry : entries) {
 			Element mol = entry.getKey();
 			Chemical chem = entry.getValue();
-			String chemicalName = chem.getName();
-			if (isFalsePositive(chem, mol)){
-				chem.setType(ChemicalType.falsePositive);
-			}
-			else if (matchPluralEnding.matcher(chemicalName).matches()){
-				chem.setType(ChemicalType.chemicalClass);
-			}
-			else{		
-				Element nextEl = Utils.getNextElement(mol);
-				if (nextEl !=null){//examine the head noun
-					if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
-						chem.setType(ChemicalType.falsePositive);
-					}
-					else if (matchClassQualifier.matcher(nextEl.getValue()).matches()){
-						chem.setType(ChemicalType.chemicalClass);
-					}
-					else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
-						chem.setType(ChemicalType.fragment);
-					}
+			assignTypeToChemical(mol, chem);
+		}
+	}
+
+	private static void assignTypeToChemical(Element mol, Chemical chem) {
+		String chemicalName = chem.getName();
+		if (isFalsePositive(chem, mol)){
+			chem.setType(ChemicalType.falsePositive);
+		}
+		else if (matchPluralEnding.matcher(chemicalName).matches()){
+			chem.setType(ChemicalType.chemicalClass);
+		}
+		else{		
+			Element nextEl = Utils.getNextElement(mol);
+			if (nextEl !=null){//examine the head noun
+				if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
+					chem.setType(ChemicalType.falsePositive);
 				}
-				if (chem.getType()==null){
-					Element previousEl = Utils.getPreviousElement(mol);
-					if (previousEl !=null){
-						if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
-							chem.setType(ChemicalType.falsePositive);
-						}
-						else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT)){
-							chem.setType(ChemicalType.chemicalClass);
-						}
-						else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
-							chem.setType(ChemicalType.exactReference);
-						}
-					}
+				else if (matchClassQualifier.matcher(nextEl.getValue()).matches()){
+					chem.setType(ChemicalType.chemicalClass);
+				}
+				else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
+					chem.setType(ChemicalType.fragment);
 				}
 			}
 			if (chem.getType()==null){
-				chem.setType(ChemicalType.exact);
+				Element previousEl = Utils.getPreviousElement(mol);
+				if (previousEl !=null){
+					if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
+						chem.setType(ChemicalType.falsePositive);
+					}
+					else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT)){
+						chem.setType(ChemicalType.chemicalClass);
+					}
+					else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
+						chem.setType(ChemicalType.exactReference);
+					}
+				}
 			}
+			if (chem.getType()==null){//e.g. "2.4g of an amide"
+				if (XOMTools.getDescendantElementsWithTagName(mol, ChemicalTaggerTags.DT).size()>0){
+					chem.setType(ChemicalType.chemicalClass);
+				}
+				else if (XOMTools.getDescendantElementsWithTagName(mol, ChemicalTaggerTags.DT_THE).size()>0){
+					chem.setType(ChemicalType.exactReference);
+				}
+			}
+		}
+		if (chem.getType()==null){
+			chem.setType(ChemicalType.exact);
 		}
 	}
 
