@@ -24,9 +24,10 @@ public class ChemicalSenseApplication {
 
 	void reassignMisCategorisedReagents() {
 		correctReactantsThatAreCatalysts();
+		correctReactantsThatAreSolvents();
 	}
 
-	private void correctReactantsThatAreCatalysts() {
+	void correctReactantsThatAreCatalysts() {
 		List<Chemical> reactantsToReclassify = new ArrayList<Chemical>();
 		for (Chemical reactant : reaction.getReactants()) {
 			if (reactant.getSmiles()!=null){
@@ -73,5 +74,27 @@ public class ChemicalSenseApplication {
 		return (atomicNumber >=21 && atomicNumber <=30) ||
 			(atomicNumber >=39 && atomicNumber <=48) ||
 			(atomicNumber >=72 && atomicNumber <=80);
+	}
+
+	/**
+	 * Applies the heuristic that the same chemical cannot be both a reactant and solvent
+	 * to reclassify such "reactants" as solvents
+	 */
+	void correctReactantsThatAreSolvents() {
+		List<String> solventInChIs = new ArrayList<String>();
+		for (Chemical spectator : reaction.getSpectators()) {
+			if (ChemicalRole.solvent.equals(spectator.getRole()) && spectator.getInchi() != null){
+				solventInChIs.add(spectator.getInchi());
+			}
+		}
+		List<Chemical> reactants = reaction.getReactants();
+		for (int i = reactants.size()-1; i >=0; i--) {
+			Chemical reactant = reactants.get(i);
+			if (solventInChIs.contains(reactant.getInchi())){
+				reactant.setRole(ChemicalRole.solvent);
+				reaction.removeReactant(reactant);
+				reaction.addSpectator(reactant);
+			}
+		}
 	}
 }
