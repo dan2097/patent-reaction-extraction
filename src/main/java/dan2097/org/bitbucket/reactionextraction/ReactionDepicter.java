@@ -41,14 +41,14 @@ public class ReactionDepicter {
 		if (rxn.countProducts()==0 && rxn.countReactants()==0){
 			return;
 		}
- //reaction mapping is currently disabled
+
 //		if (rxn.countProducts()>0 && rxn.countReactants()>0){
 //			try{
 //				rxn.automap("discard");
 //			}
 //			catch (Exception e) {
 //				e.printStackTrace();
-//				return;
+//				//return;
 //			}
 //		}
 		
