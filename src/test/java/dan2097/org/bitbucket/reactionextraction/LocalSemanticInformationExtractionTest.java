@@ -125,4 +125,97 @@ public class LocalSemanticInformationExtractionTest {
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
+	
+	@Test
+	public void typeDetectionTestDeterminerWithinMolecule1(){
+		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		moleculeEl.appendChild(new Element(QUANTITY_Container));
+		moleculeEl.appendChild(new Element(DT_THE));
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("furan");
+		moleculeEl.appendChild(cm);
+		Chemical chem = new Chemical("furan");
+		map.put(moleculeEl, chem);
+		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		assertEquals(ChemicalType.exactReference, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestDeterminerWithinMolecule2(){
+		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		moleculeEl.appendChild(new Element(QUANTITY_Container));
+		moleculeEl.appendChild(new Element(DT));
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("furan");
+		moleculeEl.appendChild(cm);
+		Chemical chem = new Chemical("furan");
+		map.put(moleculeEl, chem);
+		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		assertEquals(ChemicalType.chemicalClass, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestDeterminerWithinMolecule3(){
+		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		moleculeEl.appendChild(new Element(QUANTITY_Container));
+		moleculeEl.appendChild(new Element(DT_THE));
+		Element cmCont = new Element(OSCARCM_Container);
+		Element cm1 = new Element(OSCAR_CM);
+		cm1.appendChild("sulfamic");
+		cmCont.appendChild(cm1);
+		Element cm2 = new Element(OSCAR_CM);
+		cm2.appendChild("acid");
+		cmCont.appendChild(cm2);
+		moleculeEl.appendChild(cmCont);
+		Chemical chem = new Chemical("sulfamic acid");
+		map.put(moleculeEl, chem);
+		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		assertEquals(ChemicalType.exactReference, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestDeterminerWithinMolecule4(){
+		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		moleculeEl.appendChild(new Element(QUANTITY_Container));
+		moleculeEl.appendChild(new Element(DT));
+		Element cmCont = new Element(OSCARCM_Container);
+		Element cm1 = new Element(OSCAR_CM);
+		cm1.appendChild("sulfamic");
+		cmCont.appendChild(cm1);
+		Element cm2 = new Element(OSCAR_CM);
+		cm2.appendChild("acid");
+		cmCont.appendChild(cm2);
+		moleculeEl.appendChild(cmCont);
+		Chemical chem = new Chemical("sulfamic acid");
+		map.put(moleculeEl, chem);
+		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		assertEquals(ChemicalType.chemicalClass, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestSMARTSClassifyAsClass(){
+		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("Sulfonic acid");
+		moleculeEl.appendChild(cm);
+		Chemical chem = new Chemical("Sulfonic acid");
+		map.put(moleculeEl, chem);
+		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		assertEquals(ChemicalType.chemicalClass, chem.getType());
+	}
 }

@@ -1,10 +1,12 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
@@ -20,7 +22,7 @@ public class ChemicalTypeAssigner {
 	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchNMR = Pattern.compile("\\d+H|.*[nN][mM][rR]$");
 	/**
-	 * Assigns a preliminary type to each chemical based on local textual information
+	 * Assigns a preliminary type to each chemical based on the chemical name itself and local textual information
 	 * @param moleculeToChemicalMap
 	 */
 	static void performPreliminaryTypeDetection(Map<Element, Chemical> moleculeToChemicalMap) {
@@ -40,7 +42,10 @@ public class ChemicalTypeAssigner {
 		else if (matchPluralEnding.matcher(chemicalName).matches()){
 			chem.setType(ChemicalType.chemicalClass);
 		}
-		else{		
+		else if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
+			chem.setType(ChemicalType.chemicalClass);
+		}
+		else{
 			Element nextEl = Utils.getNextElement(mol);
 			if (nextEl !=null){//examine the head noun
 				if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
@@ -54,7 +59,7 @@ public class ChemicalTypeAssigner {
 				}
 			}
 			if (chem.getType()==null){
-				Element previousEl = Utils.getPreviousElement(mol);
+				Element previousEl = getElementBeforeFirstOSCARCM(mol);
 				if (previousEl !=null){
 					if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
 						chem.setType(ChemicalType.falsePositive);
@@ -65,14 +70,6 @@ public class ChemicalTypeAssigner {
 					else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
 						chem.setType(ChemicalType.exactReference);
 					}
-				}
-			}
-			if (chem.getType()==null){//e.g. "2.4g of an amide"
-				if (XOMTools.getDescendantElementsWithTagName(mol, ChemicalTaggerTags.DT).size()>0){
-					chem.setType(ChemicalType.chemicalClass);
-				}
-				else if (XOMTools.getDescendantElementsWithTagName(mol, ChemicalTaggerTags.DT_THE).size()>0){
-					chem.setType(ChemicalType.exactReference);
 				}
 			}
 		}
@@ -94,5 +91,15 @@ public class ChemicalTypeAssigner {
 			return true;
 		}
 		return false;
+	}
+	
+	private static Element getElementBeforeFirstOSCARCM(Element mol) {
+		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{ChemicalTaggerTags.OSCARCM_Container, ChemicalTaggerTags.OSCAR_CM});
+		if (oscarcms.size()>0){
+			return Utils.getPreviousElement(oscarcms.get(0));
+		}
+		else{
+			return Utils.getPreviousElement(mol);
+		}
 	}
 }
