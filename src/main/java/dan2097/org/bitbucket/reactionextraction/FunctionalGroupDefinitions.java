@@ -23,8 +23,10 @@ public class FunctionalGroupDefinitions {
 		functionalClassToSmartsMap.put("carbonic acid diester", "C[OX2][CX3](=[OX1])[OX2]C");
 		functionalClassToSmartsMap.put("carboxylic acid", "[CX3](=O)[OX2H1]");
 		functionalClassToSmartsMap.put("ester", "[#6][CX3](=O)[OX2H0][#6]");
+		functionalClassToSmartsMap.put("thioester", "[#6][CX3](=O)[SX2H0][#6]");
 		functionalClassToSmartsMap.put("ketone", "[#6][CX3](=O)[#6]");
-		functionalClassToSmartsMap.put("ether", "[OD2]([#6])[#6]");
+		functionalClassToSmartsMap.put("ether", "[OX2]([#6])[#6]");
+		functionalClassToSmartsMap.put("thioether", "[SX2]([#6])[#6]");
 		functionalClassToSmartsMap.put("amine", "[NX3;H2,H1;!$(NC=O)]");
 		functionalClassToSmartsMap.put("enamine", "[NX3][CX3]=[CX3]");
 		functionalClassToSmartsMap.put("amino acid", "[NX3,NX4+][CX4H]([*])[CX3](=[OX1])[O,N]");
@@ -53,7 +55,17 @@ public class FunctionalGroupDefinitions {
 		functionalClassToSmartsMap.put("alkyl halide", "[CX4][F,Cl,Br,I]");
 		functionalClassToSmartsMap.put("amino acid", "[NX3,NX4+][CX4H]([*])[CX3](=[OX1])[O,N]");
 		functionalClassToSmartsMap.put("sulfide", "[#16X2H0]");
-		
+		functionalClassToSmartsMap.put("aryl", "[R1]");
+		functionalClassToSmartsMap.put("alcohol", "[CX4][OX2H]");
+		functionalClassToSmartsMap.put("alkane", "[CX4]");
+		functionalClassToSmartsMap.put("alkene", "[CX3]=[CX3]");
+		functionalClassToSmartsMap.put("alkyne", "[CX2]#[CX2]");
+		functionalClassToSmartsMap.put("alkoxy", "[CX4][OX2H0]");
+		functionalClassToSmartsMap.put("aryloxy", "[R1][OX2H0]");
+		functionalClassToSmartsMap.put("azo", "[NX3]=[NX3]");
+		functionalClassToSmartsMap.put("haloalkane", "[CX4][F,Cl,Br,I]");
+		functionalClassToSmartsMap.put("oxime", "[CX3]=[NX2][OX2H]");
+		functionalClassToSmartsMap.put("nitroso", "[NX3]=[OX1]");
 		
 		functionalGroupToSmartsMap.put("carbamate", "[NX3,NX4+][CX3](=[OX1])[OX2,OX1-]");
 		functionalGroupToSmartsMap.put("carbamic acid", "[NX3,NX4+][CX3](=[OX1])[OX2H,OX1-]");
@@ -61,10 +73,15 @@ public class FunctionalGroupDefinitions {
 		functionalGroupToSmartsMap.put("cyanamide", "[NX3][CX2]#[NX1]");
 		functionalGroupToSmartsMap.put("azide", "[$(*-[NX2-]-[NX2+]#[NX1]),$(*-[NX2]=[NX2+]=[NX1-])]");
 		functionalGroupToSmartsMap.put("isonitrile", "[CX1-]#[NX2+]");
+		functionalGroupToSmartsMap.put("isocyanide", "[CX1-]#[NX2+]");
 		functionalGroupToSmartsMap.put("nitrate", "[$([NX3](=[OX1])(=[OX1])O),$([NX3+]([OX1-])(=[OX1])O)]");
 		functionalGroupToSmartsMap.put("phosphoric acid", "[$(P(=[OX1])([$([OX2H]),$([OX1-]),$([OX2]P)])([$([OX2H]),$([OX1-]),$([OX2]P)])[$([OX2H]),$([OX1-]),$([OX2]P)]),$([P+]([OX1-])([$([OX2H]),$([OX1-]),$([OX2]P)])([$([OX2H]),$([OX1-]),$([OX2]P)])[$([OX2H]),$([OX1-]),$([OX2]P)])]");
 		functionalGroupToSmartsMap.put("sulfate", "[$([SX4](=O)(=O)(O)O),$([SX4+2]([O-])([O-])(O)O)]");
 		functionalGroupToSmartsMap.put("sulfamate", "[$([#16X4]([NX3])(=[OX1])(=[OX1])[OX2][#6]),$([#16X4+2]([NX3])([OX1-])([OX1-])[OX2][#6])]");
+		functionalGroupToSmartsMap.put("cyanate", "[NX1]#[CX2][OX2H0]");
+		functionalGroupToSmartsMap.put("thiocyanate", "[NX1]#[CX2][SX2H0]");
+		functionalGroupToSmartsMap.put("isocyanate", "[OX1]=[CX2]=[NX3H0]");
+		functionalGroupToSmartsMap.put("isothiocyanate", "[SX1]=[CX2]=[NX3H0]");
 	}
 	
 	/**
