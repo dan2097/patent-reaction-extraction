@@ -73,8 +73,20 @@ public class ChemicalTypeAssigner {
 			}
 		}
 		if (chem.getType()==null){
-			chem.setType(ChemicalType.exact);
+			if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
+				chem.setType(ChemicalType.falsePositive);
+			}
+			else{
+				chem.setType(ChemicalType.exact);
+			}
 		}
+	}
+
+	private static boolean hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(Element mol, Chemical chem) {
+		return (chem.getSmiles() == null &&
+				chem.getInchi() == null &&
+				XOMTools.getDescendantElementsWithTagName(mol, ChemicalTaggerTags.QUANTITY_Container).size()==0 &&
+				Utils.getSystematicChemicalNamesFromText(chem.getName()).size()==0);
 	}
 
 	private static boolean isFalsePositive(Chemical chem, Element mol) {
