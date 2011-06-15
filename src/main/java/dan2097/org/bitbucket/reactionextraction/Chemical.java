@@ -29,6 +29,8 @@ public class Chemical{
 	private ChemicalType type = null;
 	private String xpathUsedToIdentify = null;
 
+	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
+
 
 	public Chemical(String name) {
 		this.name = name;
@@ -282,6 +284,22 @@ public class Chemical{
 		}
 		return false;
 	}
+	
+	boolean hasImpreciseVolume() {
+		if (volumeValue==null || volumeUnits ==null){
+			return true;
+		}
+		if (matchCentiLitresOrLarger.matcher(volumeUnits).matches()){
+			return true;
+		}
+		if (volumeValue.contains(".")){
+			return false;
+		}
+		if (volumeValue.contains("0")){
+			return true;
+		}
+		return false;
+	}
 
 	public Element toCML(String id){
 		Element reactant = new Element("reactant");
@@ -305,7 +323,7 @@ public class Chemical{
 			Element amount = new Element("amount");
 			amount.appendChild(String.valueOf(molarityValue));
 			if (amountUnits!=null){
-				amount.addAttribute(new Attribute("units", "mols"));
+				amount.addAttribute(new Attribute("units", "molar"));
 			}
 			reactant.appendChild(amount);
 		}
