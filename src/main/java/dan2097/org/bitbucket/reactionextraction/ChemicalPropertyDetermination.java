@@ -97,6 +97,7 @@ public class ChemicalPropertyDetermination {
 			else{
 				Element molarity = molarAmounts.get(0);
 				chemical.setMolarityValue(molarity.getFirstChildElement(ChemicalTaggerTags.CD).getValue());
+				chemical.setMolarityUnits(molarity.getFirstChildElement(ChemicalTaggerTags.NN_MOLAR).getValue());
 			}
 		}
 	}

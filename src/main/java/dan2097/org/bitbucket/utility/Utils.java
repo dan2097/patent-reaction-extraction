@@ -1,9 +1,7 @@
 package dan2097.org.bitbucket.utility;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +15,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.ggasoftware.indigo.Indigo;
 
+import dan2097.org.bitbucket.chemicaltagging.OscarAndOpsinTagger;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
+import dan2097.org.bitbucket.reactionextraction.ChemicalPropertyDetermination;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
+import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
@@ -32,19 +33,34 @@ import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
+import uk.ac.cam.ch.wwmm.chemicaltagger.OpenNLPTagger;
+import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTokeniser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
+import uk.ac.cam.ch.wwmm.chemicaltagger.RegexTagger;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+import uk.ac.cam.ch.wwmm.oscar.Oscar;
 import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
+import uk.ac.cam.ch.wwmm.oscarMEMM.MEMMRecogniser;
 
 public class Utils {
 	
 	private static Builder xomBuilder;
 	private static ChemNameDictRegistry chemNameRegistery;
 	public static Indigo indigo = new Indigo();
+	public static ChemistryPOSTagger posTagger;
+	
 	static{
 		chemNameRegistery = new ChemNameDictRegistry();
 		chemNameRegistery.register(new OpsinDictionary());
+		Oscar oscar = new Oscar();
+		MEMMRecogniser recogniser = new MEMMRecogniser();
+		recogniser.setDeprioritiseOnts(true);
+		recogniser.setCprPseudoConfidence(0);
+		recogniser.setOntPseudoConfidence(0);
+		oscar.setRecogniser(recogniser);
+		OscarAndOpsinTagger oscarAndOpsinTagger = new OscarAndOpsinTagger(oscar);
+		posTagger = new ChemistryPOSTagger(new OscarTokeniser(oscar), oscarAndOpsinTagger, new RegexTagger(), OpenNLPTagger.getInstance());
 		XMLReader xmlReader;
 		try{
 			xmlReader = XMLReaderFactory.createXMLReader();
@@ -66,7 +82,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String tagString(String text) {
-		POSContainer posContainer = ChemistryPOSTagger.getDefaultInstance().runTaggers(text);
+		POSContainer posContainer = posTagger.runTaggers(text);
 		return posContainer.getTokenTagTupleAsString();
 	}
 	
@@ -76,13 +92,7 @@ public class Utils {
 	 * @return
 	 */
 	public static Document runChemicalSentenceParsingOnTaggedString(String tagged) {
-		InputStream in;
-		try {
-			in = new ByteArrayInputStream(tagged.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Java VM is broken, UTF-8 should be supported!",e);
-		}
-		ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(in);
+		ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(tagged);
 		chemistrySentenceParser.parseTags();
 		return chemistrySentenceParser.makeXMLDocument();
 	}
@@ -239,9 +249,17 @@ public class Utils {
 		if (title==null){
 			throw new IllegalArgumentException("Input title text was null");
 		}
-		List<String> name = getSystematicChemicalNamesFromText(title);
-		if (name.size()==1){
-			return new Chemical(name.get(0));
+		List<String> names = getSystematicChemicalNamesFromText(title);
+		if (names.size()==1){
+			String name = names.get(0);
+			Chemical chem = new Chemical(name);
+			chem.setSmiles(Utils.resolveNameToSmiles(name));
+			String rawInchi = Utils.resolveNameToInchi(name);
+			if (rawInchi!=null){
+				chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
+			}
+			chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
+			return chem;
 		}
 		return null;
 	}

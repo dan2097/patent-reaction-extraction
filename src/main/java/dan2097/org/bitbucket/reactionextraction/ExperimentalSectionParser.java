@@ -23,6 +23,7 @@ import nu.xom.Nodes;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
+import dan2097.org.bitbucket.utility.InchiNormaliser;
 import dan2097.org.bitbucket.utility.Utils;
 
 import static dan2097.org.bitbucket.utility.Utils.*;
@@ -77,7 +78,14 @@ public class ExperimentalSectionParser {
 	}
 
 	private Chemical generateChemicalsFromMoleculeElsAndLocalInformation(Element moleculeEl) {
-		Chemical chem = new Chemical(findMoleculeName(moleculeEl));
+		String name = findMoleculeName(moleculeEl);
+		Chemical chem = new Chemical(name);
+		chem.setSmiles(Utils.resolveNameToSmiles(name));
+		String rawInchi = Utils.resolveNameToInchi(name);
+		if (rawInchi!=null){
+			chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
+		}
+		chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
 		ChemicalPropertyDetermination.determineProperties(chem, moleculeEl);
 		return chem;
 	}

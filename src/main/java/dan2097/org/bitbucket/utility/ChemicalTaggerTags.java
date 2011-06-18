@@ -188,7 +188,7 @@ public class ChemicalTaggerTags {
 	public static final String LSQB = "LSQB";
 	public static final String RSQB = "RSQB";
 	
-	public static final String SINGLECAPITALLETTER = "SINGLECAPITALLETTER";
+	public static final String NN_IDENTIFIER = "NN-IDENTIFIER";
 	
 	//The determiner 'the';
 	public static final String DT_THE = "DT-THE";
