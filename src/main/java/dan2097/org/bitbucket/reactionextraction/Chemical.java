@@ -4,8 +4,6 @@ import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
-import dan2097.org.bitbucket.utility.InchiNormaliser;
-import dan2097.org.bitbucket.utility.Utils;
 
 public class Chemical{
 
@@ -19,6 +17,7 @@ public class Chemical{
 	private String amountValue;
 	private String amountUnits;
 	private String molarityValue;
+	private String molarityUnits;
 	private String volumeValue;
 	private String volumeUnits;
 	private Double equivalents;
@@ -34,18 +33,9 @@ public class Chemical{
 
 	public Chemical(String name) {
 		this.name = name;
-		smiles = Utils.resolveNameToSmiles(name);
-		String rawInchi = Utils.resolveNameToInchi(name);
-		if (rawInchi!=null){
-			inchi = InchiNormaliser.normaliseInChI(rawInchi);
-		}
-		else{
-			inchi =null;
-		}
-		smarts = FunctionalGroupDefinitions.getSmartsFromChemicalName(name);
 	}
 
-	String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -57,7 +47,7 @@ public class Chemical{
 		return smiles;
 	}
 	
-	void setSmiles(String smiles) {
+	public void setSmiles(String smiles) {
 		this.smiles = smiles;
 	}
 	
@@ -69,7 +59,7 @@ public class Chemical{
 		return smarts;
 	}
 	
-	void setSmarts(String smarts) {
+	public void setSmarts(String smarts) {
 		this.smarts = smarts;
 	}
 
@@ -81,7 +71,7 @@ public class Chemical{
 		return inchi;
 	}
 	
-	void setInchi(String inchi) {
+	public void setInchi(String inchi) {
 		this.inchi = inchi;
 	}
 	
@@ -151,6 +141,19 @@ public class Chemical{
 
 	void setMolarityValue(String molarityValue) {
 		this.molarityValue = molarityValue;
+	}
+	
+	/**
+	 * Gets a textual string for the units used to describe the molarity
+	 * (or null if unavailable)
+	 * @return
+	 */
+	public String getMolarityUnits() {
+		return molarityUnits;
+	}
+
+	void setMolarityUnits(String molarityUnits) {
+		this.molarityUnits = molarityUnits;
 	}
 
 	/**
@@ -322,8 +325,8 @@ public class Chemical{
 		if (molarityValue!=null){
 			Element amount = new Element("amount");
 			amount.appendChild(String.valueOf(molarityValue));
-			if (amountUnits!=null){
-				amount.addAttribute(new Attribute("units", "molar"));
+			if (molarityUnits!=null){
+				amount.addAttribute(new Attribute("units", molarityUnits));
 			}
 			reactant.appendChild(amount);
 		}
