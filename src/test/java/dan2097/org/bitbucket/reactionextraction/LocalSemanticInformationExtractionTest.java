@@ -36,7 +36,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("2,3-dimethylbutane");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("2,3-dimethylbutane");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
@@ -52,7 +54,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("pyridine");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
@@ -68,7 +72,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("pyridine");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
@@ -83,7 +89,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("pyridine");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Element qualifier = new Element(NN);
 		qualifier.appendChild("compound");
 		sentence.appendChild(qualifier);
@@ -101,7 +109,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("pyridine");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Element qualifier = new Element(NN);
 		qualifier.appendChild("ring");
 		sentence.appendChild(qualifier);
@@ -119,7 +129,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("phenols");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("phenols");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
@@ -136,7 +148,9 @@ public class LocalSemanticInformationExtractionTest {
 		moleculeEl.appendChild(new Element(DT_THE));
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("furan");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
@@ -153,7 +167,9 @@ public class LocalSemanticInformationExtractionTest {
 		moleculeEl.appendChild(new Element(DT));
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("furan");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
@@ -212,7 +228,9 @@ public class LocalSemanticInformationExtractionTest {
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("Sulfonic acid");
-		moleculeEl.appendChild(cm);
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("Sulfonic acid");
 		map.put(moleculeEl, chem);
 		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);

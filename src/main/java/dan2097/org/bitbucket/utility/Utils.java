@@ -17,7 +17,6 @@ import com.ggasoftware.indigo.Indigo;
 
 import dan2097.org.bitbucket.chemicaltagging.OscarAndOpsinTagger;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
-import dan2097.org.bitbucket.reactionextraction.ChemicalPropertyDetermination;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
 import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
@@ -46,14 +45,15 @@ import uk.ac.cam.ch.wwmm.oscarMEMM.MEMMRecogniser;
 public class Utils {
 	
 	private static Builder xomBuilder;
-	private static ChemNameDictRegistry chemNameRegistery;
+	private static ChemNameDictRegistry chemNameRegistry;
 	public static Indigo indigo = new Indigo();
 	public static ChemistryPOSTagger posTagger;
 	
 	static{
-		chemNameRegistery = new ChemNameDictRegistry();
-		chemNameRegistery.register(new OpsinDictionary());
 		Oscar oscar = new Oscar();
+		chemNameRegistry = new ChemNameDictRegistry();
+		chemNameRegistry.register(new OpsinDictionary());
+		oscar.setDictionaryRegistry(chemNameRegistry);
 		MEMMRecogniser recogniser = new MEMMRecogniser();
 		recogniser.setDeprioritiseOnts(true);
 		recogniser.setCprPseudoConfidence(0);
@@ -103,7 +103,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToSmiles(String name) {
-		return chemNameRegistery.getShortestSmiles(name);
+		return chemNameRegistry.getShortestSmiles(name);
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
-		Set<String> inchis = chemNameRegistery.getInchis(name);
+		Set<String> inchis = chemNameRegistry.getInchis(name);
 		if (!inchis.isEmpty()){
 			return inchis.iterator().next();
 		}

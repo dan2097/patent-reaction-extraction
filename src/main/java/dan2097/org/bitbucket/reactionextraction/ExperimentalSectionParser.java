@@ -53,7 +53,9 @@ public class ExperimentalSectionParser {
 				Paragraph para = new Paragraph(p);
 				if (!para.getTaggedString().equals("")){
 					paragraphs.add(para);
-					generateMoleculeToChemicalMap(para);
+					List<Element> moleculeEls = findAllMolecules(para);
+					populateAliasMapWithMoleculesWithDefinedAliases(moleculeEls);
+					generateMoleculeToChemicalMap(moleculeEls);
 					ChemicalTypeAssigner.performPreliminaryTypeDetection(moleculeToChemicalMap);
 				}
 			}
@@ -68,9 +70,21 @@ public class ExperimentalSectionParser {
 	public List<Reaction> getReactions() {
 		return reactions;
 	}
+	
+	
+	/**
+	 * Finds molecules containing two OSCAR-CM parents, one of which has no resolvable structure
+	 * and for each adds an appropriate entry to aliasToChemicalMap
+	 * @param moleculeEls
+	 */
+	private void populateAliasMapWithMoleculesWithDefinedAliases(List<Element> moleculeEls) {
+		for (Element moleculeEl : moleculeEls) {
+	//TODO write this method
+		}
+	}
 
-	private void generateMoleculeToChemicalMap(Paragraph para) {
-		List<Element> moleculeEls = findAllMolecules(para);
+
+	private void generateMoleculeToChemicalMap(List<Element> moleculeEls) {
 		for (Element moleculeEl : moleculeEls) {
 			Chemical chem = generateChemicalsFromMoleculeElsAndLocalInformation(moleculeEl);
 			moleculeToChemicalMap.put(moleculeEl, chem);
@@ -114,14 +128,9 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	private String findMoleculeNameFromMoleculeEl(Element molecule) {
-		Element singleWordName = molecule.getFirstChildElement(ChemicalTaggerTags.OSCAR_CM);
-		if (singleWordName != null) {
-			return singleWordName.getValue();
-		}
-		
-		Element multiWordName = molecule.getFirstChildElement(ChemicalTaggerTags.OSCARCM_Container);
-		if (multiWordName != null) {
-			Elements multiWordNameWords = multiWordName.getChildElements(ChemicalTaggerTags.OSCAR_CM);
+		Element oscarCM = molecule.getFirstChildElement(ChemicalTaggerTags.OSCARCM_Container);
+		if (oscarCM != null) {
+			Elements multiWordNameWords = oscarCM.getChildElements(ChemicalTaggerTags.OSCAR_CM);
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < multiWordNameWords.size(); i++) {
 				builder.append(multiWordNameWords.get(i).getValue());
