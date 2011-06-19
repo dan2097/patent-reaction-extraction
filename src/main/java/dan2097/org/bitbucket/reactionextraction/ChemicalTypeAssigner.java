@@ -105,7 +105,7 @@ public class ChemicalTypeAssigner {
 	}
 	
 	private static Element getElementBeforeFirstOSCARCM(Element mol) {
-		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{ChemicalTaggerTags.OSCARCM_Container, ChemicalTaggerTags.OSCAR_CM});
+		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{ChemicalTaggerTags.OSCARCM_Container});
 		if (oscarcms.size()>0){
 			return Utils.getPreviousElement(oscarcms.get(0));
 		}

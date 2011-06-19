@@ -79,7 +79,6 @@ public class ChemicalTaggerTags {
 	public static final String NN_TIMES = "NN-TIMES";
 	public static final String NN_EXAMPLE = "NN-EXAMPLE";
 
-	//Not really Oscar-cm.. but need to be fixed
 	/** contains the text for one word of chemical name */
 	public static final String OSCAR_CM = "OSCAR-CM";
 
