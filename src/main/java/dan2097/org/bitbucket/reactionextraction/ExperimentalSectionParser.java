@@ -2,12 +2,12 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -54,8 +54,8 @@ public class ExperimentalSectionParser {
 				if (!para.getTaggedString().equals("")){
 					paragraphs.add(para);
 					List<Element> moleculeEls = findAllMolecules(para);
-					populateAliasMapWithMoleculesWithDefinedAliases(moleculeEls);
-					generateMoleculeToChemicalMap(moleculeEls);
+					aliasToChemicalMap.putAll(generateAliasToChemicalsMap(moleculeEls));
+					moleculeToChemicalMap.putAll(generateChemicalsAndReturnMapping(moleculeEls));
 					ChemicalTypeAssigner.performPreliminaryTypeDetection(moleculeToChemicalMap);
 				}
 			}
@@ -74,21 +74,41 @@ public class ExperimentalSectionParser {
 	
 	/**
 	 * Finds molecules containing two OSCAR-CM parents, one of which has no resolvable structure
-	 * and for each adds an appropriate entry to aliasToChemicalMap
+	 * and for each adds an appropriate entry to the returned map
 	 * @param moleculeEls
 	 */
-	private void populateAliasMapWithMoleculesWithDefinedAliases(List<Element> moleculeEls) {
+	private Map<String, Chemical> generateAliasToChemicalsMap(List<Element> moleculeEls) {
+		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 		for (Element moleculeEl : moleculeEls) {
-	//TODO write this method
+			List<Element> oscarCms = XOMTools.getChildElementsWithTagName(moleculeEl, ChemicalTaggerTags.OSCARCM_Container);//TODO how should OSCARCMs in mixtures be considered?
+			if (oscarCms.size()==2){//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
+				String name1 = findMoleculeNameFromOscarCM(oscarCms.get(0));
+				String smiles1 = Utils.resolveNameToSmiles(name1);
+				String name2 = findMoleculeNameFromOscarCM(oscarCms.get(1));
+				String smiles2 =Utils.resolveNameToSmiles(name2);
+				if (smiles1 !=null && smiles2 ==null){
+					Chemical cm = new Chemical(name2);
+					cm.setSmiles(smiles1);
+					aliasToChemicalMap.put(name2, cm);
+				}
+				else if (smiles1 ==null && smiles2 !=null){
+					Chemical cm = new Chemical(name1);
+					cm.setSmiles(smiles2);
+					aliasToChemicalMap.put(name1, cm);
+				}
+			}
 		}
+		return aliasToChemicalMap;
 	}
 
 
-	private void generateMoleculeToChemicalMap(List<Element> moleculeEls) {
+	private Map<Element, Chemical> generateChemicalsAndReturnMapping(List<Element> moleculeEls) {
+		Map<Element, Chemical> moleculeToChemicalMap = new HashMap<Element, Chemical>();
 		for (Element moleculeEl : moleculeEls) {
 			Chemical chem = generateChemicalsFromMoleculeElsAndLocalInformation(moleculeEl);
 			moleculeToChemicalMap.put(moleculeEl, chem);
 		}
+		return moleculeToChemicalMap;
 	}
 
 	private Chemical generateChemicalsFromMoleculeElsAndLocalInformation(Element moleculeEl) {
@@ -98,6 +118,11 @@ public class ExperimentalSectionParser {
 		String rawInchi = Utils.resolveNameToInchi(name);
 		if (rawInchi!=null){
 			chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
+		}
+		Chemical referencedChemical = aliasToChemicalMap.get(name);
+		if (referencedChemical != null){
+			chem.setSmiles(referencedChemical.getSmiles());
+			chem.setInchi(referencedChemical.getInchi());
 		}
 		chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
 		ChemicalPropertyDetermination.determineProperties(chem, moleculeEl);
@@ -112,7 +137,11 @@ public class ExperimentalSectionParser {
 	private String findMoleculeName(Element molecule) {
 		String elName= molecule.getLocalName();
 		if (elName.equals(ChemicalTaggerTags.MOLECULE_Container)) {
-			return findMoleculeNameFromMoleculeEl(molecule);
+			Element oscarCM = molecule.getFirstChildElement(ChemicalTaggerTags.OSCARCM_Container);
+			if (oscarCM ==null){
+				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM");
+			}
+			return findMoleculeNameFromOscarCM(oscarCM);
 		}
 		else if (elName.equals(ChemicalTaggerTags.UNNAMEDMOLECULE_Container)) {
 			return findMoleculeNameFromEl(molecule);
@@ -127,20 +156,19 @@ public class ExperimentalSectionParser {
 	 * @param molecule
 	 * @return
 	 */
-	private String findMoleculeNameFromMoleculeEl(Element molecule) {
-		Element oscarCM = molecule.getFirstChildElement(ChemicalTaggerTags.OSCARCM_Container);
-		if (oscarCM != null) {
-			Elements multiWordNameWords = oscarCM.getChildElements(ChemicalTaggerTags.OSCAR_CM);
-			StringBuilder builder = new StringBuilder();
-			for (int i = 0; i < multiWordNameWords.size(); i++) {
-				builder.append(multiWordNameWords.get(i).getValue());
-				if (i < multiWordNameWords.size()-1) {
-					builder.append(" ");
-				}
-			}
-			return builder.toString();	
+	private String findMoleculeNameFromOscarCM(Element oscarCM) {
+		if (oscarCM == null){
+			throw new IllegalArgumentException("Input oscarCM was null");
 		}
-		throw new RuntimeException("malformed molecule");
+		Elements multiWordNameWords = oscarCM.getChildElements(ChemicalTaggerTags.OSCAR_CM);
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < multiWordNameWords.size(); i++) {
+			builder.append(multiWordNameWords.get(i).getValue());
+			if (i < multiWordNameWords.size()-1) {
+				builder.append(" ");
+			}
+		}
+		return builder.toString();	
 	}
 	
 	/**
