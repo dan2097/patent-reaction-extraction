@@ -77,24 +77,32 @@ public class ExperimentalSectionParser {
 	 * and for each adds an appropriate entry to the returned map
 	 * @param moleculeEls
 	 */
-	private Map<String, Chemical> generateAliasToChemicalsMap(List<Element> moleculeEls) {
+	Map<String, Chemical> generateAliasToChemicalsMap(List<Element> moleculeEls) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 		for (Element moleculeEl : moleculeEls) {
 			List<Element> oscarCms = XOMTools.getChildElementsWithTagName(moleculeEl, ChemicalTaggerTags.OSCARCM_Container);//TODO how should OSCARCMs in mixtures be considered?
 			if (oscarCms.size()==2){//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
-				String name1 = findMoleculeNameFromOscarCM(oscarCms.get(0));
-				String smiles1 = Utils.resolveNameToSmiles(name1);
-				String name2 = findMoleculeNameFromOscarCM(oscarCms.get(1));
-				String smiles2 =Utils.resolveNameToSmiles(name2);
-				if (smiles1 !=null && smiles2 ==null){
-					Chemical cm = new Chemical(name2);
-					cm.setSmiles(smiles1);
-					aliasToChemicalMap.put(name2, cm);
-				}
-				else if (smiles1 ==null && smiles2 !=null){
-					Chemical cm = new Chemical(name1);
-					cm.setSmiles(smiles2);
-					aliasToChemicalMap.put(name1, cm);
+				Element secondOscarcm = oscarCms.get(1);
+				Elements children = secondOscarcm.getChildElements();
+				if (children.size() >=3 &&
+						children.get(0).getLocalName().equals(ChemicalTaggerTags.LRB) &&
+						children.get(children.size()-1).getLocalName().equals(ChemicalTaggerTags.RRB)){
+					String name1 = findMoleculeNameFromOscarCM(oscarCms.get(0));
+					String smiles1 = Utils.resolveNameToSmiles(name1);
+					String name2 = findMoleculeNameFromOscarCM(secondOscarcm);
+					String smiles2 =Utils.resolveNameToSmiles(name2);
+					if (smiles1 !=null && smiles2 ==null){
+						Chemical cm = new Chemical(name2);
+						cm.setSmiles(smiles1);
+						aliasToChemicalMap.put(name2, cm);
+						System.out.println(name1 +" is the same as " + name2);
+					}
+					else if (smiles1 ==null && smiles2 !=null){
+						Chemical cm = new Chemical(name1);
+						cm.setSmiles(smiles2);
+						aliasToChemicalMap.put(name1, cm);
+						System.out.println(name1 +" is the same as " + name2);
+					}
 				}
 			}
 		}
@@ -139,7 +147,7 @@ public class ExperimentalSectionParser {
 		if (elName.equals(ChemicalTaggerTags.MOLECULE_Container)) {
 			Element oscarCM = molecule.getFirstChildElement(ChemicalTaggerTags.OSCARCM_Container);
 			if (oscarCM ==null){
-				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM");
+				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM: " + molecule.toXML());
 			}
 			return findMoleculeNameFromOscarCM(oscarCM);
 		}

@@ -192,8 +192,8 @@ public class ChemicalTaggerTags {
 	//The determiner 'the';
 	public static final String DT_THE = "DT-THE";
 
-	public static final String LRB = "-LRB-";
-	public static final String RRB = "-RRB-";
+	public static final String LRB = "_-LRB-";
+	public static final String RRB = "_-RRB-";
 
 	//Penn Treebank Tokens
 
