@@ -13,4 +13,7 @@ public class ChemicalTaggerAtrs {
 	/**Chemical Tagger believes this molecule to be a solvent*/
 	public static final String SOLVENT_ROLE_VAL = "Solvent";
 	
+	/**Chemical Tagger believes this molecule to be a catalyst*/
+	public static final String CATALYST_ROLE_VAL = "Catalyst";
+	
 }

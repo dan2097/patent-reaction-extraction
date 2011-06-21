@@ -1,5 +1,10 @@
 package dan2097.org.bitbucket.utility;
 
+/**
+ * A subset of the tags allowed in a USPTO patent
+ * @author dl387
+ *
+ */
 public class XMLTags {
 	
 	/**
@@ -13,27 +18,17 @@ public class XMLTags {
 	public static final String HEADING = "heading";
 	
 	/**
-	 * A name element e.g. in OPSIN's CML output
-	 */
-	public static final String NAME = "name";
-	
-	/**
 	 * A paragraph element
 	 */
 	public static final String P = "p";
 	
 	/**
-	 * A source element
+	 * Unknown function
 	 */
-	public static final String SOURCE = "source";
+	public static final String TABLE_EXTERNAL_DOC = "table-external-doc";
 	
 	/**
-	 * An identifier element as found in the name resolver's CML output
+	 * Holds tables
 	 */
-	public static final String IDENTIFIER = "identifier";
-	
-	/**
-	 * The rol the reaction extractor has assigned to a molecule/unnamed molecule/mixture
-	 */
-	public static final String MOLECULEROLE = "moleculeRole";
+	public static final String TABLES = "tables";
 }

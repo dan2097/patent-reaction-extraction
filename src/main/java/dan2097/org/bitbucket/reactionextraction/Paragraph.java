@@ -51,6 +51,14 @@ public class Paragraph {
 	}
 
 	private String getText(Element p) {
+		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(p, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
+		if (elsToDetach.size()!=0){//for performance only do the defensive copying when necessary
+			p = new Element(p);
+			elsToDetach =  XOMTools.getDescendantElementsWithTagNames(p, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
+			for (Element elToDetach : elsToDetach) {
+				elToDetach.detach();
+			}
+		}
 		String text = p.getValue();
 		//TODO handle superscripts/subscripts etc. differently?
 		text = matchWhiteSpace.matcher(text).replaceAll(" ");
