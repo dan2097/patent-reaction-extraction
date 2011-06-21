@@ -21,7 +21,6 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.InchiNormaliser;
 import dan2097.org.bitbucket.utility.Utils;
@@ -95,13 +94,13 @@ public class ExperimentalSectionParser {
 						Chemical cm = new Chemical(name2);
 						cm.setSmiles(smiles1);
 						aliasToChemicalMap.put(name2, cm);
-						System.out.println(name1 +" is the same as " + name2);
+						LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 					}
 					else if (smiles1 ==null && smiles2 !=null){
 						Chemical cm = new Chemical(name1);
 						cm.setSmiles(smiles2);
 						aliasToChemicalMap.put(name1, cm);
-						System.out.println(name1 +" is the same as " + name2);
+						LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 					}
 				}
 			}
@@ -265,7 +264,9 @@ public class ExperimentalSectionParser {
 				chemicals.addAll(products);
 				chemicals.addAll(reagents);
 				resolveBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
-				preliminaryClassifyReagentsAsReactantsAndSolvents(reagents);
+				for (Element reagent : reagents) {
+					ChemicalRoleAssigner.assignRoleToChemical(reagent, moleculeToChemicalMap.get(reagent));
+				}
 				for (Element chemical : chemicals) {
 					Chemical chemChem = moleculeToChemicalMap.get(chemical);
 					if (ChemicalRole.product.equals(chemChem.getRole())){
@@ -309,25 +310,6 @@ public class ExperimentalSectionParser {
 			}
 		}
 		return false;
-	}
-
-	private void preliminaryClassifyReagentsAsReactantsAndSolvents(Set<Element> reagents) {
-		for (Element reagent : reagents) {
-			Chemical cm = moleculeToChemicalMap.get(reagent);
-			if (cm.getType()== ChemicalType.falsePositive){
-				LOG.trace(cm.getName() +" is believed to be a false positive and has been ignored");
-			}
-			else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(reagent.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-				cm.setRole(ChemicalRole.solvent);
-			}
-			else if (cm.getVolumeValue()!=null && cm.getAmountValue()==null && cm.hasImpreciseVolume()){
-				//solvents will be liquids but typically with imprecise volume and no amount given
-				cm.setRole(ChemicalRole.solvent);
-			}
-			else {
-				cm.setRole(ChemicalRole.reactant);
-			}
-		}
 	}
 
 	private Set<Element> findAllReagents(Element el) {

@@ -13,12 +13,12 @@ import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.IndigoRenderer;
 
-import dan2097.org.bitbucket.utility.XMLTags;
-
 import uk.ac.cam.ch.wwmm.opsin.XOMFormatter;
 
 public class HtmlGenerator {
 
+	private static final String IDENTIFIER = "identifier";
+	
 	public static String generateHtml(CMLReaction reaction) {
 		Element html = new Element("html");
 		Element head = new Element("head");
@@ -107,7 +107,7 @@ public class HtmlGenerator {
 		table.appendChild(row);
 	}
 	private static File generateImageAndReturnFileIndigo(Element molecule) {
-		Element identifier = molecule.getFirstChildElement(XMLTags.IDENTIFIER);
+		Element identifier = molecule.getFirstChildElement(IDENTIFIER);
 		if (identifier==null){
 			return null;
 		}

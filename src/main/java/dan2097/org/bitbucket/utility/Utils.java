@@ -14,12 +14,14 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.chemicaltagging.OscarAndOpsinTagger;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
 import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
+import dan2097.org.bitbucket.reactionextraction.Reaction;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
@@ -27,6 +29,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Node;
+import nu.xom.Nodes;
 import nu.xom.ParentNode;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
@@ -147,11 +150,12 @@ public class Utils {
 	
 	public static ExperimentalParser extractReactions(Document doc){
 		ExperimentalParser parser = new ExperimentalParser();
-		List<Element> headings = XOMTools.getDescendantElementsWithTagName(doc.getRootElement(), XMLTags.HEADING);
-		for (Element heading : headings) {
+		Nodes headings = doc.getRootElement().query("//heading|//p[starts-with(@id, 'h-')]");
+		for (int i = 0; i < headings.size(); i++) {
+			Element heading = (Element) headings.get(i);
 	    	Element headingElementToProcess = new Element(XMLTags.HEADING);
 	    	headingElementToProcess.addAttribute(new Attribute(XMLAtrs.TITLE, heading.getValue()));
-	    	List<Element> paragraphs = getNextAdjacentSiblingsOfType(heading, XMLTags.P);
+	    	List<Element> paragraphs = getAdjacentSiblingsParagraphs(heading);
 	    	for (Element paragraph : paragraphs) {
 		        Element paragraphToProcess = new Element(paragraph);
 		        headingElementToProcess.appendChild(paragraphToProcess);
@@ -164,12 +168,11 @@ public class Utils {
 	}
 	
 	/**
-	 * Returns an arrayList containing sibling elements of the given type after the given element.
+	 * Returns an arrayList containing sibling elements of type "p" which are not believed to be subheadings
 	 * @param currentElem: the element to look for following siblings of
-	 * @param type: the "localname" of the element type desired
 	 * @return
 	 */
-	private static List<Element> getNextAdjacentSiblingsOfType(Element currentElem, String type) {
+	private static List<Element> getAdjacentSiblingsParagraphs(Element currentElem) {
 		List<Element> siblingElementsOfType= new ArrayList<Element>();
 		Element parent =(Element) currentElem.getParent();
 		if (parent==null){
@@ -178,8 +181,14 @@ public class Utils {
 		Node nextSibling = XOMTools.getNextSibling(currentElem);
 		while (nextSibling !=null){
 			if (nextSibling instanceof Element){
-				if (((Element)nextSibling).getLocalName().equals(type)){
-					siblingElementsOfType.add(((Element)nextSibling));
+				if (((Element)nextSibling).getLocalName().equals(XMLTags.P)){
+					String id = ((Element)nextSibling).getAttributeValue(XMLAtrs.ID);
+					if (id !=null && id.startsWith("h-")){
+						break;//break on subheadings
+					}
+					else{
+						siblingElementsOfType.add(((Element)nextSibling));
+					}
 				}
 				else{
 					break;
@@ -277,5 +286,31 @@ public class Utils {
 		paragraph.appendChild(content);
 		paragraphEls.add(paragraph);
 		return new ExperimentalSectionParser(titleCompound, paragraphEls, new HashMap<String, Chemical>());
+	}
+	
+	/**
+	 * Converts a reaction object into an indigo reaction object
+	 * @param reaction
+	 * @return
+	 */
+	public IndigoObject createIndigoReaction(Reaction reaction) {
+		IndigoObject rxn = indigo.createReaction();
+		for (Chemical product: reaction.getProducts()) {
+			if (product.getSmiles()!=null){
+				rxn.addProduct(indigo.loadMolecule(product.getSmiles()));
+			}
+		}
+		for (Chemical reactant: reaction.getReactants()) {
+			if (reactant.getSmiles()!=null){
+				rxn.addReactant(indigo.loadMolecule(reactant.getSmiles()));
+			}
+		}
+		
+		for (Chemical reactant: reaction.getSpectators()) {
+			if (reactant.getSmiles()!=null){
+				rxn.addCatalyst(indigo.loadMolecule(reactant.getSmiles()));
+			}
+		}
+		return rxn;
 	}
 }

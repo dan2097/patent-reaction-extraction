@@ -11,7 +11,7 @@ import nu.xom.Element;
 
 import org.junit.Test;
 
-public class LocalSemanticInformationExtractionTest {
+public class ChemicalTypeAssignmentTest {
 
 	@Test
 	public void typeDetectionTestFP(){
