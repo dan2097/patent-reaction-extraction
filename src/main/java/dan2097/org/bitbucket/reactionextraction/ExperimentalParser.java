@@ -55,7 +55,7 @@ public class ExperimentalParser {
 			if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
 				try {
 					File f = new File(directory, "reaction" + i + ".png");
-					ReactionDepicter.depictReaction(reaction, f);
+					ReactionDepicter.depictReaction(Utils.createIndigoReaction(reaction), f);
 						FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
 					    Serializer serializer = new Serializer(in);
 						serializer.setIndent(2);

@@ -293,22 +293,27 @@ public class Utils {
 	 * @param reaction
 	 * @return
 	 */
-	public IndigoObject createIndigoReaction(Reaction reaction) {
+	public static IndigoObject createIndigoReaction(Reaction reaction) {
 		IndigoObject rxn = indigo.createReaction();
 		for (Chemical product: reaction.getProducts()) {
 			if (product.getSmiles()!=null){
-				rxn.addProduct(indigo.loadMolecule(product.getSmiles()));
+				IndigoObject mol = indigo.loadMolecule(product.getSmiles());
+				mol.foldHydrogens();
+				rxn.addProduct(mol);
 			}
 		}
 		for (Chemical reactant: reaction.getReactants()) {
 			if (reactant.getSmiles()!=null){
-				rxn.addReactant(indigo.loadMolecule(reactant.getSmiles()));
+				IndigoObject mol = indigo.loadMolecule(reactant.getSmiles());
+				mol.foldHydrogens();
+				rxn.addReactant(mol);
 			}
 		}
-		
-		for (Chemical reactant: reaction.getSpectators()) {
-			if (reactant.getSmiles()!=null){
-				rxn.addCatalyst(indigo.loadMolecule(reactant.getSmiles()));
+		for (Chemical spectator: reaction.getSpectators()) {
+			if (spectator.getSmiles()!=null){
+				IndigoObject mol = indigo.loadMolecule(spectator.getSmiles());
+				mol.foldHydrogens();
+				rxn.addCatalyst(mol);
 			}
 		}
 		return rxn;
