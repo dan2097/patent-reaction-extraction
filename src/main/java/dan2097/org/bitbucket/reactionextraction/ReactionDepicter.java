@@ -6,53 +6,19 @@ import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.IndigoRenderer;
 
+import dan2097.org.bitbucket.utility.Utils;
+
 public class ReactionDepicter {
-	
-	final static Indigo indigo;
+
 	final static IndigoRenderer renderer;
 
 	static{
-		indigo = new Indigo();
+		Indigo indigo = Utils.indigo;
 		renderer = new IndigoRenderer(indigo);
+		indigo.setOption("render-output-format", "png");
 	}
 	
-	public static void depictReaction(Reaction reaction, File depictionFile){
-		IndigoObject rxn = indigo.createReaction();
-		//System.out.println("#####################");
-		for (Chemical product: reaction.getProducts()) {
-			if (product.getSmiles()!=null){
-				rxn.addProduct(indigo.loadMolecule(product.getSmiles()));
-				//System.out.println("prod " + product.getSmiles());
-			}
-		}
-		for (Chemical reactant: reaction.getReactants()) {
-			if (reactant.getSmiles()!=null){
-				rxn.addReactant(indigo.loadMolecule(reactant.getSmiles()));
-				//System.out.println("react " + reactant.getSmiles());
-			}
-		}
-		
-		for (Chemical reactant: reaction.getSpectators()) {
-			if (reactant.getSmiles()!=null){
-				rxn.addCatalyst(indigo.loadMolecule(reactant.getSmiles()));
-				//System.out.println("spectator " + reactant.getSmiles());
-			}
-		}
-		if (rxn.countProducts()==0 && rxn.countReactants()==0){
-			return;
-		}
-
-//		if (rxn.countProducts()>0 && rxn.countReactants()>0){
-//			try{
-//				rxn.automap("discard");
-//			}
-//			catch (Exception e) {
-//				e.printStackTrace();
-//				//return;
-//			}
-//		}
-		
-		indigo.setOption("render-output-format", "png");
+	public static void depictReaction(IndigoObject rxn, File depictionFile){
 		rxn.layout();
 		try{
 			renderer.renderToFile(rxn, depictionFile.getCanonicalPath());
@@ -60,7 +26,6 @@ public class ReactionDepicter {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }
