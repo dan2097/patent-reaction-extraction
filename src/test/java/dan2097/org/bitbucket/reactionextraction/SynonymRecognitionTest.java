@@ -4,7 +4,6 @@ import static junit.framework.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -36,7 +35,6 @@ public class SynonymRecognitionTest {
 	@Test
 	public void simpleSynonymTest() {
 		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(Chemical.class), new ArrayList<Element>(), new HashMap<String, Chemical>());
-		List<Element> moleculeEls = new ArrayList<Element>();
 		Element moleculeEl = stringToXom("<MOLECULE>" +
 				"<OSCARCM><OSCAR-CM>LITDIPA</OSCAR-CM></OSCARCM>" +
 				"<OSCARCM><_-LRB->(</_-LRB-><OSCAR-CM>Lithium</OSCAR-CM><OSCAR-CM>diisopropylamide</OSCAR-CM><_-RRB->)</_-RRB-></OSCARCM>" +
@@ -45,8 +43,30 @@ public class SynonymRecognitionTest {
 		String resolvableName = "Lithium diisopropylamide";
 		String smiles = Utils.resolveNameToSmiles(resolvableName);
 		assertNotNull(resolvableName +" should be resolvable", smiles);
-		moleculeEls.add(moleculeEl);
-		Map<String, Chemical> foundAliases = parser.generateAliasToChemicalsMap(moleculeEls);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalType.exact);
+		assertEquals(1, foundAliases.size());
+		Entry<String, Chemical> entry = foundAliases.entrySet().iterator().next();
+		assertEquals("LITDIPA", entry.getKey());
+		assertEquals(smiles, entry.getValue().getSmiles());
+	}
+	
+	@Test
+	public void synonymWithQuantityTest() {
+		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(Chemical.class), new ArrayList<Element>(), new HashMap<String, Chemical>());
+		Element moleculeEl = stringToXom("<MOLECULE>" +
+				"<OSCARCM><OSCAR-CM>LITDIPA</OSCAR-CM></OSCARCM>" +
+				"<MIXTURE>" +
+					"<_-LRB->(</_-LRB->" +
+						"<OSCARCM><OSCAR-CM>Lithium diisopropylamide</OSCAR-CM></OSCARCM>" +
+						"<COMMA>,</COMMA>" +
+						"<QUANTITY><MASS><CD>30</CD><NN-MASS>g</NN-MASS></MASS></QUANTITY>" +
+					"<_-RRB->)</_-RRB->" +
+				"</MIXTURE>" +
+				"</MOLECULE>");
+		String resolvableName = "Lithium diisopropylamide";
+		String smiles = Utils.resolveNameToSmiles(resolvableName);
+		assertNotNull(resolvableName +" should be resolvable", smiles);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalType.exact);
 		assertEquals(1, foundAliases.size());
 		Entry<String, Chemical> entry = foundAliases.entrySet().iterator().next();
 		assertEquals("LITDIPA", entry.getKey());
@@ -56,7 +76,6 @@ public class SynonymRecognitionTest {
 	@Test
 	public void notASynonymTest() {
 		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(Chemical.class), new ArrayList<Element>(), new HashMap<String, Chemical>());
-		List<Element> moleculeEls = new ArrayList<Element>();
 		Element moleculeEl = stringToXom("<MOLECULE>" +
 				"<OSCARCM><OSCAR-CM>silver</OSCAR-CM></OSCARCM>" +
 				"<JJ>modified</JJ>" +
@@ -65,8 +84,21 @@ public class SynonymRecognitionTest {
 		String resolvableName = "silver";
 		String smiles = Utils.resolveNameToSmiles(resolvableName);
 		assertNotNull(resolvableName +" should be resolvable", smiles);
-		moleculeEls.add(moleculeEl);
-		Map<String, Chemical> foundAliases = parser.generateAliasToChemicalsMap(moleculeEls);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl , ChemicalType.exact);
+		assertEquals(0, foundAliases.size());
+	}
+	
+	@Test
+	public void notASynonymTest2() {
+		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(Chemical.class), new ArrayList<Element>(), new HashMap<String, Chemical>());
+		Element moleculeEl = stringToXom("<MOLECULE>" +
+				"<OSCARCM><OSCAR-CM>NMR</OSCAR-CM></OSCARCM>" +
+				"<OSCARCM><_-LRB->(</_-LRB-><OSCAR-CM>dimethyl sulfoxide</OSCAR-CM><_-RRB->)</_-RRB-></OSCARCM>" +
+				"</MOLECULE>");
+		String resolvableName = "dimethyl sulfoxide";
+		String smiles = Utils.resolveNameToSmiles(resolvableName);
+		assertNotNull(resolvableName +" should be resolvable", smiles);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalType.falsePositive);
 		assertEquals(0, foundAliases.size());
 	}
 

@@ -1,12 +1,7 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import static junit.framework.Assert.assertEquals;
-
-import java.util.HashMap;
-import java.util.Map;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
-
-
+import static junit.framework.Assert.assertEquals;
 import nu.xom.Element;
 
 import org.junit.Test;
@@ -15,7 +10,6 @@ public class ChemicalTypeAssignmentTest {
 
 	@Test
 	public void typeDetectionTestFP(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(UNNAMEDMOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -23,14 +17,12 @@ public class ChemicalTypeAssignmentTest {
 		alphaNum.appendChild("4H");
 		moleculeEl.appendChild(alphaNum);
 		Chemical chem = new Chemical("4H");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.falsePositive, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestSpecific(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -40,14 +32,12 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("2,3-dimethylbutane");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.exact, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestDeterminerCompound1(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(new Element(DT));
@@ -58,14 +48,12 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestDeterminerCompound2(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(new Element(DT_THE));
@@ -76,14 +64,12 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.exactReference, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestQualifiedCompound1(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -96,14 +82,12 @@ public class ChemicalTypeAssignmentTest {
 		qualifier.appendChild("compound");
 		sentence.appendChild(qualifier);
 		Chemical chem = new Chemical("pyridine");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestQualifiedCompound2(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -116,14 +100,12 @@ public class ChemicalTypeAssignmentTest {
 		qualifier.appendChild("ring");
 		sentence.appendChild(qualifier);
 		Chemical chem = new Chemical("pyridine");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.fragment, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestPlural(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -133,14 +115,12 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("phenols");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestDeterminerWithinMolecule1(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -152,14 +132,12 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.exactReference, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestDeterminerWithinMolecule2(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -171,14 +149,12 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestDeterminerWithinMolecule3(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -193,14 +169,12 @@ public class ChemicalTypeAssignmentTest {
 		cmCont.appendChild(cm2);
 		moleculeEl.appendChild(cmCont);
 		Chemical chem = new Chemical("sulfamic acid");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.exactReference, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestDeterminerWithinMolecule4(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -215,14 +189,12 @@ public class ChemicalTypeAssignmentTest {
 		cmCont.appendChild(cm2);
 		moleculeEl.appendChild(cmCont);
 		Chemical chem = new Chemical("sulfamic acid");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
 	
 	@Test
 	public void typeDetectionTestSMARTSClassifyAsClass(){
-		Map<Element, Chemical> map =new HashMap<Element, Chemical>();
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -232,8 +204,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("Sulfonic acid");
-		map.put(moleculeEl, chem);
-		ChemicalTypeAssigner.performPreliminaryTypeDetection(map);
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
 }
