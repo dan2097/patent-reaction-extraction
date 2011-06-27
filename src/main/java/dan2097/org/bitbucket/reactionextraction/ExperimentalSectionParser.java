@@ -21,7 +21,7 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
+import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.utility.InchiNormaliser;
 import dan2097.org.bitbucket.utility.Utils;
 
@@ -53,9 +53,12 @@ public class ExperimentalSectionParser {
 				if (!para.getTaggedString().equals("")){
 					paragraphs.add(para);
 					List<Element> moleculeEls = findAllMolecules(para);
-					aliasToChemicalMap.putAll(generateAliasToChemicalsMap(moleculeEls));
-					moleculeToChemicalMap.putAll(generateChemicalsAndReturnMapping(moleculeEls));
-					ChemicalTypeAssigner.performPreliminaryTypeDetection(moleculeToChemicalMap);
+					for (Element moleculeEl : moleculeEls) {
+						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
+						moleculeToChemicalMap.put(moleculeEl, cm);
+						ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+						aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+					}
 				}
 			}
 			reactions.addAll(determineReactions(paragraphs));
@@ -69,56 +72,86 @@ public class ExperimentalSectionParser {
 	public List<Reaction> getReactions() {
 		return reactions;
 	}
-	
-	
+
 	/**
-	 * Finds molecules containing two OSCAR-CM parents, one of which has no resolvable structure
-	 * and for each adds an appropriate entry to the returned map
-	 * @param moleculeEls
+	 * Determines where the moleculeEl contains two OSCAR-CM parents, one of which has no resolvable structure
+	 * Such cases are assumed to be defining aliases.
+	 * The returned map will typically be of size 0 or 1
+	 * @param moleculeEl
+	 * @param type
+	 * @return
 	 */
-	Map<String, Chemical> generateAliasToChemicalsMap(List<Element> moleculeEls) {
+	Map<String, Chemical> findAliasDefinitions(Element moleculeEl, ChemicalType type) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
-		for (Element moleculeEl : moleculeEls) {
-			List<Element> oscarCms = XOMTools.getChildElementsWithTagName(moleculeEl, ChemicalTaggerTags.OSCARCM_Container);//TODO how should OSCARCMs in mixtures be considered?
-			if (oscarCms.size()==2){//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
-				Element secondOscarcm = oscarCms.get(1);
-				Elements children = secondOscarcm.getChildElements();
-				if (children.size() >=3 &&
-						children.get(0).getLocalName().equals(ChemicalTaggerTags.LRB) &&
-						children.get(children.size()-1).getLocalName().equals(ChemicalTaggerTags.RRB)){
-					String name1 = findMoleculeNameFromOscarCM(oscarCms.get(0));
-					String smiles1 = Utils.resolveNameToSmiles(name1);
-					String name2 = findMoleculeNameFromOscarCM(secondOscarcm);
-					String smiles2 =Utils.resolveNameToSmiles(name2);
-					if (smiles1 !=null && smiles2 ==null){
-						Chemical cm = new Chemical(name2);
-						cm.setSmiles(smiles1);
-						aliasToChemicalMap.put(name2, cm);
-						LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
-					}
-					else if (smiles1 ==null && smiles2 !=null){
-						Chemical cm = new Chemical(name1);
-						cm.setSmiles(smiles2);
-						aliasToChemicalMap.put(name1, cm);
-						LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
-					}
+		if (type!=ChemicalType.exact && type!=ChemicalType.exactReference){
+			return aliasToChemicalMap;
+		}
+		List<Element> oscarCMsAndMixtures = XOMTools.getChildElementsWithTagNames(moleculeEl, new String[]{OSCARCM_Container, MIXTURE_Container});
+		if (oscarCMsAndMixtures.size()==2 && oscarCMsAndMixtures.get(0).getLocalName().equals(OSCARCM_Container)){
+			//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
+			Element firstOscarcm = oscarCMsAndMixtures.get(0);
+			Element secondOscarcm;
+			if(oscarCMsAndMixtures.get(1).getLocalName().equals(MIXTURE_Container)){
+				secondOscarcm = findSynonymnOscarCmFromMixture(oscarCMsAndMixtures.get(1));
+				if (secondOscarcm == null){
+					return aliasToChemicalMap;
 				}
+			}
+			else{
+				secondOscarcm = oscarCMsAndMixtures.get(1);
+				if (!oscarCMisBracketted(secondOscarcm)){
+					return aliasToChemicalMap;
+				}
+			}
+			String name1 = findMoleculeNameFromOscarCM(firstOscarcm);
+			String smiles1 = Utils.resolveNameToSmiles(name1);
+			String name2 = findMoleculeNameFromOscarCM(secondOscarcm);
+			String smiles2 =Utils.resolveNameToSmiles(name2);
+
+			if (smiles1 !=null && smiles2 ==null){
+				Chemical cm = new Chemical(name2);
+				cm.setSmiles(smiles1);
+				aliasToChemicalMap.put(name2, cm);
+				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
+			}
+			else if (smiles1 ==null && smiles2 !=null){
+				Chemical cm = new Chemical(name1);
+				cm.setSmiles(smiles2);
+				aliasToChemicalMap.put(name1, cm);
+				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
 		}
 		return aliasToChemicalMap;
 	}
 
-
-	private Map<Element, Chemical> generateChemicalsAndReturnMapping(List<Element> moleculeEls) {
-		Map<Element, Chemical> moleculeToChemicalMap = new HashMap<Element, Chemical>();
-		for (Element moleculeEl : moleculeEls) {
-			Chemical chem = generateChemicalsFromMoleculeElsAndLocalInformation(moleculeEl);
-			moleculeToChemicalMap.put(moleculeEl, chem);
+	private boolean oscarCMisBracketted(Element oscarcm) {
+		Elements children = oscarcm.getChildElements();
+		if (children.size() >=3 &&
+				children.get(0).getLocalName().equals(LRB) &&
+				children.get(children.size()-1).getLocalName().equals(RRB)){
+			return true;
 		}
-		return moleculeToChemicalMap;
+		return false;
 	}
 
-	private Chemical generateChemicalsFromMoleculeElsAndLocalInformation(Element moleculeEl) {
+	private Element findSynonymnOscarCmFromMixture(Element oscarCmOrMixture) {
+		if(oscarCmOrMixture.getLocalName().equals(OSCARCM_Container)){
+			return oscarCmOrMixture;
+		}
+		Element lrb = oscarCmOrMixture.getFirstChildElement(LRB);
+		if (lrb !=null){
+			Element oscarcm = (Element) XOMTools.getNextSibling(lrb);
+			if (oscarcm !=null && oscarcm.getLocalName().equals(OSCARCM_Container)){
+				Element delimiter = (Element) XOMTools.getNextSibling(oscarcm);
+				if (delimiter !=null && (delimiter.getLocalName().equals(COMMA) || delimiter.getLocalName().equals(COLON))){
+					return oscarcm;
+				}
+			}
+		}
+		return null;
+	}
+
+	private Chemical generateChemicalFromMoleculeElAndLocalInformation(Element moleculeEl) {
 		String name = findMoleculeName(moleculeEl);
 		Chemical chem = new Chemical(name);
 		chem.setSmiles(Utils.resolveNameToSmiles(name));
@@ -143,18 +176,18 @@ public class ExperimentalSectionParser {
 	 */
 	private String findMoleculeName(Element molecule) {
 		String elName= molecule.getLocalName();
-		if (elName.equals(ChemicalTaggerTags.MOLECULE_Container)) {
-			Element oscarCM = molecule.getFirstChildElement(ChemicalTaggerTags.OSCARCM_Container);
+		if (elName.equals(MOLECULE_Container)) {
+			Element oscarCM = molecule.getFirstChildElement(OSCARCM_Container);
 			if (oscarCM ==null){
 				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM: " + molecule.toXML());
 			}
 			return findMoleculeNameFromOscarCM(oscarCM);
 		}
-		else if (elName.equals(ChemicalTaggerTags.UNNAMEDMOLECULE_Container)) {
+		else if (elName.equals(UNNAMEDMOLECULE_Container)) {
 			return findMoleculeNameFromEl(molecule);
 		}
 		throw new IllegalArgumentException("Unexpected tag type:" + elName +" The following are allowed" +
-				ChemicalTaggerTags.MOLECULE_Container + ", "+ ChemicalTaggerTags.UNNAMEDMOLECULE_Container);
+				MOLECULE_Container + ", "+ UNNAMEDMOLECULE_Container);
 	}
 	
 	
@@ -167,7 +200,7 @@ public class ExperimentalSectionParser {
 		if (oscarCM == null){
 			throw new IllegalArgumentException("Input oscarCM was null");
 		}
-		Elements multiWordNameWords = oscarCM.getChildElements(ChemicalTaggerTags.OSCAR_CM);
+		Elements multiWordNameWords = oscarCM.getChildElements(OSCAR_CM);
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < multiWordNameWords.size(); i++) {
 			builder.append(multiWordNameWords.get(i).getValue());
@@ -193,7 +226,7 @@ public class ExperimentalSectionParser {
 			if (els.size()>0){
 				for (int i = 0; i < els.size(); i++) {
 					Element elToConsider =els.get(i);
-					if (!elToConsider.getLocalName().equals(ChemicalTaggerTags.QUANTITY_Container)){
+					if (!elToConsider.getLocalName().equals(QUANTITY_Container)){
 						stack.add(elToConsider);
 					}
 				}
@@ -313,7 +346,7 @@ public class ExperimentalSectionParser {
 	}
 
 	private Set<Element> findAllReagents(Element el) {
-		List<Element> mols = XOMTools.getDescendantElementsWithTagNames(el, new String[]{ChemicalTaggerTags.MOLECULE_Container, ChemicalTaggerTags.UNNAMEDMOLECULE_Container});
+		List<Element> mols = XOMTools.getDescendantElementsWithTagNames(el, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
 		return new LinkedHashSet<Element>(mols);
 	}
 
@@ -399,7 +432,7 @@ public class ExperimentalSectionParser {
 				//The <name of compound> could also be specific
 				Element molecule = moleculeToChemicalMap.inverse().get(chemical);
 				Element previous = Utils.getPreviousElement(molecule);
-				if (previous !=null && previous.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
+				if (previous !=null && previous.getLocalName().equals(DT_THE)){
 					chemical.setType(ChemicalType.exact);
 					return true;
 				}
@@ -414,7 +447,7 @@ public class ExperimentalSectionParser {
 			//The <name of compound> could also be specific
 			Element molecule = moleculeToChemicalMap.inverse().get(chemical);
 			Element previous = Utils.getPreviousElement(molecule);
-			if (previous !=null && previous.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
+			if (previous !=null && previous.getLocalName().equals(DT_THE)){
 				chemical.setType(ChemicalType.exact);
 				return true;
 			}

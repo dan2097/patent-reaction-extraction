@@ -1,9 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
@@ -20,20 +17,13 @@ public class ChemicalTypeAssigner {
 	private static Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchNMR = Pattern.compile("\\d+H|.*[nN][mM][rR]$");
+
 	/**
 	 * Assigns a preliminary type to each chemical based on the chemical name itself and local textual information
-	 * @param moleculeToChemicalMap
+	 * @param mol
+	 * @param chem
 	 */
-	static void performPreliminaryTypeDetection(Map<Element, Chemical> moleculeToChemicalMap) {
-		Set<Entry<Element, Chemical>> entries = moleculeToChemicalMap.entrySet();
-		for (Entry<Element, Chemical> entry : entries) {
-			Element mol = entry.getKey();
-			Chemical chem = entry.getValue();
-			assignTypeToChemical(mol, chem);
-		}
-	}
-
-	private static void assignTypeToChemical(Element mol, Chemical chem) {
+	static void assignTypeToChemical(Element mol, Chemical chem) {
 		String chemicalName = chem.getName();
 		if (isFalsePositive(chem, mol)){
 			chem.setType(ChemicalType.falsePositive);
