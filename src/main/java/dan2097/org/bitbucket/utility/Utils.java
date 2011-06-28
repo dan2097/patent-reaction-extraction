@@ -1,5 +1,7 @@
 package dan2097.org.bitbucket.utility;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.xml.sax.XMLReader;
@@ -22,6 +26,7 @@ import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
 import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
 import dan2097.org.bitbucket.reactionextraction.Reaction;
+import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
@@ -32,6 +37,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.ParentNode;
 import nu.xom.ParsingException;
+import nu.xom.Serializer;
 import nu.xom.ValidityException;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
@@ -317,5 +323,36 @@ public class Utils {
 			}
 		}
 		return rxn;
+	}
+	
+	public static void serializeReactions(File directory, List<Reaction> reactions) throws IOException {
+		if (!directory.exists()){
+			FileUtils.forceMkdir(directory);
+		}
+		if (!directory.isDirectory()){
+			throw new IllegalArgumentException("A directory was expected");
+		}
+		for (int i = 0; i < reactions.size(); i++) {
+			Reaction reaction = reactions.get(i);
+			if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
+				try {
+					File f = new File(directory, "reaction" + i + ".png");
+					ReactionDepicter.depictReaction(Utils.createIndigoReaction(reaction), f);
+						FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
+					    Serializer serializer = new Serializer(in);
+						serializer.setIndent(2);
+						serializer.write(reaction.getInput().getTaggedSentencesDocument());
+						IOUtils.closeQuietly(in);
+						
+					FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + i + ".cml"));
+				    serializer = new Serializer(out);
+					serializer.setIndent(2);
+					serializer.write(new Document(reaction.toCML()));
+					IOUtils.closeQuietly(out);	
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

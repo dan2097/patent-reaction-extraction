@@ -77,7 +77,7 @@ public class Paragraph {
 	 * The sentence as a XOM document as produced by chemical tagger.
 	 * @return
 	 */
-	Document getTaggedSentencesDocument() {
+	public Document getTaggedSentencesDocument() {
 		return taggedSentencesDocument;
 	}
 

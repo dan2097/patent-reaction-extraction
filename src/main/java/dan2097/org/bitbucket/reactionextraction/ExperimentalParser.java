@@ -1,22 +1,14 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nu.xom.Document;
+import com.ggasoftware.indigo.IndigoObject;
+
 import nu.xom.Element;
-import nu.xom.Serializer;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
@@ -24,9 +16,15 @@ import dan2097.org.bitbucket.utility.XMLTags;
 public class ExperimentalParser {
 	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 	private final List<Reaction> documentReactions = new ArrayList<Reaction>();
+	private final List<Reaction> completeReactions = new ArrayList<Reaction>();
 
-	public List<Reaction> getDocumentReactions() {
+	public List<Reaction> getAllFoundReactions() {
 		return documentReactions;
+	}
+	
+	public List<Reaction> getAllCompleteReactions() {
+		throw new RuntimeException("Disabled whilst bugs in indigo are fixed");
+		//return completeReactions;
 	}
 
 	public void parseExperimentalSection(Element headingElementToProcess) {
@@ -41,38 +39,48 @@ public class ExperimentalParser {
 		List<Reaction> reactions = sectionparser.getReactions();
 		new ReactionStoichiometryDeterminer(reactions).processReactionStoichiometry();
 		documentReactions.addAll(reactions);
+		//completeReactions.addAll(determineCompleteReactions(reactions));
 	}
 
-	public void serialize(File directory) throws IOException {
-		if (!directory.exists()){
-			FileUtils.forceMkdir(directory);
-		}
-		if (!directory.isDirectory()){
-			throw new IllegalArgumentException("A directory was expected");
-		}
-		for (int i = 0; i < documentReactions.size(); i++) {
-			Reaction reaction = documentReactions.get(i);
-			if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
-				try {
-					File f = new File(directory, "reaction" + i + ".png");
-					ReactionDepicter.depictReaction(Utils.createIndigoReaction(reaction), f);
-						FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
-					    Serializer serializer = new Serializer(in);
-						serializer.setIndent(2);
-						serializer.write(reaction.getInput().getTaggedSentencesDocument());
-						IOUtils.closeQuietly(in);
-						
-					FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + i + ".cml"));
-				    serializer = new Serializer(out);
-					serializer.setIndent(2);
-					serializer.write(new Document(reaction.toCML()));
-					IOUtils.closeQuietly(out);	
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	private List<Reaction> determineCompleteReactions(List<Reaction> reactions) {
+		List<Reaction> validReactions = new ArrayList<Reaction>();
+		for (Reaction reaction : reactions) {
+			if (reactantsContainsProduct(reaction)){
+				continue;
+			}
+			IndigoObject indigoReaction = Utils.createIndigoReaction(reaction);
+			if (indigoReaction.countReactants() < 2 || indigoReaction.countProducts() < 1 ){
+				continue;
+			}
+			ReactionMapper mapper = new ReactionMapper(indigoReaction);
+			if (!mapper.mapReaction()){
+				continue;
+			}
+			if (mapper.allProductAtomsAreMapped()){
+				validReactions.add(reaction);
 			}
 		}
-		
+		return validReactions;
 	}
 
+	/**
+	 * Uses InChIs to check whether any of the products are also reactants 
+	 * @param reaction
+	 * @return
+	 */
+	private boolean reactantsContainsProduct(Reaction reaction) {
+		List<Chemical> products =reaction.getProducts();
+		List<String> productInChIs = new ArrayList<String>();
+		for (Chemical product : products) {
+			if (product.getInchi() != null){
+				productInChIs.add(product.getInchi());
+			}
+		}
+		for (Chemical reactant : reaction.getReactants()) {
+			if (productInChIs.contains(reactant.getInchi())){
+				return true;
+			}
+		}
+		return false;
+	}
 }
