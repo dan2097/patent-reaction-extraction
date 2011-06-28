@@ -16,7 +16,7 @@ public class IntegrationTests{
 	public void integrationTest1() throws Exception{
 		Document doc = Utils.buildXmlFile(IntegrationTests.class.getResourceAsStream("patentText1.xml"));
 		ExperimentalParser parser = Utils.extractReactions(doc);
-		List<Reaction> reactions = parser.getDocumentReactions();
+		List<Reaction> reactions = parser.getAllFoundReactions();
 		assertEquals(1, reactions.size());
 		Reaction reaction = reactions.get(0);
 		assertEquals(1, reaction.getProducts().size());
@@ -93,7 +93,7 @@ public class IntegrationTests{
 		//Logger.getLogger("dan2097.org.bitbucket.reactionextraction").setLevel(Level.TRACE);
 		Document doc = Utils.buildXmlFile(IntegrationTests.class.getResourceAsStream("patentText2.xml"));
 		ExperimentalParser parser = Utils.extractReactions(doc);
-		List<Reaction> reactions = parser.getDocumentReactions();
+		List<Reaction> reactions = parser.getAllFoundReactions();
 		assertEquals(1, reactions.size());
 		Reaction reaction = reactions.get(0);
 		assertEquals(1, reaction.getProducts().size());//resolved by reference to title compound
