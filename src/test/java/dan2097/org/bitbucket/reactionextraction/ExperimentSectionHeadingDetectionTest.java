@@ -9,11 +9,7 @@ public class ExperimentSectionHeadingDetectionTest {
 
 	@Test
 	public void justAChemicalNameTest() {
-		assertEquals(1, Utils.getSystematicChemicalNamesFromText("ether").size());
+		assertEquals(1, Utils.getSystematicChemicalNamesFromText("ethane").size());
 	}
-	
-	@Test
-	public void justAChemicalNameTest2() {
-		assertEquals(1, Utils.getSystematicChemicalNamesFromText("Alkyl Ether Sulfates ").size());
-	}
+
 }
