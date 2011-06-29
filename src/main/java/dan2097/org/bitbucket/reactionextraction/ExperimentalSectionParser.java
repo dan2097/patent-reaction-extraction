@@ -164,7 +164,12 @@ public class ExperimentalSectionParser {
 			chem.setSmiles(referencedChemical.getSmiles());
 			chem.setInchi(referencedChemical.getInchi());
 		}
-		chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
+		String smarts = FunctionalGroupDefinitions.getSmartsFromChemicalName(name);
+		chem.setSmarts(smarts);
+		if (smarts !=null && FunctionalGroupDefinitions.functionalClassToSmartsMap.containsKey(name)){
+			chem.setSmiles(null);
+			chem.setInchi(null);
+		}
 		ChemicalPropertyDetermination.determineProperties(chem, moleculeEl);
 		return chem;
 	}
