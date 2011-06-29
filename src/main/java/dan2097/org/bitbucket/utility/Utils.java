@@ -10,24 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
-import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoObject;
-
-import dan2097.org.bitbucket.chemicaltagging.OscarAndOpsinTagger;
-import dan2097.org.bitbucket.reactionextraction.Chemical;
-import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
-import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
-import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
-import dan2097.org.bitbucket.reactionextraction.Reaction;
-import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
-
 import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -39,37 +21,34 @@ import nu.xom.ParentNode;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
-import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
+import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
-import uk.ac.cam.ch.wwmm.chemicaltagger.OpenNLPTagger;
-import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTokeniser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
-import uk.ac.cam.ch.wwmm.chemicaltagger.RegexTagger;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-import uk.ac.cam.ch.wwmm.oscar.Oscar;
-import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
-import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
-import uk.ac.cam.ch.wwmm.oscarMEMM.MEMMRecogniser;
+
+import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoObject;
+
+import dan2097.org.bitbucket.reactionextraction.Chemical;
+import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
+import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
+import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
+import dan2097.org.bitbucket.reactionextraction.Reaction;
+import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 
 public class Utils {
 	
 	private static Builder xomBuilder;
-	private static ChemNameDictRegistry chemNameRegistry;
 	public static Indigo indigo = new Indigo();
-	public static ChemistryPOSTagger posTagger;
 	
-	static{
-		Oscar oscar = new Oscar();
-		chemNameRegistry = new ChemNameDictRegistry();
-		chemNameRegistry.register(new OpsinDictionary());
-		oscar.setDictionaryRegistry(chemNameRegistry);
-		MEMMRecogniser recogniser = new MEMMRecogniser();
-		recogniser.setDeprioritiseOnts(true);
-		recogniser.setCprPseudoConfidence(0);
-		recogniser.setOntPseudoConfidence(0);
-		oscar.setRecogniser(recogniser);
-		OscarAndOpsinTagger oscarAndOpsinTagger = new OscarAndOpsinTagger(oscar);
-		posTagger = new ChemistryPOSTagger(new OscarTokeniser(oscar), oscarAndOpsinTagger, new RegexTagger(), OpenNLPTagger.getInstance());
+	static {
 		XMLReader xmlReader;
 		try{
 			xmlReader = XMLReaderFactory.createXMLReader();
@@ -85,13 +64,14 @@ public class Utils {
 		}
 		xomBuilder = new Builder(xmlReader);
 	}
+
 	/**
 	 * Tags a string with parts of speech using chemical tagger. Where known the annotations will be more specific than those used for the Brown corpus
 	 * @param text
 	 * @return
 	 */
 	public static String tagString(String text) {
-		POSContainer posContainer = posTagger.runTaggers(text);
+		POSContainer posContainer = OscarUtils.posTagger.runTaggers(text);
 		return posContainer.getTokenTagTupleAsString();
 	}
 	
@@ -112,7 +92,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToSmiles(String name) {
-		return chemNameRegistry.getShortestSmiles(name);
+		return OscarUtils.chemNameRegistry.getShortestSmiles(name);
 	}
 	
 	/**
@@ -121,7 +101,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
-		Set<String> inchis = chemNameRegistry.getInchis(name);
+		Set<String> inchis = OscarUtils.chemNameRegistry.getInchis(name);
 		if (!inchis.isEmpty()){
 			return inchis.iterator().next();
 		}
@@ -160,7 +140,11 @@ public class Utils {
 		for (int i = 0; i < headings.size(); i++) {
 			Element heading = (Element) headings.get(i);
 	    	Element headingElementToProcess = new Element(XMLTags.HEADING);
-	    	headingElementToProcess.addAttribute(new Attribute(XMLAtrs.TITLE, heading.getValue()));
+	    	String headingText = heading.getValue();
+	    	if (heading.getLocalName().equals(XMLTags.P) && headingText.contains("\n")){
+	    		continue;
+	    	}
+	    	headingElementToProcess.addAttribute(new Attribute(XMLAtrs.TITLE, headingText));
 	    	List<Element> paragraphs = getAdjacentSiblingsParagraphs(heading);
 	    	for (Element paragraph : paragraphs) {
 		        Element paragraphToProcess = new Element(paragraph);

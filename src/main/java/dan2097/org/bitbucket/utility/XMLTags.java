@@ -8,6 +8,11 @@ package dan2097.org.bitbucket.utility;
 public class XMLTags {
 	
 	/**
+	 * A line break element
+	 */
+	public static final String BR = "br";
+	
+	/**
 	 * A chemistry element, expected to contain a chemical img child
 	 */
 	public static final String CHEMISTRY = "chemistry";
