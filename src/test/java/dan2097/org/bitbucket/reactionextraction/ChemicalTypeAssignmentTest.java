@@ -37,7 +37,7 @@ public class ChemicalTypeAssignmentTest {
 	}
 	
 	@Test
-	public void typeDetectionTestDeterminerCompound1(){
+	public void typeDetectionTestADeterminer(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(new Element(DT));
@@ -53,7 +53,30 @@ public class ChemicalTypeAssignmentTest {
 	}
 	
 	@Test
-	public void typeDetectionTestDeterminerCompound2(){
+	public void typeDetectionTestADeterminerQualified(){
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(new Element(DT));
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("pyridine");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Element referenceToCompound = new Element(REFERENCETOCOMPOUND_Container);
+		referenceToCompound.appendChild(new Element(LRB));
+		Element identifier = new Element(NN_IDENTIFIER);
+		identifier.appendChild("IV");
+		referenceToCompound.appendChild(identifier);
+		referenceToCompound.appendChild(new Element(RRB));
+		moleculeEl.appendChild(referenceToCompound);
+		Chemical chem = new Chemical("pyridine");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.definiteReference, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestTheDeterminer(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(new Element(DT_THE));
@@ -65,7 +88,7 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalType.exactReference, chem.getType());
+		assertEquals(ChemicalType.definiteReference, chem.getType());
 	}
 	
 	@Test
@@ -120,6 +143,28 @@ public class ChemicalTypeAssignmentTest {
 	}
 	
 	@Test
+	public void typeDetectionTestSpecificPlural(){
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("phenols");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Element referenceToCompound = new Element(REFERENCETOCOMPOUND_Container);
+		referenceToCompound.appendChild(new Element(LRB));
+		Element identifier = new Element(CD);
+		identifier.appendChild("1-3");
+		referenceToCompound.appendChild(identifier);
+		referenceToCompound.appendChild(new Element(RRB));
+		moleculeEl.appendChild(referenceToCompound);
+		Chemical chem = new Chemical("phenols");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.definiteReference, chem.getType());
+	}
+	
+	@Test
 	public void typeDetectionTestDeterminerWithinMolecule1(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
@@ -133,7 +178,7 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalType.exactReference, chem.getType());
+		assertEquals(ChemicalType.definiteReference, chem.getType());
 	}
 	
 	@Test
@@ -170,7 +215,7 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(cmCont);
 		Chemical chem = new Chemical("sulfamic acid");
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalType.exactReference, chem.getType());
+		assertEquals(ChemicalType.definiteReference, chem.getType());
 	}
 	
 	@Test

@@ -57,11 +57,16 @@ public class ChemicalTypeAssigner {
 						chem.setType(ChemicalType.chemicalClass);
 					}
 					else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
-						chem.setType(ChemicalType.exactReference);
+						chem.setType(ChemicalType.definiteReference);
 					}
 				}
 			}
 		}
+		
+		if (ChemicalType.chemicalClass.equals(chem.getType()) && hasQualifyingIdentifier(mol)){
+			chem.setType(ChemicalType.definiteReference);
+		}
+		
 		if (chem.getType()==null){
 			if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
 				chem.setType(ChemicalType.falsePositive);
@@ -70,6 +75,10 @@ public class ChemicalTypeAssigner {
 				chem.setType(ChemicalType.exact);
 			}
 		}
+	}
+
+	private static boolean hasQualifyingIdentifier(Element mol) {
+		return XOMTools.getDescendantElementsWithTagName(mol, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container).size()>0;
 	}
 
 	private static boolean hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(Element mol, Chemical chem) {

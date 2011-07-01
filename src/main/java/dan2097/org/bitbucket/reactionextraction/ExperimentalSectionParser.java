@@ -83,7 +83,7 @@ public class ExperimentalSectionParser {
 	 */
 	Map<String, Chemical> findAliasDefinitions(Element moleculeEl, ChemicalType type) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
-		if (type!=ChemicalType.exact && type!=ChemicalType.exactReference){
+		if (type!=ChemicalType.exact && type!=ChemicalType.definiteReference){
 			return aliasToChemicalMap;
 		}
 		List<Element> oscarCMsAndMixtures = XOMTools.getChildElementsWithTagNames(moleculeEl, new String[]{OSCARCM_Container, MIXTURE_Container});
@@ -284,7 +284,7 @@ public class ExperimentalSectionParser {
 				else{
 					reagents = Collections.emptySet();
 				}
-				Set<Element> productAfterReagants = identifyYieldedProduct(phrase, inSynthesis);
+				Set<Element> productAfterReagants = identifyYieldedProduct(phrase);
 				if (productAfterReagants.size() >0 && currentReaction.getReactants().size()==0 && isBackReference(productAfterReagants)){
 					productAfterReagants.clear();
 				}
@@ -343,7 +343,7 @@ public class ExperimentalSectionParser {
 	private boolean isBackReference(Set<Element> yieldedCompounds) {
 		if (yieldedCompounds.size()==1){
 			Chemical cm = moleculeToChemicalMap.get(yieldedCompounds.iterator().next());
-			if (cm.getType().equals(ChemicalType.exactReference)){
+			if (cm.getType().equals(ChemicalType.definiteReference)){
 				return true;
 			}
 		}
@@ -358,10 +358,9 @@ public class ExperimentalSectionParser {
 	/**
 	 * Identifies products using yieldPhraseProduct
 	 * @param phrase
-	 * @param inSynthesis 
 	 * @return 
 	 */
-	private Set<Element> identifyYieldedProduct(Element phrase, boolean inSynthesis) {
+	private Set<Element> identifyYieldedProduct(Element phrase) {
 		Set<Element> products = new LinkedHashSet<Element>();
 		Nodes yieldPhraseMolecules = phrase.query(yieldPhraseProduct);
 		boolean foundProductWithQuantity =false;
@@ -413,7 +412,7 @@ public class ExperimentalSectionParser {
 	private void resolveBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
 		for (Element chemical : chemicals) {
 			Chemical chemChem = moleculeToChemicalMap.get(chemical);
-			if (chemChem.getType() ==ChemicalType.exactReference){
+			if (chemChem.getType() ==ChemicalType.definiteReference){
 				attemptToResolveBackReference(chemChem, reactions);
 			}
 		}

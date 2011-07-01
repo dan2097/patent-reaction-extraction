@@ -383,6 +383,9 @@ public class ChemicalTaggerTags {
 	/**Contains a procedure e.g. "example 1"*/
 	public static final String PROCEDURE_Container = "PROCEDURE";
 	
+	/**Contains within it either a CD-ALPHANUM or a CD or an NN-IDENTIFER*/
+	public static final String REFERENCETOCOMPOUND_Container = "REFERENCETOCOMPOUND";
+	
 	/**Holds phrases/punctuation that together form the action phrase*/
 	public static final String ACTIONPHRASE_Container = "ActionPhrase";
 
