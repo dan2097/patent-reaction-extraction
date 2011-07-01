@@ -106,7 +106,7 @@ public class IntegrationTests{
 		assertEquals(null, product.getMolarity());
 		assertEquals("title compound", product.getName());
 		assertEquals(ChemicalRole.product, product.getRole());
-		assertEquals(ChemicalType.exactReference, product.getType());
+		assertEquals(ChemicalType.definiteReference, product.getType());
 		assertEquals(null, product.getVolumeUnits());
 		assertEquals(null, product.getVolumeValue());
 		assertEquals(89d, product.getPercentYield(), 0.1d);
