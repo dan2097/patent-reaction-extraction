@@ -252,4 +252,20 @@ public class ChemicalTypeAssignmentTest {
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
 	}
+	
+	@Test
+	public void exactCompoundActuallyReferenceTest(){//e.g. indole 3
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("indole");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		moleculeEl.appendChild(new Element(REFERENCETOCOMPOUND_Container));
+		Chemical chem = new Chemical("indole");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.definiteReference, chem.getType());
+	}
 }

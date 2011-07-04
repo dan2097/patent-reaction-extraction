@@ -384,6 +384,18 @@ public class Chemical{
 			identifier.addAttribute(new Attribute("title", "InChI"));
 			reactant.appendChild(identifier);
 		}
+		
+		//not CMLreact
+		if (role != null){
+			Element roleEl = new Element("role");
+			roleEl.appendChild(role.toString());
+			reactant.appendChild(roleEl);
+		}
+		if (type != null){
+			Element typeEl = new Element("type");
+			typeEl.appendChild(type.toString());
+			reactant.appendChild(typeEl);
+		}
 		return reactant;
 	}
 }
