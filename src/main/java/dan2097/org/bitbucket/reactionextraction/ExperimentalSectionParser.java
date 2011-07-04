@@ -448,7 +448,8 @@ public class ExperimentalSectionParser {
 			if (ChemicalRole.product.equals(chemical.getRole())){
 				chemicalsToMatchAgainst.add(titleCompound);
 			}
-			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmiles(), chemical, chemicalsToMatchAgainst);
+			String smarts = generateAromaticSmiles(chemical.getSmiles());
+			boolean success = attemptToResolveViaSmartsMatch(smarts, chemical, chemicalsToMatchAgainst);
 			if (success){
 				if (!ChemicalRole.product.equals(chemical.getRole())){
 					chemical.setRole(ChemicalRole.reactant);
@@ -472,6 +473,12 @@ public class ExperimentalSectionParser {
 			products.addAll(reaction.getProducts());
 		}
 		return products;
+	}
+
+	private String generateAromaticSmiles(String smiles) {
+		IndigoObject chem = indigo.loadMolecule(smiles);
+		chem.aromatize();
+		return chem.smiles();
 	}
 
 	private boolean attemptToResolveViaSmartsMatch(String smarts, Chemical backReference, List<Chemical> chemicalsToMatchAgainst) {
