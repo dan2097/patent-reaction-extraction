@@ -427,7 +427,8 @@ public class ExperimentalSectionParser {
 			return true;
 		}
 		if (chemical.getSmarts()!=null){
-			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmarts(), chemical, reactionsToConsider);
+			List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactionsToConsider);
+			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmarts(), chemical, chemicalsToMatchAgainst);
 			if (success){
 				chemical.setRole(ChemicalRole.reactant);
 				return true;
@@ -443,9 +444,15 @@ public class ExperimentalSectionParser {
 			}
 		}
 		else if (chemical.getSmiles()!=null){
-			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmiles(), chemical, reactionsToConsider);
+			List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactionsToConsider);
+			if (ChemicalRole.product.equals(chemical.getRole())){
+				chemicalsToMatchAgainst.add(titleCompound);
+			}
+			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmiles(), chemical, chemicalsToMatchAgainst);
 			if (success){
-				chemical.setRole(ChemicalRole.reactant);
+				if (!ChemicalRole.product.equals(chemical.getRole())){
+					chemical.setRole(ChemicalRole.reactant);
+				}
 				return true;
 			}
 			//The <name of compound> could also be specific
@@ -459,17 +466,22 @@ public class ExperimentalSectionParser {
 		return false;
 	}
 
-	private boolean attemptToResolveViaSmartsMatch(String smarts, Chemical backReference, List<Reaction> reactionsToConsider) {
+	private List<Chemical> getProductChemsFromReactions(List<Reaction> reactionsToConsider) {
+		List<Chemical> products = new ArrayList<Chemical>();
+		for (Reaction reaction : reactionsToConsider) {
+			products.addAll(reaction.getProducts());
+		}
+		return products;
+	}
+
+	private boolean attemptToResolveViaSmartsMatch(String smarts, Chemical backReference, List<Chemical> chemicalsToMatchAgainst) {
 		IndigoObject query = indigo.loadSmarts(smarts);
 		List<Chemical> chemicalMatches = new ArrayList<Chemical>();
-		for (Reaction reaction : reactionsToConsider) {
-			List<Chemical> products = reaction.getProducts();
-			for (Chemical chemical : products) {
-				if (chemical.getSmiles()!=null){
-					IndigoObject substructureMatcher = indigo.substructureMatcher(indigo.loadMolecule(chemical.getSmiles()));
-					if (substructureMatcher.match(query) !=null){
-						chemicalMatches.add(chemical);
-					}
+		for (Chemical chemical : chemicalsToMatchAgainst) {
+			if (chemical.getSmiles()!=null){
+				IndigoObject substructureMatcher = indigo.substructureMatcher(indigo.loadMolecule(chemical.getSmiles()));
+				if (substructureMatcher.match(query) !=null){
+					chemicalMatches.add(chemical);
 				}
 			}
 		}

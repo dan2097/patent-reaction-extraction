@@ -63,7 +63,7 @@ public class ChemicalTypeAssigner {
 			}
 		}
 		
-		if (ChemicalType.chemicalClass.equals(chem.getType()) && hasQualifyingIdentifier(mol)){
+		if (!ChemicalType.falsePositive.equals(chem.getType()) && hasQualifyingIdentifier(mol)){
 			chem.setType(ChemicalType.definiteReference);
 		}
 		
