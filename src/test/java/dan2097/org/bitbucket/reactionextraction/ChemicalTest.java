@@ -37,13 +37,4 @@ public class ChemicalTest {
 		cm.setVolumeUnits("ml");
 		assertEquals(false, cm.hasImpreciseVolume());
 	}
-
-	@Test
-	public void isMonoAtomicTest() {
-		Chemical cm = new Chemical("foo");
-		cm.setInchi("InChI=1S/N");
-		assertEquals(true, cm.hasMonoAtomicInChI());
-		cm.setInchi("InChI=1S/N2/c1-2");
-		assertEquals(false, cm.hasMonoAtomicInChI());
-	}
 }
