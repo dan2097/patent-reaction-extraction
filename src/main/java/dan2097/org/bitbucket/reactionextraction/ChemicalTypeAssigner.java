@@ -93,12 +93,20 @@ public class ChemicalTypeAssigner {
 		if (matchNMR.matcher(chemicalName).matches()){
 			return true;
 		}
-		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())
-				|| chem.hasMonoAtomicInChI()){
-			return true;//e.g. nitrogen
+		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
+			return true;
 		}
 		String chemicalNameLc = chemicalName.toLowerCase();
 		if (chemicalNameLc.contains("=") || chemicalNameLc.startsWith("silica")){
+			return true;
+		}
+		if (chemicalNameLc.equals("nitrogen") || chemicalNameLc.equals("carbon")
+				|| chemicalNameLc.equals("silicon")
+				|| chemicalNameLc.equals("helium")
+				|| chemicalNameLc.equals("neon")
+				|| chemicalNameLc.equals("argon")
+				|| chemicalNameLc.equals("krypton")
+				|| chemicalNameLc.equals("xenon")){
 			return true;
 		}
 		return false;

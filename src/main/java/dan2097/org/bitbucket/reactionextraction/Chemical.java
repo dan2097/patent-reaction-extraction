@@ -262,32 +262,7 @@ public class Chemical{
 	void setXpathUsedToIdentify(String xpathUsedToIdentify) {
 		this.xpathUsedToIdentify = xpathUsedToIdentify;
 	}
-	
-	/**
-	 * If the InChI is available and describes a molecule with exactly one atom returns true
-	 * else returns false
-	 * @return
-	 */
-	boolean hasMonoAtomicInChI(){
-		if (inchi!=null){
-			String formula = matchSlash.split(inchi)[1];
-			int upperCaseCount =0;
-			for (int i = 0; i < formula.length(); i++) {
-				char c = formula.charAt(i);
-				if (Character.isDigit(c)){
-					return false;
-				}
-				else if (Character.isUpperCase(c)){
-					upperCaseCount++;
-				}
-			}
-			if (upperCaseCount==1){
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	boolean hasImpreciseVolume() {
 		if (volumeValue==null || volumeUnits ==null){
 			return true;
