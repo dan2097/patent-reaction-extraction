@@ -93,8 +93,9 @@ public class ChemicalTypeAssigner {
 		if (matchNMR.matcher(chemicalName).matches()){
 			return true;
 		}
-		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
-			return true;
+		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())
+				|| chem.hasMonoAtomicInChI()){
+			return true;//e.g. nitrogen
 		}
 		String chemicalNameLc = chemicalName.toLowerCase();
 		if (chemicalNameLc.contains("=") || chemicalNameLc.startsWith("silica")){
