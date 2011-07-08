@@ -19,7 +19,7 @@ public class ParagraphClassifier {
 	private static final URL NON_EXPERIMENTAL_URL = ClassLoader.getSystemResource("dan2097/org/bitbucket/paragraphclassification/non-experimental");
 	private static Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	
-	private class xmlFileFilter implements FileFilter {
+	private static class xmlFileFilter implements FileFilter {
 		public boolean accept(File f) {
 			if (f.getName().endsWith(".xml")) {
 				return true;
