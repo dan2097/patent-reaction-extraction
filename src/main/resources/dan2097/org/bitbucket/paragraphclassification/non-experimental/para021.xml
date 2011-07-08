@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0048" num="0048" sourceFile="EP 2055710A1.xml">when h is 2, Ar
+  <sub>13</sub> represents (C6-C60)arylene, (C4-C60)heteroarylene, or an arylene represented by one of the following structural formulas: 
+  <chemistry id="chem0059" num="0059">
+    <img id="ib0059" file="imgb0059.tif" wi="142" he="25" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+  </chemistry> wherein Ar
+  <sub>201</sub> and Ar
+  <sub>202</sub> independently represent (C6-C60)arylene or (C4-C60)heteroarylene; 
+  <ul id="ul0009" list-style="none" compact="compact">
+    <li>R
+      <sub>161</sub>, R
+      <sub>162</sub> and R
+      <sub>163</sub> independently represent hydrogen, (C1-C60)alkyl or (C6-C60)aryl;
+    </li>
+    <li>i is an integer from 1 to 4, j is an integer of 0 or 1; and</li>
+    <li>the alkyl, aryl, heteroaryl, arylamino, alkylamino, cycloalkyl or heterocycloalkyl of Ar
+      <sub>101</sub> and Ar
+      <sub>102</sub>, or the aryl, heteroaryl, arylene or heteroarylene of Ar
+      <sub>103</sub>, or the arylene or heteroarylene of Ar
+      <sub>201</sub> and Ar
+      <sub>202</sub>, or the alkyl or aryl of R
+      <sub>161</sub> through R
+      <sub>163</sub> may be further substituted by one or more substituent(s) selected from a group consisting of halogen, (C1-C60)alkyl, (C6-C60)aryl, (C4-C60)heteroaryl, a 5- or 6-membered heterocycloalkyl containing one or more heteroatom(s) selected from N, O and S, (C3-C60)cycloalkyl, tri(C1-C60)alkylsilyl, di(C1-C60)alkyl(C6-C60)arylsilyl, tri(C6-C60)arylsilyl, adamantyl, (C7-C60)bicycloalkyl, (C2-C60)alkenyl, (C2-C60)alkynyl, cyano, (C1-C60)alkylamino, (C6-C60)arylamino,
+      <!-- EPO <DP n="40"> --> (C6-C60)ar(C1-C60)alkyl, (C6-C60)aryloxy, (C1-C60)alkyloxy, (C6-C60)arylthio, (C1-C60)alkylthio, (C1-C60)alkoxycarbonyl, (C1-C60)alkylcarbonyl, (C6-C60)arylcarbonyl, carboxyl, nitro and hydroxyl. 
+      <chemistry id="chem0060" num="0060">
+        <img id="ib0060" file="imgb0060.tif" wi="55" he="45" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+      </chemistry>
+    </li>
+  </ul>
+</p>

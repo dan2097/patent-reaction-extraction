@@ -1,0 +1,1059 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="ref-p0002" num="" sourceFile="EP 2055705A1.xml">
+  <ul id="ref-ul0001" list-style="bullet">
+    <li>
+      <patcit id="ref-pcit0001" dnum="WO2007058322A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2007058322</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0001">[0021]</crossref>
+      <crossref idref="pcit0010">[0030]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0002" dnum="WO2004024697A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2004024697</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0002">[0022]</crossref>
+      <crossref idref="pcit0011">[0030]</crossref>
+      <crossref idref="pcit0105">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0003" dnum="WO2005023247A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2005023247</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0003">[0023]</crossref>
+      <crossref idref="pcit0012">[0030]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0004" dnum="WO2006022454A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006022454</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0004">[0024]</crossref>
+      <crossref idref="pcit0013">[0030]</crossref>
+      <crossref idref="pcit0019">[0032]</crossref>
+      <crossref idref="pcit0107">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0005" dnum="WO2006020415A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006020415</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0005">[0025]</crossref>
+      <crossref idref="pcit0014">[0030]</crossref>
+      <crossref idref="pcit0109">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0006" dnum="WO2006023400A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006023400</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0006">[0026]</crossref>
+      <crossref idref="pcit0015">[0030]</crossref>
+      <crossref idref="pcit0108">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0007" dnum="WO2006026703A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006026703</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0007">[0027]</crossref>
+      <crossref idref="pcit0016">[0030]</crossref>
+      <crossref idref="pcit0119">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0008" dnum="WO2006036816A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006036816</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0008">[0028]</crossref>
+      <crossref idref="pcit0017">[0030]</crossref>
+      <crossref idref="pcit0111">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0009" dnum="WO2003055876A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2003055876</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0009">[0029]</crossref>
+      <crossref idref="pcit0018">[0030]</crossref>
+      <crossref idref="pcit0104">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0010" dnum="WO9907351A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9907351</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0020">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0011" dnum="WO9940913A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9940913</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0021">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0012" dnum="WO0046195A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0046195</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0022">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0013" dnum="WO0046196A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0046196</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0023">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0014" dnum="WO0046197A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0046197</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0024">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0015" dnum="WO0046198A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0046198</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0025">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0016" dnum="WO0046199A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0046199</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0026">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0017" dnum="WO0069432A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0069432</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0027">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0018" dnum="WO0069815A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0069815</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0028">[0269]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0019" dnum="DE19837386">
+        <document-id>
+          <country>DE</country>
+          <doc-number>19837386</doc-number>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0029">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0020" dnum="WO9955324A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9955324</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0030">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0021" dnum="WO9955330A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9955330</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0031">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0022" dnum="WO0004003A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0004003</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0032">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0023" dnum="WO0027800A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0027800</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0033">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0024" dnum="WO0027835A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0027835</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0034">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0025" dnum="WO0027843A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0027843</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0035">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0026" dnum="WO0029377A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0029377</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0036">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0027" dnum="WO0031032A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0031032</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0037">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0028" dnum="WO0031033A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0031033</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0038">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0029" dnum="WO0034278A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0034278</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0039">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0030" dnum="WO0035449A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035449</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0040">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0031" dnum="WO0035451A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035451</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0041">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0032" dnum="WO0035452A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035452</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0042">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0033" dnum="WO0035453A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035453</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0043">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0034" dnum="WO0035454A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035454</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0044">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0035" dnum="WO0035876A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035876</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0045">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0036" dnum="WO0035877A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0035877</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0046">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0037" dnum="WO0041685A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0041685</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0047">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0038" dnum="WO0051607A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0051607</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0048">[0270]</crossref>
+      <crossref idref="pcit0085">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0039" dnum="WO0051608A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0051608</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0049">[0270]</crossref>
+      <crossref idref="pcit0086">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0040" dnum="WO0051609A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0051609</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0050">[0270]</crossref>
+      <crossref idref="pcit0087">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0041" dnum="WO0051610A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0051610</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0051">[0270]</crossref>
+      <crossref idref="pcit0088">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0042" dnum="WO0053172A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0053172</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0052">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0043" dnum="WO0053600A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0053600</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0053">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0044" dnum="WO0058305A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0058305</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0054">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0045" dnum="WO0059497A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0059497</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0055">[0270]</crossref>
+      <crossref idref="pcit0090">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0046" dnum="WO0059498A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0059498</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0056">[0270]</crossref>
+      <crossref idref="pcit0091">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0047" dnum="WO0059502A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0059502</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0057">[0270]</crossref>
+      <crossref idref="pcit0092">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0048" dnum="WO0059503A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0059503</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0058">[0270]</crossref>
+      <crossref idref="pcit0093">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0049" dnum="WO0062814A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0062814</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0059">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0050" dnum="WO0073327A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0073327</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0060">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0051" dnum="WO0109088A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0109088</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0061">[0270]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0052" dnum="WO02030357A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>02030357</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0062">[0271]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0053" dnum="WO02030358A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>02030358</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0063">[0271]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0054" dnum="WO9917773A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9917773</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0064">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0055" dnum="WO9932100A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9932100</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0065">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0056" dnum="WO0006085A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0006085</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0066">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0057" dnum="WO0006146A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0006146</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0067">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0058" dnum="WO0010965A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0010965</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0068">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0059" dnum="WO0006153A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0006153</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0069">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0060" dnum="WO0021916A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0021916</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0070">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0061" dnum="WO0037455A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0037455</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0071">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0062" dnum="EP1013276A">
+        <document-id>
+          <country>EP</country>
+          <doc-number>1013276</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0072">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0063" dnum="WO0038680A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0038680</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0073">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0064" dnum="WO0039125A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0039125</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0074">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0065" dnum="WO0040239A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0040239</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0075">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0066" dnum="WO0042045A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0042045</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0076">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0067" dnum="WO0053175A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0053175</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0077">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0068" dnum="WO0042852A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0042852</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0078">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0069" dnum="WO0066551A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0066551</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0079">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0070" dnum="WO0066558A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0066558</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0080">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0071" dnum="WO0066559A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0066559</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0081">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0072" dnum="WO0066141A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0066141</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0082">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0073" dnum="WO0068203A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0068203</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0083">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0074" dnum="JP2000309598B">
+        <document-id>
+          <country>JP</country>
+          <doc-number>2000309598</doc-number>
+          <kind>B</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0084">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0075" dnum="WO0056729A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0056729</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0089">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0076" dnum="WO0076933A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0076933</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0094">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0077" dnum="WO9825605A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9825605</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0095">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0078" dnum="WO9904794A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9904794</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0096">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0079" dnum="WO9938514A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>9938514</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0097">[0272]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0080" dnum="WO0116114A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0116114</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0098">[0274]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0081" dnum="WO02083143A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>02083143</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0099">[0274]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0082" dnum="WO02085862A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>02085862</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0100">[0274]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0083" dnum="US6469002B">
+        <document-id>
+          <country>US</country>
+          <doc-number>6469002</doc-number>
+          <kind>B</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0101">[0274]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0084" dnum="WO03101970A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>03101970</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0102">[0274]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0085" dnum="WO0066112A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>0066112</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0103">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0086" dnum="WO2004052862A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2004052862</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0106">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0087" dnum="WO2006020891A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006020891</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0110">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0088" dnum="US2006069122A">
+        <document-id>
+          <country>US</country>
+          <doc-number>2006069122</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0112">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0089" dnum="WO2006034001A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006034001</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0113">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0090" dnum="WO2006028896A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006028896</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0114">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0091" dnum="WO2006048862A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006048862</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0115">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0092" dnum="WO2006074426A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006074426</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0116">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0093" dnum="US2006160860A">
+        <document-id>
+          <country>US</country>
+          <doc-number>2006160860</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0117">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0094" dnum="WO2006076131A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006076131</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0118">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0095" dnum="JP2006188445A">
+        <document-id>
+          <country>JP</country>
+          <doc-number>2006188445</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0120">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0096" dnum="WO2006090853A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006090853</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0121">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0097" dnum="WO2006096444A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006096444</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0122">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0098" dnum="US2006281712A">
+        <document-id>
+          <country>US</country>
+          <doc-number>2006281712</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0123">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0099" dnum="WO2007008539A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2007008539</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0124">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0100" dnum="US20060293324A">
+        <document-id>
+          <country>US</country>
+          <doc-number>20060293324</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0125">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0101" dnum="WO2006117011A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2006117011</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0126">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0102" dnum="WO2007022385A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2007022385</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0127">[0275]</crossref>
+    </li>
+    <li>
+      <patcit id="ref-pcit0103" dnum="WO2007027999A">
+        <document-id>
+          <country>WO</country>
+          <doc-number>2007027999</doc-number>
+          <kind>A</kind>
+        </document-id>
+      </patcit>
+      <crossref idref="pcit0128">[0275]</crossref>
+    </li>
+  </ul>
+</p>

@@ -7,7 +7,6 @@ import nu.xom.Element;
 
 public class Chemical{
 
-	private final static Pattern matchSlash = Pattern.compile("/");
 	private final String name;
 	private String smiles;
 	private String smarts;

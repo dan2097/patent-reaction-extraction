@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0088" num="0088" sourceFile="EP 1767529A1.xml">In the formula (2-a), (3-a), (6-a) or (7-a), (R
+  <sup>3</sup>)
+  <sub>m</sub> and Y represent one combination of substituents shown in Table 2.
+  <!-- EPO <DP n="31"> -->
+  <tables id="tabl0002" num="0002">
+    <table frame="all">
+      <title>Table 2</title>
+      <tgroup cols="2">
+        <colspec colnum="1" colname="col1" colwidth="29mm"/>
+        <colspec colnum="2" colname="col2" colwidth="57mm"/>
+        <thead>
+          <row>
+            <entry valign="top">(R
+              <sup>3</sup>)
+              <sub>m</sub>
+            </entry>
+            <entry valign="top">Y</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CF
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-F</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-NO
+              <sub>2</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CN</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCF
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCHF
+              <sub>2</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCClF
+              <sub>2</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCBrF
+              <sub>2</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-SCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-SCF
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>-</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-chlorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-chlorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl,4-Cl</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl,4-Cl</entry>
+            <entry>2,9,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>, 4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2, 4, 6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-OCH
+              <sub>3</sub>,4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-F</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-Cl</entry>
+            <entry>2,4,6-trifluorophenyl</entry>
+          </row>
+          <!-- EPO <DP n="32"> -->
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CF
+              <sub>3</sub>
+            </entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-F</entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl,4-Cl</entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl,4-Cl</entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-F</entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-Cl</entry>
+            <entry>2-chloro-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-methylphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-methylphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-(trifluoromethyl)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-(trifluoromethyl)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CF
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-F</entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl,4-Cl</entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl,4-Cl</entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-F</entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-Cl</entry>
+            <entry>2,6-difluoro-4-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluoro-4-ethoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-4-ethoxyphenyl</entry>
+          </row>
+          <!-- EPO <DP n="33"> -->
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-nitrophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-nitrophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-cyanophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-cyanophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CF
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-F</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-NO
+              <sub>2</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CN</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCF
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCHF
+              <sub>2</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCClF
+              <sub>2</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCBrF
+              <sub>2</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-SCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-SCF
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>-</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl,4-Cl</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl,4-Cl</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-OCH
+              <sub>3</sub>, 4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-F</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-Cl</entry>
+            <entry>2,6-difluorophenyl</entry>
+          </row>
+          <!-- EPO <DP n="34"> -->
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CF
+              <sub>3</sub>
+            </entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-F</entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-OCH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-Cl,4-Cl</entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-Cl,4-Cl</entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>3-CH
+              <sub>3</sub>,4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-F</entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>2-F,4-Cl</entry>
+            <entry>2,4-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,3,4-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3,4-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,3,5-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3,5-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,3,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3,6-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,3,5-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3,5-trifluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,3-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2,5-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,5-difluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-(difluoromethoxy)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-(difluoromethoxy)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-(trifluoromethoxy)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-(trifluoromethoxy)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-CH
+              <sub>3</sub>
+            </entry>
+            <entry>2-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-methoxyphenyl</entry>
+          </row>
+          <!-- EPO <DP n="35"> -->
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>pentafluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>4-methoxy-2,3,5,6-tetrafluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>4-ethoxy-2,3,5,6-tetrafluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>4-cyano-2,3,5,6-tetrafluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>4-nitro-2,3,5,6-tetrafluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3,5,6-tetrafluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-4-cyanophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-4-nitrophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-4-chlorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-4-(trifluoromethyl)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-fluoro-6-methylphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-fluoro-6-nitrophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-cyano-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-fluoro-6-(trifluoromethyl)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-(difluoromethoxy)-6-fluorophenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-fluoro-6-(trifluoromethoxy)phenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2-fluoro-6-methoxyphenyl</entry>
+          </row>
+          <row rowsep="0">
+            <entry>4-Cl</entry>
+            <entry>2,3-difluoro-6-(trifluoromethyl)phenyl</entry>
+          </row>
+          <row>
+            <entry>4-Cl</entry>
+            <entry>2,6-difluoro-3-chlorophenyl</entry>
+          </row>
+        </tbody>
+      </tgroup>
+      <tgroup cols="2" rowsep="0">
+        <colspec colnum="1" colname="col1" colwidth="29mm"/>
+        <colspec colnum="2" colname="col2" colwidth="57mm"/>
+        <tbody>
+          <row>
+            <entry namest="col1" nameend="col2" align="justify">In the table, "-" means that m is 0.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </tables>
+</p>

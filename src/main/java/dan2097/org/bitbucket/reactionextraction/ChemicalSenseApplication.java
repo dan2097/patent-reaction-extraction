@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
-import static dan2097.org.bitbucket.utility.Utils.*;
+import dan2097.org.bitbucket.utility.IndigoHolder;
 
 public class ChemicalSenseApplication {
 
 	private final Reaction reaction;
 	private List<IndigoObject> products = new ArrayList<IndigoObject>();
+	private Indigo indigo = IndigoHolder.getInstance();
 	
 	ChemicalSenseApplication(Reaction reaction) {
 		this.reaction = reaction;

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0225" num="0225" sourceFile="EP 2055696A1.xml">
+  <tables id="tabl0014" num="0014">
+    <table frame="none">
+      <tgroup cols="3" colsep="0" rowsep="0">
+        <colspec colnum="1" colname="col1" colwidth="26mm"/>
+        <colspec colnum="2" colname="col2" colwidth="10mm"/>
+        <colspec colnum="3" colname="col3" colwidth="121mm"/>
+        <tbody>
+          <row>
+            <entry>Ac</entry>
+            <entry>=</entry>
+            <entry>acetyl</entry>
+          </row>
+          <row>
+            <entry>APCI</entry>
+            <entry>=</entry>
+            <entry>atmospheric pressure chemical ionisation (in relation to MS)</entry>
+          </row>
+          <row>
+            <entry>API</entry>
+            <entry>=</entry>
+            <entry>atmospheric pressure ionisation (in relation to MS)</entry>
+          </row>
+          <row>
+            <entry>aq.</entry>
+            <entry>=</entry>
+            <entry>aqueous</entry>
+          </row>
+          <row>
+            <entry>Aze(&amp; (
+              <i>S</i>)-Aze)
+            </entry>
+            <entry>=</entry>
+            <entry>(
+              <i>S</i>)-azetidine-2-carboxylate (unless otherwise specified)
+            </entry>
+          </row>
+          <row>
+            <entry>Boc</entry>
+            <entry>=</entry>
+            <entry>
+              <i>tert</i>-butyloxycarbonyl
+            </entry>
+          </row>
+          <row>
+            <entry>br</entry>
+            <entry>=</entry>
+            <entry>broad (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>CI</entry>
+            <entry>=</entry>
+            <entry>chemical ionisation (in relation to MS)</entry>
+          </row>
+          <row>
+            <entry>d</entry>
+            <entry>=</entry>
+            <entry>day(s)</entry>
+          </row>
+          <row>
+            <entry>d</entry>
+            <entry>=</entry>
+            <entry>doublet (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>DCC</entry>
+            <entry>=</entry>
+            <entry>dicyclohexyl carbodiimide</entry>
+          </row>
+          <row>
+            <entry>dd</entry>
+            <entry>=</entry>
+            <entry>doublet of doublets (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>DIBAL-H</entry>
+            <entry>=</entry>
+            <entry>di-isobutylaluminium hydride</entry>
+          </row>
+          <!-- EPO <DP n="79"> -->
+          <row>
+            <entry>DIPEA</entry>
+            <entry>=</entry>
+            <entry>diisopropylethylamine</entry>
+          </row>
+          <row>
+            <entry>DMAP</entry>
+            <entry>=</entry>
+            <entry>4-(
+              <i>N</i>,
+              <i>N</i>-dimethyl amino) pyridine
+            </entry>
+          </row>
+          <row>
+            <entry>DMF</entry>
+            <entry>=</entry>
+            <entry>
+              <i>N</i>,
+              <i>N</i>-dimethylformamide
+            </entry>
+          </row>
+          <row>
+            <entry>DMSO</entry>
+            <entry>=</entry>
+            <entry>dimethylsulfoxide</entry>
+          </row>
+          <row>
+            <entry>DSC</entry>
+            <entry>=</entry>
+            <entry>differential scanning calorimetry</entry>
+          </row>
+          <row>
+            <entry>DVT</entry>
+            <entry>=</entry>
+            <entry>deep vein thrombosis</entry>
+          </row>
+          <row>
+            <entry>EDC</entry>
+            <entry>=</entry>
+            <entry>1-(3-dimethylaminopropyl)-3-ethylcarbodiimide hydrochloride</entry>
+          </row>
+          <row>
+            <entry>eq.</entry>
+            <entry>=</entry>
+            <entry>equivalents</entry>
+          </row>
+          <row>
+            <entry>ES</entry>
+            <entry>=</entry>
+            <entry>electrospray</entry>
+          </row>
+          <row>
+            <entry>ESI</entry>
+            <entry>=</entry>
+            <entry>electrospray interface</entry>
+          </row>
+          <row>
+            <entry>Et</entry>
+            <entry>=</entry>
+            <entry>ethyl</entry>
+          </row>
+          <row>
+            <entry>ether</entry>
+            <entry>=</entry>
+            <entry>diethyl ether</entry>
+          </row>
+          <row>
+            <entry>EtOAc</entry>
+            <entry>=</entry>
+            <entry>ethyl acetate</entry>
+          </row>
+          <row>
+            <entry>EtOH</entry>
+            <entry>=</entry>
+            <entry>ethanol</entry>
+          </row>
+          <row>
+            <entry>Et
+              <sub>2</sub>O
+            </entry>
+            <entry>=</entry>
+            <entry>diethyl ether</entry>
+          </row>
+          <row>
+            <entry>FT-IR</entry>
+            <entry>=</entry>
+            <entry>Fourier-transform infra-red spectroscopy</entry>
+          </row>
+          <row>
+            <entry>gCOSY</entry>
+            <entry>=</entry>
+            <entry>gradient-selective correlated spectroscopy</entry>
+          </row>
+          <row>
+            <entry>gHMBC</entry>
+            <entry>=</entry>
+            <entry>gradient-selective heteronuclear multiple bond correlation spectroscopy</entry>
+          </row>
+          <row>
+            <entry>gHSQC</entry>
+            <entry>=</entry>
+            <entry>gradient-selective heteronuclear single quantum coherence</entry>
+          </row>
+          <row>
+            <entry>HATU</entry>
+            <entry>=</entry>
+            <entry>
+              <i>O</i>-(azabenzotriazol-1-yl)-
+              <i>N</i>,
+              <i>N</i>,
+              <i>N</i>',
+              <i>N</i>'-tetramethyluronium hexafluorophosphate
+            </entry>
+          </row>
+          <row>
+            <entry>HBTU</entry>
+            <entry>=</entry>
+            <entry>[
+              <i>N</i>,
+              <i>N</i>,
+              <i>N</i>',
+              <i>N</i>'-tetramethyl-
+              <i>O</i>-(benzotriazol-1-yl)uronium hexafluorophosphate]
+            </entry>
+          </row>
+          <row>
+            <entry>HCl</entry>
+            <entry>=</entry>
+            <entry>hydrochloric acid, hydrogen chloride gas or hydrochloride salt (depending on context)</entry>
+          </row>
+          <row>
+            <entry>Hex</entry>
+            <entry>=</entry>
+            <entry>hexanes</entry>
+          </row>
+          <row>
+            <entry>HOAc</entry>
+            <entry>=</entry>
+            <entry>acetic acid</entry>
+          </row>
+          <row>
+            <entry>HPLC</entry>
+            <entry>=</entry>
+            <entry>high performance liquid chromatography</entry>
+          </row>
+          <row>
+            <entry>LC</entry>
+            <entry>=</entry>
+            <entry>liquid chromatography</entry>
+          </row>
+          <row>
+            <entry>m</entry>
+            <entry>=</entry>
+            <entry>multiplet (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>Me</entry>
+            <entry>=</entry>
+            <entry>methyl</entry>
+          </row>
+          <!-- EPO <DP n="80"> -->
+          <row>
+            <entry>MeOH</entry>
+            <entry>=</entry>
+            <entry>methanol</entry>
+          </row>
+          <row>
+            <entry>min.</entry>
+            <entry>=</entry>
+            <entry>minute(s)</entry>
+          </row>
+          <row>
+            <entry>MS</entry>
+            <entry>=</entry>
+            <entry>mass spectroscopy</entry>
+          </row>
+          <row>
+            <entry>MTBE</entry>
+            <entry>=</entry>
+            <entry>methyl 
+              <i>tert</i>-butyl ether
+            </entry>
+          </row>
+          <row>
+            <entry>NOE</entry>
+            <entry>=</entry>
+            <entry>nuclear Overhauser enhancement</entry>
+          </row>
+          <row>
+            <entry>NMR</entry>
+            <entry>=</entry>
+            <entry>nuclear magnetic resonance</entry>
+          </row>
+          <row>
+            <entry>OAc</entry>
+            <entry>=</entry>
+            <entry>acetate</entry>
+          </row>
+          <row>
+            <entry>Pab</entry>
+            <entry>=</entry>
+            <entry>
+              <i>para</i>-amidinobenzylamino
+            </entry>
+          </row>
+          <row>
+            <entry>H-Pab</entry>
+            <entry>=</entry>
+            <entry>
+              <i>para</i>-amidinobenzylamine
+            </entry>
+          </row>
+          <row>
+            <entry>Pd/C</entry>
+            <entry>=</entry>
+            <entry>palladium on carbon</entry>
+          </row>
+          <row>
+            <entry>Ph</entry>
+            <entry>=</entry>
+            <entry>phenyl</entry>
+          </row>
+          <row>
+            <entry>PyBOP</entry>
+            <entry>=</entry>
+            <entry>(benzotriazol-1-yloxy)tripyrrolidinophosphonium hexafluorophosphate</entry>
+          </row>
+          <row>
+            <entry>q</entry>
+            <entry>=</entry>
+            <entry>quartet (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>QF</entry>
+            <entry>=</entry>
+            <entry>tetrabutylammonium fluoride</entry>
+          </row>
+          <row>
+            <entry>rt/RT</entry>
+            <entry>=</entry>
+            <entry>room temperature</entry>
+          </row>
+          <row>
+            <entry>s</entry>
+            <entry>=</entry>
+            <entry>singlet (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>t</entry>
+            <entry>=</entry>
+            <entry>triplet (in relation to NMR)</entry>
+          </row>
+          <row>
+            <entry>TBTU</entry>
+            <entry>=</entry>
+            <entry>[
+              <i>N</i>,
+              <i>N</i>,
+              <i>N</i>',
+              <i>N</i>'-tetramethyl-
+              <i>O</i>-(benzotriazol-1-yl)uronium tetrafluoroborate]
+            </entry>
+          </row>
+          <row>
+            <entry>TEA</entry>
+            <entry>=</entry>
+            <entry>triethylamine</entry>
+          </row>
+          <row>
+            <entry>Teoc</entry>
+            <entry>=</entry>
+            <entry>2-(trimethylsilyl)ethoxycarbonyl</entry>
+          </row>
+          <row>
+            <entry>TEMPO</entry>
+            <entry>=</entry>
+            <entry>2,2,6,6-tetramethyl-1-piperidinyloxy free radical</entry>
+          </row>
+          <row>
+            <entry>TFA</entry>
+            <entry>=</entry>
+            <entry>trifluoroacetic acid</entry>
+          </row>
+          <row>
+            <entry>TGA</entry>
+            <entry>=</entry>
+            <entry>thermogravimetric analysis</entry>
+          </row>
+          <row>
+            <entry>THF</entry>
+            <entry>=</entry>
+            <entry>tetrahydrofuran</entry>
+          </row>
+          <row>
+            <entry>TLC</entry>
+            <entry>=</entry>
+            <entry>thin layer chromatography</entry>
+          </row>
+          <row>
+            <entry>UV</entry>
+            <entry>=</entry>
+            <entry>ultraviolet</entry>
+          </row>
+          <row>
+            <entry>XRPD</entry>
+            <entry>=</entry>
+            <entry>X-ray powder diffraction</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </tables>
+</p>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0089" num="0089" sourceFile="EP 1704154B1.xml">
+  <tables id="tabl0005" num="0005">
+    <table frame="all">
+      <tgroup cols="2">
+        <colspec colnum="1" colname="col1" colwidth="39mm"/>
+        <colspec colnum="2" colname="col2" colwidth="18mm"/>
+        <thead>
+          <row>
+            <entry valign="top">Ingredient</entry>
+            <entry valign="top">% wt. /wt.</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>Active ingredient</entry>
+            <entry>1.0%</entry>
+          </row>
+          <row>
+            <entry>Polyethylene glycol 1000</entry>
+            <entry>74.5%</entry>
+          </row>
+          <row>
+            <entry>Polyethylene glycol 4000</entry>
+            <entry>24.5%</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </tables>
+</p>

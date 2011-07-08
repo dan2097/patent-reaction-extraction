@@ -10,7 +10,7 @@ import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
 import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
 import uk.ac.cam.ch.wwmm.opsin.OpsinResult.OPSIN_RESULT_STATUS;
 
-import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.IndigoHolder;
 
 public class FunctionalGroupDefinitionsTest {
 
@@ -44,7 +44,7 @@ public class FunctionalGroupDefinitionsTest {
 				}
 			}
 			try{
-				Utils.indigo.loadSmarts(value);
+				IndigoHolder.getInstance().loadSmarts(value);
 			}
 			catch (Exception e) {
 				fail("indigo threw an exception when parsing the following SMARTS: " + value);
@@ -58,7 +58,7 @@ public class FunctionalGroupDefinitionsTest {
 				}
 			}
 			try{
-				Utils.indigo.loadSmarts(value);
+				IndigoHolder.getInstance().loadSmarts(value);
 			}
 			catch (Exception e) {
 				fail("indigo threw an exception when parsing the following SMARTS: " + value);
