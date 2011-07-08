@@ -7,13 +7,13 @@ import org.junit.Test;
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
-import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.IndigoHolder;
 
 public class ReactionMapperTest {
 
 	@Test
 	public void trivialReactionTest(){
-		Indigo indigo= Utils.indigo;
+		Indigo indigo = IndigoHolder.getInstance();
 		IndigoObject reaction = indigo.createReaction();
 		reaction.addProduct(indigo.loadMolecule("C(C)O"));
 		reaction.addReactant(indigo.loadMolecule("C(O)C"));
@@ -24,7 +24,7 @@ public class ReactionMapperTest {
 	
 	@Test
 	public void trivialNotAReactionTest(){
-		Indigo indigo= Utils.indigo;
+		Indigo indigo = IndigoHolder.getInstance();
 		IndigoObject reaction = indigo.createReaction();
 		reaction.addProduct(indigo.loadMolecule("[Pb]"));
 		reaction.addReactant(indigo.loadMolecule("[Au]"));
@@ -35,7 +35,7 @@ public class ReactionMapperTest {
 	
 	@Test
 	public void reactionTest1(){
-		Indigo indigo= Utils.indigo;
+		Indigo indigo = IndigoHolder.getInstance();
 		IndigoObject reaction = indigo.createReaction();
 		reaction.addProduct(indigo.loadMolecule("c1ccccc1CCC"));
 		reaction.addReactant(indigo.loadMolecule("c1ccccc1"));
@@ -48,7 +48,7 @@ public class ReactionMapperTest {
 	
 	@Test
 	public void reactionTest2(){
-		Indigo indigo= Utils.indigo;
+		Indigo indigo = IndigoHolder.getInstance();
 		IndigoObject reaction = indigo.createReaction();
 		IndigoObject product = indigo.loadMolecule("O=C1CCC[C@]2([H])C3C=CC(C3)[C@@]21[H]");
 		product.foldHydrogens();//Hopefully this can be done within the reaction in later versions

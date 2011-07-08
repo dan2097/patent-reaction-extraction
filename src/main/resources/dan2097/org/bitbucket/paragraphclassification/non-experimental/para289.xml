@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0004" num="0004" sourceFile="EP 1326865B1.xml">Nucleotide sequencing of HIV shows the presence of a pol gene in one open reading frame [
+  <nplcit id="ncit0001" npl-type="s">
+    <text>Ratner, L. et al., Nature, 313, 277(1985</text>
+  </nplcit>)]. Amino acid sequence homology provides evidence that the pol sequence encodes reverse
+  <!-- EPO <DP n="2"> --> transcriptase, integrase and an HIV protease [
+  <nplcit id="ncit0002" npl-type="s">
+    <text>Toh, H. et al., EMBO J. 4, 1267 (1985</text>
+  </nplcit>); 
+  <nplcit id="ncit0003" npl-type="s">
+    <text>Power, M.D. et al., Science, 231, 1567 (1986</text>
+  </nplcit>); 
+  <nplcit id="ncit0004" npl-type="s">
+    <text>Pearl, L.H. et al., Nature, 329, 351 (1987</text>
+  </nplcit>)]. All three enzymes have been shown to be essential for the replication of HIV.
+</p>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0587" num="0587" sourceFile="EP 1670757B1.xml">Prepare the following compounds listed in Table E-26 in a manner analogous to the procedure set forth in Method DII from appropriate halo-substituted ethyl ester derivative and the corresponding boronic acid or boronate.
+  <!-- EPO <DP n="188"> -->
+  <tables id="tabl0031" num="0031">
+    <table frame="all">
+      <title>Table E-26.</title>
+      <tgroup cols="4">
+        <colspec colnum="1" colname="col1" colwidth="14mm"/>
+        <colspec colnum="2" colname="col2" colwidth="55mm"/>
+        <colspec colnum="3" colname="col3" colwidth="48mm"/>
+        <colspec colnum="4" colname="col4" colwidth="50mm" colsep="0"/>
+        <thead>
+          <row>
+            <entry valign="top">Ex.</entry>
+            <entry valign="top">Structure</entry>
+            <entry valign="top">Data</entry>
+            <entry colsep="1" valign="top">S.M.</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry align="center">E-259</entry>
+            <entry align="center">
+              <chemistry id="chem0530" num="0530">
+                <img id="ib0535" file="imgb0535.tif" wi="47" he="29" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>mass spectrum (m/e): 418.1 (M+18). R
+              <i>
+                <sub>f</sub>
+              </i> = 0.5 (50% Et
+              <sub>2</sub>O in hexanes).
+            </entry>
+            <entry align="center">E-257 and 
+              <chemistry id="chem0531" num="0531">
+                <img id="ib0536" file="imgb0536.tif" wi="30" he="20" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">E-260</entry>
+            <entry align="center">
+              <chemistry id="chem0532" num="0532">
+                <img id="ib0537" file="imgb0537.tif" wi="48" he="26" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>mass spectrum (m/e): 389.0 (M+1). R
+              <i>
+                <sub>f</sub>
+              </i> = 0.5 (50% Et
+              <sub>2</sub>O in hexanes).
+            </entry>
+            <entry align="center">E-257 and 
+              <chemistry id="chem0533" num="0533">
+                <img id="ib0538" file="imgb0538.tif" wi="30" he="17" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">E-261</entry>
+            <entry align="center">
+              <chemistry id="chem0534" num="0534">
+                <img id="ib0539" file="imgb0539.tif" wi="49" he="26" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>mass spectrum (m/e): (M+1). R
+              <i>
+                <sub>f</sub>
+              </i> = 0.4 (50% Et
+              <sub>2</sub>O in hexanes).
+            </entry>
+            <entry align="center">E-257 and 
+              <chemistry id="chem0535" num="0535">
+                <img id="ib0540" file="imgb0540.tif" wi="30" he="16" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">E-262</entry>
+            <entry align="center">
+              <chemistry id="chem0536" num="0536">
+                <img id="ib0541" file="imgb0541.tif" wi="50" he="26" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>mass spectrum (m/e): 391.1 (M+18). R
+              <i>
+                <sub>f</sub>
+              </i> = 0.3 (50% Et
+              <sub>2</sub>O in hexanes).
+            </entry>
+            <entry align="center">E-257 and 
+              <chemistry id="chem0537" num="0537">
+                <img id="ib0542" file="imgb0542.tif" wi="30" he="17" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">E-263</entry>
+            <entry align="center">
+              <chemistry id="chem0538" num="0538">
+                <img id="ib0543" file="imgb0543.tif" wi="49" he="28" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>mass spectrum (m/e): 392.0 (M). R
+              <i>
+                <sub>f</sub>
+              </i> = 0.3 (50% Et
+              <sub>2</sub>O in hexanes).
+            </entry>
+            <entry align="center">E-257 and 
+              <chemistry id="chem0539" num="0539">
+                <img id="ib0544" file="imgb0544.tif" wi="31" he="21" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">E-264</entry>
+            <entry align="center">
+              <chemistry id="chem0540" num="0540">
+                <img id="ib0545" file="imgb0545.tif" wi="50" he="27" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>mass spectrum (m/e): 407.1 (M+18). R
+              <i>
+                <sub>f</sub>
+              </i> = 0.2 (50% Et
+              <sub>2</sub>O in hexanes).
+            </entry>
+            <entry align="center">Prep. 38 and 
+              <chemistry id="chem0541" num="0541">
+                <img id="ib0546" file="imgb0546.tif" wi="29" he="33" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </tables>
+</p>

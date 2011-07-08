@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0166" num="0166" sourceFile="EP 2055703A1.xml">
+  <tables id="tabl0012" num="0012">
+    <table frame="all">
+      <title>[Table 1-12]</title>
+      <tgroup cols="3">
+        <colspec colnum="1" colname="col1" colwidth="18mm"/>
+        <colspec colnum="2" colname="col2" colwidth="69mm"/>
+        <colspec colnum="3" colname="col3" colwidth="80mm"/>
+        <thead>
+          <row>
+            <entry valign="top">Example</entry>
+            <entry valign="top">Chemical formula</entry>
+            <entry valign="top">Physicochemical properties</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry valign="middle">45</entry>
+            <entry valign="middle">
+              <chemistry id="chem0051" num="0051">
+                <img id="ib0051" file="imgb0051.tif" wi="64" he="54" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>IR (ATR)cm
+              <sup>-1</sup>: 2949, 1607, 1548, 1500, 1475, 1033.
+              <br/>
+              <sup>1</sup>H-NMR (CDCl
+              <sub>3</sub>) δ: 0.92 (3H, t, J = 7.1 Hz), 1.10-1.13 (2H, m), 1.42-1.62 (6H, m), 1.84 (1H, m), 2.75 (2H, d, J = 7.3 Hz), 2.85 (2H, q, J = 7.1 Hz), 3.06 (3H, s), 3.41 (2H, t, J = 5.3 Hz), 3.60 (3H, s), 4.37 (2H, t, J = 5.3 Hz), 4.96 (2H, s), 5.01 (2H, s), 6.57 (1H, d, J = 8.6 Hz), 7.39 (1H, d, J = 8.6 Hz), 7.41 (2H, d, J = 8.3 Hz), 7.55 (2H, d, J = 8.3 Hz), 8.09 (2H, s).
+            </entry>
+          </row>
+          <!-- EPO <DP n="71"> -->
+          <row>
+            <entry valign="middle">46</entry>
+            <entry valign="middle">
+              <chemistry id="chem0052" num="0052">
+                <img id="ib0052" file="imgb0052.tif" wi="50" he="53" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>
+              <sup>1</sup>H-NMR (CDCl
+              <sub>3</sub>) δ: 0.92 (3H, t, J = 7.1 Hz), 1.03-1.20 (2H, m), 1.35-1.70 (6H, m), 1.85 (1H, m), 2.75 (2H, d, J = 7.8 Hz), 2.85 (2H, q, J = 7.1 Hz), 3.57 (3H, s), 4.99 (2H, s), 5.03 (2H, s), 6.58 (1H, d, J = 8.8 Hz), 7.43 (1H, d, J = 8.8 Hz), 7.72-7.75 (3H, m), 8.30 (2H, s).
+            </entry>
+          </row>
+          <row>
+            <entry valign="middle">47</entry>
+            <entry valign="middle">
+              <chemistry id="chem0053" num="0053">
+                <img id="ib0053" file="imgb0053.tif" wi="54" he="51" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>
+              <sup>1</sup>H-NMR (CDCl
+              <sub>3</sub>) δ: 0.92 (3H, t, J = 6.8 Hz), 1.03-1.23 (2H, m), 1.30-1.75 (6H, m), 1.86 (1H, m), 2.75 (2H, d, J = 7.3 Hz), 2.86 (2H, q, J = 6.8 Hz), 2.98-3.01 (4H, m), 3.54 (3H, s), 3.83-3.89 (4H, m), 4.98 (2H, s), 5.05 (2H, s), 6.56 (1H, d, J = 8.6 Hz), 7.40 (1H, d, J = 8.6 Hz), 7.65-7.80 (3H, m), 8.10 (2H, s).
+            </entry>
+          </row>
+          <row>
+            <entry valign="middle">48</entry>
+            <entry valign="middle">
+              <chemistry id="chem0054" num="0054">
+                <img id="ib0054" file="imgb0054.tif" wi="55" he="48" img-content="chem" img-format="tif" orientation="portrait" inline="no"/>
+              </chemistry>
+            </entry>
+            <entry>
+              <sup>1</sup>H-NMR (CDCl
+              <sub>3</sub>) δ: 0.91 (3H, t, J = 7.1 Hz), 1.08-1.13 (2H, m), 1.39-1.74 (12H, m), 1.85 (1H, m), 2.74 (2H, d, J = 7.6 Hz), 2.85 (2H, q, J = 7.1 Hz), 2.96 (4H, t, J = 5.1 Hz), 3.53 (3H, s), 4.97 (2H, s), 5.05 (2H, s), 6.55 (1H, d, J = 8.6 Hz), 7.39 (1H, d, J = 8.6 Hz), 7.71 (1H, s), 7.74 (2H, s), 8.11 (2H, s).
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+      <!-- EPO <DP n="72"> -->
+    </table>
+  </tables>
+</p>

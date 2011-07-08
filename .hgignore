@@ -1,5 +1,5 @@
 relre:src/main/java/dl/*
-relre:resources/*
+relre:src/main/resources/rxdemo/*
 relre:target/*
 .classpath
 .project

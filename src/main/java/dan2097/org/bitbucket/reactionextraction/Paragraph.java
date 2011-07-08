@@ -4,9 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
@@ -15,14 +12,12 @@ import com.google.common.collect.BiMap;
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.utility.Utils;
-import dan2097.org.bitbucket.utility.XMLTags;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 
 public class Paragraph {
-	private static Logger LOG = Logger.getLogger(Paragraph.class);
-	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
+	//private static Logger LOG = Logger.getLogger(Paragraph.class);
 	private final String untaggedString;
 	private final String taggedString;
 	private final Document taggedSentencesDocument;
@@ -30,11 +25,8 @@ public class Paragraph {
 	private static final List<String> WORKUP_PHRASES = Arrays.asList("Concentrate", "Degass", "Dry", "Extract", "Filter", "Partition", "Precipitate", "Purify", "Recover", "Remove", "Wash", "Quench");
 	private static final String[] CONTAINER_ELS = new String[]{ACTIONPHRASE_Container, UNMATCHED_Container, NOUN_PHRASE_Container, VERBPHRASE_Container, ATMOSPHEREPHRASE_Container, TIMEPHRASE_Container,TEMPPHRASE_Container, PREPPHRASE_Container, ROLEPREPPHRASE_Container};
 
-	public Paragraph(Element p) {
-		if (!p.getLocalName().equals(XMLTags.P)){
-			throw new IllegalArgumentException("A paragraph object must be created from a XOM <p> element");
-		}
-		untaggedString = getText(p);
+	public Paragraph(String paragraphText) {
+		untaggedString = paragraphText;
 		if (untaggedString.equals("")){
 			taggedString ="";
 			taggedSentencesDocument =new Document(new Element("Document"));
@@ -48,21 +40,6 @@ public class Paragraph {
 			}
 			//if (LOG.isTraceEnabled()){LOG.trace(taggedSentencesDocument.toXML());};
 		}
-	}
-
-	private String getText(Element p) {
-		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(p, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
-		if (elsToDetach.size()!=0){//for performance only do the defensive copying when necessary
-			p = new Element(p);
-			elsToDetach =  XOMTools.getDescendantElementsWithTagNames(p, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
-			for (Element elToDetach : elsToDetach) {
-				elToDetach.detach();
-			}
-		}
-		String text = p.getValue();
-		//TODO handle superscripts/subscripts etc. differently?
-		text = matchWhiteSpace.matcher(text).replaceAll(" ");
-		return text.trim();
 	}
 	
 	String getTaggedString() {

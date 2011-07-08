@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0002" num="0002" sourceFile="EP 1841834B1.xml">Organic electronic devices that emit light, such as light-emitting diodes that make up displays, are present in many different kinds of electronic equipment. In all such devices, an organic active layer is sandwiched between two electrical contact layers. At least one of the electrical contact layers is light-transmitting so that light can pass through the electrical contact layer. The organic active layer emits light through the light-transmitting electrical contact layer upon application of electricity across the electrical contact layers.
+  <br/> It is well known to use organic electroluminescent compounds as the active component in light-emitting diodes. Simple organic molecules such as anthracene, thiadiazole derivatives, and coumarin derivatives are known to show electroluminescence. Semiconductive conjugated polymers have also been used as electroluminescent components, as has been disclosed in, for example, in 
+  <patcit id="pcit0001" dnum="US5247190B">
+    <text>US-B-5,247,190</text>
+  </patcit>, 
+  <patcit id="pcit0002" dnum="US5408109B">
+    <text>US-B-5,408,109</text>
+  </patcit> and 
+  <patcit id="pcit0003" dnum="EP443861A">
+    <text>EP-A-443 861</text>
+  </patcit>. Complexes of 8-hydroxyquinolate with trivalent metal ions, particularly aluminum, have been extensively used as electroluminescent components, as has been disclosed in, for example, 
+  <patcit id="pcit0004" dnum="US5552678A">
+    <text>US-A-5,552,678</text>
+  </patcit>. Burrows and Thompson have reported that fac-tris(2-phenylpyridine) iridium can be used as the active component in organic light-emitting devices. (
+  <nplcit id="ncit0001" npl-type="s">
+    <text>Appl. Phys. Lett. 1999, 75, 4</text>
+  </nplcit>.) The performance is maximized when the iridium compound is present in a host conductive material. Thompson has further reported devices in which the active layer is poly(N-vinyl carbazole) doped with fac-tris[2-(4',5'-difluorophenyl)pyridine-C'
+  <sub>2</sub>,N]iridium(III). (
+  <nplcit id="ncit0002" npl-type="s">
+    <text>Polymer Preprints 2000, 41(1), 770</text>
+  </nplcit>.)
+</p>

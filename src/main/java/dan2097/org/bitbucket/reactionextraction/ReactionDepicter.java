@@ -6,14 +6,14 @@ import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.IndigoRenderer;
 
-import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.IndigoHolder;
 
 public class ReactionDepicter {
 
 	final static IndigoRenderer renderer;
 
 	static{
-		Indigo indigo = Utils.indigo;
+		Indigo indigo = IndigoHolder.getInstance();
 		renderer = new IndigoRenderer(indigo);
 		indigo.setOption("render-output-format", "png");
 	}

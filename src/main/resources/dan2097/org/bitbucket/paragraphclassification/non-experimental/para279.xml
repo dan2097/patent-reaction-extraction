@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="p0141" num="0141" sourceFile="EP 2055695A1.xml">
+  <tables id="tabl0007" num="0007">
+    <table frame="all">
+      <title>[Table 7]</title>
+      <tgroup cols="8">
+        <colspec colnum="1" colname="col1" colwidth="11mm"/>
+        <colspec colnum="2" colname="col2" colwidth="18mm"/>
+        <colspec colnum="3" colname="col3" colwidth="15mm"/>
+        <colspec colnum="4" colname="col4" colwidth="13mm"/>
+        <colspec colnum="5" colname="col5" colwidth="19mm"/>
+        <colspec colnum="6" colname="col6" colwidth="15mm"/>
+        <colspec colnum="7" colname="col7" colwidth="13mm"/>
+        <colspec colnum="8" colname="col8" colwidth="13mm"/>
+        <thead>
+          <row>
+            <entry morerows="1" align="center" valign="middle">
+              <b>No.</b>
+            </entry>
+            <entry morerows="1" align="center" valign="middle">
+              <b>Time (hr)</b>
+            </entry>
+            <entry namest="col3" nameend="col8" align="center" valign="middle">
+              <b>Concentration (µmol/L)</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center" valign="middle">
+              <b>As(V)</b>
+            </entry>
+            <entry align="center" valign="middle">
+              <b>MMA</b>
+            </entry>
+            <entry align="center" valign="middle">
+              <b>MMA(III)</b>
+            </entry>
+            <entry align="center" valign="middle">
+              <b>As(III)</b>
+            </entry>
+            <entry align="center" valign="middle">
+              <b>DMA</b>
+            </entry>
+            <entry align="center" valign="middle">
+              <b>Total</b>
+            </entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry align="center">
+              <b>1</b>
+            </entry>
+            <entry align="center">
+              <b>0.5</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.173</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>26.120</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.972</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>2</b>
+            </entry>
+            <entry align="center">
+              <b>1</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.163</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.171</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.213</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>23.799</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.075</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.907</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>3</b>
+            </entry>
+            <entry align="center">
+              <b>2</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.152</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>2.305</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.440</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>22.651</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.109</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.924</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>4</b>
+            </entry>
+            <entry align="center">
+              <b>4</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.156</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>2.900</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.915</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>21.545</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.129</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.923</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>5</b>
+            </entry>
+            <entry align="center">
+              <b>21</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.361</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>4.383</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.588</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>19.311</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.153</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.860</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>6</b>
+            </entry>
+            <entry align="center">
+              <b>48</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.712</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>4.869</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>17.565</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.187</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.750</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>7</b>
+            </entry>
+            <entry align="center">
+              <b>72</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>0.605</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>3.621</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>12.469</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.160</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.264</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>8</b>
+            </entry>
+            <entry align="center">
+              <b>360</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>2.481</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>6.659</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>19.316</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.860</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>2.199</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>9</b>
+            </entry>
+            <entry align="center">
+              <b>21</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>13.609</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>6.973</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.165</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.556</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>10</b>
+            </entry>
+            <entry align="center">
+              <b>48</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>13.333</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>6.741</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.224</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.522</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>11</b>
+            </entry>
+            <entry align="center">
+              <b>72</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>9.477</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>4.099</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.176</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>1.031</b>
+            </entry>
+          </row>
+          <row>
+            <entry align="center">
+              <b>12</b>
+            </entry>
+            <entry align="center">
+              <b>360</b>
+            </entry>
+            <entry align="char" char=".">
+              <b>19.261</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>8.264</b>
+            </entry>
+            <entry align="char" char="." charoff="10">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="25">
+              <b>0.000</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>0.813</b>
+            </entry>
+            <entry align="char" char="." charoff="14">
+              <b>2.130</b>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </tables>
+</p>

@@ -8,9 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -22,10 +24,12 @@ import nu.xom.Nodes;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
+import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.InchiNormaliser;
+import dan2097.org.bitbucket.utility.IndigoHolder;
+import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
 import dan2097.org.bitbucket.utility.Utils;
-
-import static dan2097.org.bitbucket.utility.Utils.*;
+import dan2097.org.bitbucket.utility.XMLTags;
 
 public class ExperimentalSectionParser {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionParser.class);
@@ -38,6 +42,9 @@ public class ExperimentalSectionParser {
 	private final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
 	private final String synthesizePhraseProduct = "self::node()/descendant-or-self::NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	private final Indigo indigo = IndigoHolder.getInstance();
+	private final ParagraphClassifier classifier = ParagraphClassifierHolder.getInstance();
+	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	
 	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
 		this.titleCompound = titleCompound;
@@ -49,20 +56,48 @@ public class ExperimentalSectionParser {
 		if (titleCompound!=null){
 			List<Paragraph> paragraphs = new ArrayList<Paragraph>();
 			for (Element p : paragraphEls) {
-				Paragraph para = new Paragraph(p);
-				if (!para.getTaggedString().equals("")){
-					paragraphs.add(para);
-					List<Element> moleculeEls = findAllMolecules(para);
-					for (Element moleculeEl : moleculeEls) {
-						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
-						moleculeToChemicalMap.put(moleculeEl, cm);
-						ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
-						aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+				String paragraphText = getParagraphText(p);
+				if (classifier.isExperimental(paragraphText)){
+					Paragraph para = new Paragraph(paragraphText);
+					if (!para.getTaggedString().equals("")){
+						paragraphs.add(para);
+						List<Element> moleculeEls = findAllMolecules(para);
+						for (Element moleculeEl : moleculeEls) {
+							Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
+							moleculeToChemicalMap.put(moleculeEl, cm);
+							ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+							aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+						}
 					}
 				}
 			}
 			reactions.addAll(determineReactions(paragraphs));
 		}
+	}
+	
+
+	/**
+	 * Returns the text contained within a paragraph.
+	 * Contained tables are ignored, white space is normalised
+	 * @param paragraphEl
+	 * @return
+	 */
+	private String getParagraphText(Element paragraphEl) {
+		if (!paragraphEl.getLocalName().equals(XMLTags.P)){
+			throw new IllegalArgumentException("A paragraph element was expected!");
+		}
+		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
+		if (elsToDetach.size()!=0){//for performance only do the defensive copying when necessary
+			paragraphEl = new Element(paragraphEl);
+			elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
+			for (Element elToDetach : elsToDetach) {
+				elToDetach.detach();
+			}
+		}
+		String text = paragraphEl.getValue();
+		//TODO handle superscripts/subscripts etc. differently?
+		text = matchWhiteSpace.matcher(text).replaceAll(" ");
+		return text.trim();
 	}
 
 	/**

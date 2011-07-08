@@ -46,7 +46,6 @@ import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 public class Utils {
 	
 	private static Builder xomBuilder;
-	public static Indigo indigo = new Indigo();
 	
 	static {
 		XMLReader xmlReader;
@@ -71,7 +70,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String tagString(String text) {
-		POSContainer posContainer = OscarUtils.posTagger.runTaggers(text);
+		POSContainer posContainer = OscarReliantFunctionality.getInstance().getPosTagger().runTaggers(text);
 		return posContainer.getTokenTagTupleAsString();
 	}
 	
@@ -92,7 +91,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToSmiles(String name) {
-		return OscarUtils.chemNameRegistry.getShortestSmiles(name);
+		return OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getShortestSmiles(name);
 	}
 	
 	/**
@@ -101,7 +100,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
-		Set<String> inchis = OscarUtils.chemNameRegistry.getInchis(name);
+		Set<String> inchis = OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getInchis(name);
 		if (!inchis.isEmpty()){
 			return inchis.iterator().next();
 		}
@@ -284,6 +283,7 @@ public class Utils {
 	 * @return
 	 */
 	public static IndigoObject createIndigoReaction(Reaction reaction) {
+		Indigo indigo = IndigoHolder.getInstance();
 		IndigoObject rxn = indigo.createReaction();
 		for (Chemical product: reaction.getProducts()) {
 			if (product.getSmiles()!=null){

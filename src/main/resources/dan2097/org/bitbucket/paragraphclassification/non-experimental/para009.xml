@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p id="ref-p0003" num="" sourceFile="EP 1828185B1.xml">
+  <ul id="ref-ul0002" list-style="bullet">
+    <li>
+      <nplcit id="ref-ncit0001" npl-type="s">
+        <article>
+          <author>
+            <name>M.C. HUNG et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Seminars in Oncology</sertitle>
+            <pubdate>
+              <sdate>19990812</sdate>
+              <edate/>
+            </pubdate>
+            <vid>26</vid>
+            <ino>4</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>51</ppf>
+              <ppl>59</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0001">[0003]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0002" npl-type="s">
+        <article>
+          <author>
+            <name>ULLRICH et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Cell</sertitle>
+            <pubdate>
+              <sdate>19900420</sdate>
+              <edate/>
+            </pubdate>
+            <vid>61</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>203</ppf>
+              <ppl>212</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0002">[0003]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0003" npl-type="s">
+        <article>
+          <author>
+            <name>MODJTAHEDI et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Int'l. J. of Oncology</sertitle>
+            <pubdate>
+              <sdate>19980000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>13</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>335</ppf>
+              <ppl>342</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0003">[0003]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0004" npl-type="s">
+        <article>
+          <author>
+            <name>J.R. WOODBURN</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Pharmacol. Ther.</sertitle>
+            <pubdate>
+              <sdate>19990000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>82</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>2</ppf>
+              <ppl>3</ppl>
+            </pp>
+            <pp>
+              <ppf>241</ppf>
+              <ppl>250</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0004">[0003]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0005" npl-type="b">
+        <article>
+          <atl/>
+          <book>
+            <book-title>Burger's Medicinal Chemistry And Drug Discovery</book-title>
+            <imprint>
+              <name>Principles And Practice</name>
+            </imprint>
+            <vid>1</vid>
+          </book>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0005">[0059]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0006" npl-type="s">
+        <article>
+          <author>
+            <name>NORMANNO, N.</name>
+          </author>
+          <author>
+            <name>BIANCO, C.</name>
+          </author>
+          <author>
+            <name>STRIZZI, L.</name>
+          </author>
+          <author>
+            <name>MANCINO, M.</name>
+          </author>
+          <author>
+            <name>MAIELLO, M.R.</name>
+          </author>
+          <author>
+            <name>DELUCA, A.</name>
+          </author>
+          <author>
+            <name>CAPONIGRO, F.</name>
+          </author>
+          <author>
+            <name>SALOMON, D.S.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Current Drug Targets</sertitle>
+            <pubdate>
+              <sdate>20050000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>6</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>243</ppf>
+              <ppl>257</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0006">[0062]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0007" npl-type="s">
+        <article>
+          <author>
+            <name>HYNES, N. E.</name>
+          </author>
+          <author>
+            <name>LANE, H. A.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Nature Reviews Cancer</sertitle>
+            <pubdate>
+              <sdate>20050000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>5</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>341</ppf>
+              <ppl>345</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0007">[0062]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0008" npl-type="s">
+        <article>
+          <author>
+            <name>BEN-BARUCH, N.</name>
+          </author>
+          <author>
+            <name>YARDEN, Y.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Progress in Oncology</sertitle>
+            <pubdate>
+              <sdate>20040000</sdate>
+              <edate/>
+            </pubdate>
+          </serial>
+          <location>
+            <pp>
+              <ppf>46</ppf>
+              <ppl>72</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0008">[0062]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0009" npl-type="b">
+        <article>
+          <atl/>
+          <book>
+            <book-title>Pharmaceutical Research</book-title>
+            <imprint>
+              <name/>
+              <pubdate>19860000</pubdate>
+            </imprint>
+            <vid>3</vid>
+            <location>
+              <pp>
+                <ppf>318</ppf>
+                <ppl/>
+              </pp>
+            </location>
+          </book>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0009">[0089]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0010" npl-type="s">
+        <article>
+          <author>
+            <name>KATH, JOHN C.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Exp. Opin. Ther. Patents</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>10</vid>
+            <ino>6</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>803</ppf>
+              <ppl>818</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0010">[0113]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0011" npl-type="s">
+        <article>
+          <author>
+            <name>SHAWVER et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>DDT</sertitle>
+            <pubdate>
+              <sdate>19970200</sdate>
+              <edate/>
+            </pubdate>
+            <vid>2</vid>
+            <ino>2</ino>
+          </serial>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0011">[0113]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0012" npl-type="b">
+        <article>
+          <atl>Growth Factor Receptors as Targets</atl>
+          <book>
+            <author>
+              <name>LOFTS, F. J. et al.</name>
+            </author>
+            <book-title>New Molecular Targets for Cancer Chemotherapy</book-title>
+            <imprint>
+              <name>CRC Press</name>
+              <pubdate>19940000</pubdate>
+            </imprint>
+          </book>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0012">[0113]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0013" npl-type="s">
+        <article>
+          <author>
+            <name>SINH, S.</name>
+          </author>
+          <author>
+            <name>COREY, S.J.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Journal of Hematotherapy and Stem Cell Research</sertitle>
+            <pubdate>
+              <sdate>19990000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>8</vid>
+            <ino>5</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>465</ppf>
+              <ppl>80</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0013">[0114]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0014" npl-type="s">
+        <article>
+          <author>
+            <name>BOLEN, J.B.</name>
+          </author>
+          <author>
+            <name>BRUGGE, J.S.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Annual Review of Immunology</sertitle>
+            <pubdate>
+              <sdate>19970000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>15</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>371</ppf>
+              <ppl>404</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0014">[0114]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0015" npl-type="s">
+        <article>
+          <author>
+            <name>SMITHGALL, T.E.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Journal of Pharmacological and Toxicological Methods</sertitle>
+            <pubdate>
+              <sdate>19950000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>34</vid>
+            <ino>3</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>125</ppf>
+              <ppl>32</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0015">[0114]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0016" npl-type="s">
+        <article>
+          <author>
+            <name>YAMAMOTO, T.</name>
+          </author>
+          <author>
+            <name>TAYA, S.</name>
+          </author>
+          <author>
+            <name>KAIBUCHI, K.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Journal of Biochemistry</sertitle>
+            <pubdate>
+              <sdate>19990000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>126</vid>
+            <ino>5</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>799</ppf>
+              <ppl>803</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0016">[0115]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0017" npl-type="s">
+        <article>
+          <author>
+            <name>BRODT, P</name>
+          </author>
+          <author>
+            <name>SAMANI, A.</name>
+          </author>
+          <author>
+            <name>NAVAB, R.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Biochemical Pharmacology</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>60</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>1101</ppf>
+              <ppl>1107</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0017">[0115]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0018" npl-type="s">
+        <article>
+          <author>
+            <name>MASSAGUE, J.</name>
+          </author>
+          <author>
+            <name>WEIS-GARCIA, F.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Cancer Surveys</sertitle>
+            <pubdate>
+              <sdate>19960000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>27</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>41</ppf>
+              <ppl>64</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0018">[0115]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0019" npl-type="s">
+        <article>
+          <author>
+            <name>PHILIP, P.A.</name>
+          </author>
+          <author>
+            <name>HARRIS, A.L.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Cancer Treatment and Research.</sertitle>
+            <pubdate>
+              <sdate>19950000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>78</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>3</ppf>
+              <ppl>27</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0019">[0115]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0020" npl-type="s">
+        <article>
+          <author>
+            <name>LACKEY, K. et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Bioorganic and Medicinal Chemistry Letters</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>10</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>223</ppf>
+              <ppl>226</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0020">[0115]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0021" npl-type="s">
+        <article>
+          <author>
+            <name>MARTINEZ-LACACI, L. et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Int. J. Cancer</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>88</vid>
+            <ino>1</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>44</ppf>
+              <ppl>52</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0021">[0115]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0022" npl-type="s">
+        <article>
+          <author>
+            <name>ABRAHAM, R.T.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Current Opinion in Immunology.</sertitle>
+            <pubdate>
+              <sdate>19960000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>8</vid>
+            <ino>3</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>412</ppf>
+              <ppl>8</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0022">[0116]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0023" npl-type="s">
+        <article>
+          <author>
+            <name>CANMAN, C.E.</name>
+          </author>
+          <author>
+            <name>LIM, D.S.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Oncogene</sertitle>
+            <pubdate>
+              <sdate>19980000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>17</vid>
+            <ino>25</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>3301</ppf>
+              <ppl>3308</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0023">[0116]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0024" npl-type="s">
+        <article>
+          <author>
+            <name>JACKSON, S.P.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>International Journal of Biochemistry and Cell Biology</sertitle>
+            <pubdate>
+              <sdate>19970000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>29</vid>
+            <ino>7</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>935</ppf>
+              <ppl>8</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0024">[0116]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0025" npl-type="s">
+        <article>
+          <author>
+            <name>ZHONG, H. et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Cancer Res</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>60</vid>
+            <ino>6</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>1541</ppf>
+              <ppl>1545</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0025">[0116]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0026" npl-type="b">
+        <article>
+          <atl/>
+          <book>
+            <author>
+              <name>POWIS, G.</name>
+            </author>
+            <author>
+              <name>KOZIKOWSKI A.</name>
+            </author>
+            <book-title>New Molecular Targets for Cancer Chemotherapy</book-title>
+            <imprint>
+              <name>CRC Press</name>
+              <pubdate>19940000</pubdate>
+            </imprint>
+          </book>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0026">[0117]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0027" npl-type="s">
+        <article>
+          <author>
+            <name>SCHAROVSKY, O.G.</name>
+          </author>
+          <author>
+            <name>ROZADOS, V.R.</name>
+          </author>
+          <author>
+            <name>GERVASONI, S.I.</name>
+          </author>
+          <author>
+            <name>MATAR, P.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Journal of Biomedical Science</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>7</vid>
+            <ino>4</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>292</ppf>
+              <ppl>8</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0027">[0118]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0028" npl-type="s">
+        <article>
+          <author>
+            <name>ASHBY, M.N.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Current Opinion in Lipidology.</sertitle>
+            <pubdate>
+              <sdate>19890000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>9</vid>
+            <ino>2</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>99</ppf>
+              <ppl>102</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0028">[0118]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0029" npl-type="s">
+        <article>
+          <atl/>
+          <serial>
+            <sertitle>BioChim. Biophys. Acta</sertitle>
+            <vid>1423</vid>
+            <ino>3</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>19</ppf>
+              <ppl>30</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0029">[0118]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0030" npl-type="s">
+        <article>
+          <author>
+            <name>GREEN, M.C. et al.</name>
+          </author>
+          <atl>Monoclonal Antibody Therapy for Solid Tumors</atl>
+          <serial>
+            <sertitle>Cancer Treat. Rev.</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>26</vid>
+            <ino>4</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>269</ppf>
+              <ppl>286</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0030">[0119]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0031" npl-type="s">
+        <article>
+          <atl>Tyrosine Kinase Signaling in Breast Cancer:ErbB Family Receptor Tyrosine Kinases</atl>
+          <serial>
+            <sertitle>Breast Cancer Res.</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>2</vid>
+            <ino>3</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>176</ppf>
+              <ppl>183</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0031">[0119]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0032" npl-type="s">
+        <article>
+          <author>
+            <name>BREKKEN, R.A. et al.</name>
+          </author>
+          <atl>Selective Inhibition of VEGFR2 Activity by a Monoclonal Anti-VEGF Antibody Blocks Tumor Growth in Mice</atl>
+          <serial>
+            <sertitle>Cancer Res.</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>60</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>5117</ppf>
+              <ppl>5124</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0032">[0119]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0033" npl-type="s">
+        <article>
+          <author>
+            <name>WATER JS et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>J. Clin. Oncol.</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>18</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>1812</ppf>
+              <ppl>1823</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0033">[0122]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0034" npl-type="s">
+        <article>
+          <author>
+            <name>KITADA S et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Antisense Res. Dev.</sertitle>
+            <pubdate>
+              <sdate>19940000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>4</vid>
+          </serial>
+          <location>
+            <pp>
+              <ppf>71</ppf>
+              <ppl>79</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0034">[0122]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0035" npl-type="s">
+        <article>
+          <author>
+            <name>ROSANIA et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>Exp. Opin. Ther. Patents</sertitle>
+            <pubdate>
+              <sdate>20000000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>10</vid>
+            <ino>2</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>215</ppf>
+              <ppl>230</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0035">[0123]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0036" npl-type="b">
+        <article>
+          <atl/>
+          <book>
+            <author>
+              <name>T. W. GREEN</name>
+            </author>
+            <author>
+              <name>P. G. M. WUTS</name>
+            </author>
+            <book-title>Protecting Groups in Organic Synthesis</book-title>
+            <imprint>
+              <name>John Wiley &amp; Sons</name>
+              <pubdate>19910000</pubdate>
+            </imprint>
+          </book>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0036">[0125]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0037" npl-type="b">
+        <article>
+          <atl>Palladium-catalyzed alkynylation</atl>
+          <book>
+            <author>
+              <name>SONOGASHIRA</name>
+            </author>
+            <author>
+              <name>KENKICHI</name>
+            </author>
+            <book-title>HANDBOOK OF ORGANOPALLADIUM CHEMISTRY FOR ORGANIC SYNTHESIS</book-title>
+            <imprint>
+              <name/>
+              <pubdate>20020000</pubdate>
+            </imprint>
+            <vid>1</vid>
+            <location>
+              <pp>
+                <ppf>493</ppf>
+                <ppl>529</ppl>
+              </pp>
+            </location>
+          </book>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0037">[0140]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0038" npl-type="s">
+        <article>
+          <author>
+            <name>BRIGNOLA, P.S. et al.</name>
+          </author>
+          <atl/>
+          <serial>
+            <sertitle>J. Biol. Chem.</sertitle>
+            <pubdate>
+              <sdate>20020000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>277</vid>
+            <ino>2</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>1576</ppf>
+              <ppl>1585</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0038">[0920]</crossref>
+    </li>
+    <li>
+      <nplcit id="ref-ncit0039" npl-type="s">
+        <article>
+          <author>
+            <name>BRIGNOLA, P.S. et al.</name>
+          </author>
+          <atl>Peptide C</atl>
+          <serial>
+            <sertitle>J. Biol Chem.</sertitle>
+            <pubdate>
+              <sdate>20020000</sdate>
+              <edate/>
+            </pubdate>
+            <vid>277</vid>
+            <ino>2</ino>
+          </serial>
+          <location>
+            <pp>
+              <ppf>1576</ppf>
+              <ppl>1585</ppl>
+            </pp>
+          </location>
+        </article>
+      </nplcit>
+      <crossref idref="ncit0039">[0921]</crossref>
+    </li>
+  </ul>
+</p>
