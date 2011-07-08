@@ -31,7 +31,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
+import uk.ac.cam.ch.wwmm.opsin.NameToInchi;
+import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
+import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
+import uk.ac.cam.ch.wwmm.opsin.OpsinResult;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+import uk.ac.cam.ch.wwmm.opsin.OpsinResult.OPSIN_RESULT_STATUS;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
@@ -243,21 +248,30 @@ public class Utils {
 		return previous;
 	}
 	
-	public static Chemical extractChemicalFromHeading(String title) {
+	public static Chemical extractResolvableChemicalFromHeading(String title) {
 		if (title==null){
 			throw new IllegalArgumentException("Input title text was null");
 		}
 		List<String> names = getSystematicChemicalNamesFromText(title);
 		if (names.size()==1){
 			String name = names.get(0);
-			Chemical chem = new Chemical(name);
-			chem.setSmiles(Utils.resolveNameToSmiles(name));
-			String rawInchi = Utils.resolveNameToInchi(name);
-			if (rawInchi!=null){
-				chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
+			NameToStructure n2s;
+			try {
+				n2s = NameToStructure.getInstance();
+			} catch (NameToStructureException e) {
+				throw new RuntimeException("OPSIN failed to initialise", e);
 			}
-			chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
-			return chem;
+			OpsinResult result = n2s.parseChemicalName(name);
+			if (result.getStatus() != OPSIN_RESULT_STATUS.FAILURE){
+				Chemical chem = new Chemical(name);
+				chem.setSmiles(result.getSmiles());
+				String rawInchi = NameToInchi.convertResultToInChI(result);
+				if (rawInchi!=null){
+					chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
+				}
+				chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
+				return chem;
+			}
 		}
 		return null;
 	}
@@ -269,7 +283,7 @@ public class Utils {
 	 * @return
 	 */
 	public static ExperimentalSectionParser createExperimentalSectionParser(String title, String content){
-		Chemical titleCompound = extractChemicalFromHeading(title);
+		Chemical titleCompound = extractResolvableChemicalFromHeading(title);
 		List<Element> paragraphEls = new ArrayList<Element>();
 		Element paragraph = new Element(XMLTags.P);
 		paragraph.appendChild(content);

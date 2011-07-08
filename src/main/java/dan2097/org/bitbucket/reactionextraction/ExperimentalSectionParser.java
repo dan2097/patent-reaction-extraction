@@ -47,32 +47,33 @@ public class ExperimentalSectionParser {
 	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	
 	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
+		if (titleCompound ==null|| paragraphEls ==null|| aliasToChemicalMap==null){
+			throw new IllegalArgumentException("Null input parameter");
+		}
 		this.titleCompound = titleCompound;
 		this.paragraphEls = paragraphEls;
 		this.aliasToChemicalMap = aliasToChemicalMap;
 	}
 
 	public void parseForReactions(){
-		if (titleCompound!=null){
-			List<Paragraph> paragraphs = new ArrayList<Paragraph>();
-			for (Element p : paragraphEls) {
-				String paragraphText = getParagraphText(p);
-				if (classifier.isExperimental(paragraphText)){
-					Paragraph para = new Paragraph(paragraphText);
-					if (!para.getTaggedString().equals("")){
-						paragraphs.add(para);
-						List<Element> moleculeEls = findAllMolecules(para);
-						for (Element moleculeEl : moleculeEls) {
-							Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
-							moleculeToChemicalMap.put(moleculeEl, cm);
-							ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
-							aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
-						}
+		List<Paragraph> paragraphs = new ArrayList<Paragraph>();
+		for (Element p : paragraphEls) {
+			String paragraphText = getParagraphText(p);
+			if (classifier.isExperimental(paragraphText)){
+				Paragraph para = new Paragraph(paragraphText);
+				if (!para.getTaggedString().equals("")){
+					paragraphs.add(para);
+					List<Element> moleculeEls = findAllMolecules(para);
+					for (Element moleculeEl : moleculeEls) {
+						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
+						moleculeToChemicalMap.put(moleculeEl, cm);
+						ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+						aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
 					}
 				}
 			}
-			reactions.addAll(determineReactions(paragraphs));
 		}
+		reactions.addAll(determineReactions(paragraphs));
 	}
 	
 

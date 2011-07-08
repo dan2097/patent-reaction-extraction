@@ -29,7 +29,10 @@ public class ExperimentalParser {
 
 	public void parseExperimentalSection(Element headingElementToProcess) {
 		String title = headingElementToProcess.getAttributeValue(XMLAtrs.TITLE);
-		Chemical titleCompound = Utils.extractChemicalFromHeading(title);
+		Chemical titleCompound = Utils.extractResolvableChemicalFromHeading(title);
+		if (titleCompound==null){
+			return;
+		}
 		String alias = TitleTextAliasExtractor.findAlias(title);
 		if (alias !=null){
 			aliasToChemicalMap.put(alias, titleCompound);
