@@ -59,17 +59,17 @@
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>indigo</artifactId>
-			<version>1.1-alpha2</version>
+			<version>1.1-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>indigo-renderer</artifactId>
-			<version>1.1-alpha2</version>
+			<version>1.1-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>jna</artifactId>
-			<version>1.1-alpha2</version>
+			<version>1.1-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.collections</groupId>
