@@ -23,8 +23,7 @@ public class ExperimentalParser {
 	}
 	
 	public List<Reaction> getAllCompleteReactions() {
-		throw new RuntimeException("Disabled whilst bugs in indigo are fixed");
-		//return completeReactions;
+		return completeReactions;
 	}
 
 	public void parseExperimentalSection(Element headingElementToProcess) {
@@ -42,7 +41,7 @@ public class ExperimentalParser {
 		List<Reaction> reactions = sectionparser.getReactions();
 		new ReactionStoichiometryDeterminer(reactions).processReactionStoichiometry();
 		documentReactions.addAll(reactions);
-		//completeReactions.addAll(determineCompleteReactions(reactions));
+		completeReactions.addAll(determineCompleteReactions(reactions));
 	}
 
 	private List<Reaction> determineCompleteReactions(List<Reaction> reactions) {

@@ -147,12 +147,14 @@ public class ExperimentalSectionParser {
 			if (smiles1 !=null && smiles2 ==null){
 				Chemical cm = new Chemical(name2);
 				cm.setSmiles(smiles1);
+				cm.setInchi(Utils.resolveNameToSmiles(name1));
 				aliasToChemicalMap.put(name2, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
 			else if (smiles1 ==null && smiles2 !=null){
 				Chemical cm = new Chemical(name1);
 				cm.setSmiles(smiles2);
+				cm.setInchi(Utils.resolveNameToSmiles(name2));
 				aliasToChemicalMap.put(name1, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
