@@ -1,5 +1,10 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -16,7 +21,27 @@ public class ChemicalTypeAssigner {
 	private static Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchNMR = Pattern.compile("\\d+H|.*[nN][mM][rR]$");
+	private static List<Pattern> falsePositivePatterns = new ArrayList<Pattern>();
+	
+	static{
+		InputStream is = ChemicalTypeAssigner.class.getResourceAsStream("/dan2097/org/bitbucket/reactionextraction/falsePositiveRegexes.txt");
+		if (is ==null){
+			throw new RuntimeException("Failed to read falsePositiveRegexes.txt");
+		}
+		BufferedReader input = new BufferedReader(new InputStreamReader(is));
+		String line = null;
+		try{
+			while ((line = input.readLine()) != null) {
+				if (line.startsWith("#") || line.equals("")){
+					continue;
+				}
+				falsePositivePatterns.add(Pattern.compile(line, Pattern.CASE_INSENSITIVE));
+			}
+		}
+		catch (IOException e ) {
+			throw new RuntimeException("Failed to read falsePositiveRegexes.txt", e);
+		}
+	}
 
 	/**
 	 * Assigns a preliminary type to each chemical based on the chemical name itself and local textual information
@@ -66,7 +91,6 @@ public class ChemicalTypeAssigner {
 		if (!ChemicalType.falsePositive.equals(chem.getType()) && hasQualifyingIdentifier(mol)){
 			chem.setType(ChemicalType.definiteReference);
 		}
-		
 		if (chem.getType()==null){
 			if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
 				chem.setType(ChemicalType.falsePositive);
@@ -90,24 +114,13 @@ public class ChemicalTypeAssigner {
 
 	private static boolean isFalsePositive(Chemical chem, Element mol) {
 		String chemicalName = chem.getName();
-		if (matchNMR.matcher(chemicalName).matches()){
-			return true;
-		}
 		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
 			return true;
 		}
-		String chemicalNameLc = chemicalName.toLowerCase();
-		if (chemicalNameLc.contains("=") || chemicalNameLc.startsWith("silica")){
-			return true;
-		}
-		if (chemicalNameLc.equals("nitrogen") || chemicalNameLc.equals("carbon")
-				|| chemicalNameLc.equals("silicon")
-				|| chemicalNameLc.equals("helium")
-				|| chemicalNameLc.equals("neon")
-				|| chemicalNameLc.equals("argon")
-				|| chemicalNameLc.equals("krypton")
-				|| chemicalNameLc.equals("xenon")){
-			return true;
+		for (Pattern pat : falsePositivePatterns) {
+			if (pat.matcher(chemicalName).matches()){
+				return true;
+			}
 		}
 		return false;
 	}
