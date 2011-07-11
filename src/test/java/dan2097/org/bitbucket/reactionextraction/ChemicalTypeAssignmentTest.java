@@ -9,7 +9,7 @@ import org.junit.Test;
 public class ChemicalTypeAssignmentTest {
 
 	@Test
-	public void typeDetectionTestFP(){
+	public void typeDetectionTestFP1(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(UNNAMEDMOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -17,6 +17,37 @@ public class ChemicalTypeAssignmentTest {
 		alphaNum.appendChild("4H");
 		moleculeEl.appendChild(alphaNum);
 		Chemical chem = new Chemical("4H");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.falsePositive, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestFP2(){
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("benzene-d6");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Chemical chem = new Chemical("benzene-d6");
+		chem.setSmiles("[2H]C1=C([2H])C([2H])=C([2H])C([2H])=C1[2H]");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.falsePositive, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestFP3(){
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("tms");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Chemical chem = new Chemical("tms");
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.falsePositive, chem.getType());
 	}

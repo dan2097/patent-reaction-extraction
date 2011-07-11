@@ -1,0 +1,42 @@
+#use (?-i) to force case sensitivity. If one of these expressions entirely matches a chemical name it will be marked as a false positive.
+#False positives are not neccesarily non-chemical, they just are not products/reactants/solvents/catalysts
+
+
+#parts of NMR patterns
+(?-i)\d+H
+.*nmr
+.*-d\d*
+CD3COOD
+CD3COCD3
+CD3CN
+C6D6
+CDCl3
+CD2Cl2
+CD3SOCD3
+CD3CD2OD
+CD3OD
+C6D5NO2
+CD3NO2
+C5D5N
+C4D8O
+C6D5CD3
+CF3COOD
+CF3CD2OD
+D2O
+Tetramethylsilane|TMS|DSS|TSP|TMSP 
+
+
+#Inert gases and elements that are part of materials
+nitrogen
+carbon
+silicon
+helium
+neon
+argon
+krypton
+xenon
+
+
+#Miscellany
+.*=.*
+silica.*
