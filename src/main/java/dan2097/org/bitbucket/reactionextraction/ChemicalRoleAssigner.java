@@ -23,10 +23,6 @@ public class ChemicalRoleAssigner {
 		else if (ChemicalTaggerAtrs.CATALYST_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
-		else if (chemical.getVolumeValue()!=null && chemical.getAmountValue()==null && chemical.hasImpreciseVolume()){
-			//solvents will be liquids but typically with imprecise volume and no amount given
-			chemical.setRole(ChemicalRole.solvent);
-		}
 		else {
 			chemical.setRole(ChemicalRole.reactant);
 		}

@@ -44,7 +44,7 @@ public class ChemicalSenseApplicationTest {
 	}
 	
 	@Test
-	public void reactantMisclassifiedAsASolventTest() {
+	public void reactantIsKnownToBeASolventInSameReactionTest() {
 		Reaction reaction = new Reaction();
 		Chemical misclassifiedReactant = new Chemical("THF");
 		misclassifiedReactant.setInchi("InChI=1/C4H8O/c1-2-4-5-3-1/h1-4H2");
@@ -59,7 +59,7 @@ public class ChemicalSenseApplicationTest {
 	}
 	
 	@Test
-	public void correctlyClassifiedAlreadyTest() {
+	public void correctlyClassifiedTest() {
 		Reaction reaction = new Reaction();
 		Chemical reactant = new Chemical("DMF");
 		reactant.setInchi("InChI=1S/C6H8O4/c1-9-5(7)3-4-6(8)10-2/h3-4H,1-2H3/b4-3+");
@@ -69,6 +69,92 @@ public class ChemicalSenseApplicationTest {
 		solvent.setRole(ChemicalRole.solvent);
 		reaction.addReactant(reactant);
 		reaction.addSpectator(solvent);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
+		assertEquals(ChemicalRole.reactant, reactant.getRole());
+	}
+	
+	@Test
+	public void correctReactantToSolventUsingKnowledge() {
+		Reaction reaction = new Reaction();
+		Chemical reactant = new Chemical("THF");
+		reactant.setInchi("InChI=1/C4H8O/c1-2-4-5-3-1/h1-4H2");
+		reactant.setRole(ChemicalRole.reactant);
+		reaction.addReactant(reactant);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
+		assertEquals(ChemicalRole.solvent, reactant.getRole());
+	}
+	
+	@Test
+	public void correctReactantToSolventUsingKnowledge2() {
+		Reaction reaction = new Reaction();
+		Chemical reactant = new Chemical("THF");
+		reactant.setInchi("InChI=1/C4H8O/c1-2-4-5-3-1/h1-4H2");
+		reactant.setAmountValue("0.5");
+		reactant.setAmountUnits("mM");
+		reactant.setRole(ChemicalRole.reactant);
+		reaction.addReactant(reactant);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
+		assertEquals(ChemicalRole.reactant, reactant.getRole());
+	}
+	
+	@Test
+	public void correctReactantToSolventUsingKnowledge3() {
+		Reaction reaction = new Reaction();
+		Chemical reactant = new Chemical("acetic acid");//can be a solvent
+		reactant.setInchi("InChI=1/C2H4O2/c1-2(3)4/h1H3,(H,3,4)");
+		reactant.setAmountValue("0.5");
+		reactant.setAmountUnits("mM");
+		reactant.setRole(ChemicalRole.reactant);
+		reaction.addReactant(reactant);
+		Chemical misclassifiedSolvent = new Chemical("THF");
+		misclassifiedSolvent.setInchi("InChI=1/C4H8O/c1-2-4-5-3-1/h1-4H2");
+		misclassifiedSolvent.setRole(ChemicalRole.reactant);
+		reaction.addReactant(misclassifiedSolvent);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
+		assertEquals(ChemicalRole.reactant, reactant.getRole());
+		assertEquals(ChemicalRole.solvent, misclassifiedSolvent.getRole());
+	}
+
+	@Test
+	public void assignedAsSolventDueToInpreciseVolumeTest(){
+		Reaction reaction = new Reaction();
+		Chemical reactant = new Chemical("foo");
+		reactant.setVolumeValue("500");
+		reactant.setVolumeUnits("ml");
+		reactant.setRole(ChemicalRole.reactant);
+		reaction.addReactant(reactant);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
+		assertEquals(ChemicalRole.solvent, reactant.getRole());
+	}
+	
+	@Test
+	public void correctReactantToSolventUsingKnowledge4() {
+		Reaction reaction = new Reaction();
+		Chemical misclassifiedSolvent1 = new Chemical("foo");//can be a solvent
+		misclassifiedSolvent1.setVolumeValue("500");
+		misclassifiedSolvent1.setVolumeUnits("ml");
+		misclassifiedSolvent1.setRole(ChemicalRole.reactant);
+		reaction.addReactant(misclassifiedSolvent1);
+		Chemical misclassifiedSolvent2 = new Chemical("foo");
+		misclassifiedSolvent2.setRole(ChemicalRole.reactant);
+		reaction.addReactant(misclassifiedSolvent2);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
+		assertEquals(ChemicalRole.solvent, misclassifiedSolvent1.getRole());
+		assertEquals(ChemicalRole.solvent, misclassifiedSolvent2.getRole());
+	}
+
+	@Test
+	public void onlyEmployHeuristicWhenNoSolventPresentTest(){
+		Reaction reaction = new Reaction();
+		Chemical reactant = new Chemical("foo");
+		reactant.setVolumeValue("500");
+		reactant.setVolumeUnits("ml");
+		reactant.setRole(ChemicalRole.reactant);
+		reaction.addReactant(reactant);
+		Chemical solvent = new Chemical("THF");
+		solvent.setInchi("InChI=1/C4H8O/c1-2-4-5-3-1/h1-4H2");
+		solvent.setRole(ChemicalRole.solvent);
+		reaction.addReactant(solvent);
 		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
 		assertEquals(ChemicalRole.reactant, reactant.getRole());
 	}

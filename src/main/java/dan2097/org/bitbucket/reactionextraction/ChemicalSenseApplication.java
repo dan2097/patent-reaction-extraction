@@ -1,8 +1,10 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
@@ -14,6 +16,7 @@ public class ChemicalSenseApplication {
 	private final Reaction reaction;
 	private List<IndigoObject> products = new ArrayList<IndigoObject>();
 	private Indigo indigo = IndigoHolder.getInstance();
+	private static AprioriKnowledge chemicalKnowledge = new AprioriKnowledge();
 	
 	ChemicalSenseApplication(Reaction reaction) {
 		this.reaction = reaction;
@@ -78,17 +81,21 @@ public class ChemicalSenseApplication {
 			(atomicNumber >=72 && atomicNumber <=80);
 	}
 
+
+	void correctReactantsThatAreSolvents() {
+		Set<String> solventInChIs = getSolventInChIs();
+		classifyReactantsThatAreAlsoSolventsAsSolvent(solventInChIs);
+		classifyReactantAsSolventsUsingAprioriKnowledge();
+	}
+
+
+
 	/**
 	 * Applies the heuristic that the same chemical cannot be both a reactant and solvent
 	 * to reclassify such "reactants" as solvents
+	 * @param solventInChIs 
 	 */
-	void correctReactantsThatAreSolvents() {
-		List<String> solventInChIs = new ArrayList<String>();
-		for (Chemical spectator : reaction.getSpectators()) {
-			if (ChemicalRole.solvent.equals(spectator.getRole()) && spectator.getInchi() != null){
-				solventInChIs.add(spectator.getInchi());
-			}
-		}
+	private void classifyReactantsThatAreAlsoSolventsAsSolvent(Set<String> solventInChIs) {
 		List<Chemical> reactants = reaction.getReactants();
 		for (int i = reactants.size()-1; i >=0; i--) {
 			Chemical reactant = reactants.get(i);
@@ -97,6 +104,50 @@ public class ChemicalSenseApplication {
 				reaction.removeReactant(reactant);
 				reaction.addSpectator(reactant);
 			}
+		}
+	}
+
+	private Set<String> getSolventInChIs() {
+		Set<String> solventInChIs = new HashSet<String>();
+		for (Chemical spectator : reaction.getSpectators()) {
+			if (ChemicalRole.solvent.equals(spectator.getRole()) && spectator.getInchi() != null){
+				solventInChIs.add(spectator.getInchi());
+			}
+		}
+		return solventInChIs;
+	}
+
+	private void classifyReactantAsSolventsUsingAprioriKnowledge() {
+		boolean hasSolvent = getSolventInChIs().size()>0;
+		List<Chemical> reactants = reaction.getReactants();
+		Set<String> newSolventInChIs = new HashSet<String>();
+		for (int i = reactants.size()-1; i >=0; i--) {
+			Chemical reactant = reactants.get(i);
+			String inchi = reactant.getInchi();
+			if (!hasSolvent && chemicalKnowledge.isKnownSolventInChI(inchi) && reactant.getAmountValue()==null){
+				reactant.setRole(ChemicalRole.solvent);
+				reaction.removeReactant(reactant);
+				reaction.addSpectator(reactant);
+				newSolventInChIs.add(inchi);
+				hasSolvent = true;
+			}
+		}
+		if (!hasSolvent){
+			for (int i = reactants.size()-1; i >=0; i--) {
+				Chemical reactant = reactants.get(i);
+				String inchi = reactant.getInchi();
+				if (!hasSolvent && reactant.getVolumeValue()!=null && reactant.getAmountValue()==null && reactant.hasImpreciseVolume()){
+					//solvents will be liquids but typically with imprecise volume and no amount given
+					reactant.setRole(ChemicalRole.solvent);
+					reaction.removeReactant(reactant);
+					reaction.addSpectator(reactant);
+					newSolventInChIs.add(inchi);
+					hasSolvent = true;
+				}
+			}
+		}
+		if (!newSolventInChIs.isEmpty()){
+			classifyReactantsThatAreAlsoSolventsAsSolvent(newSolventInChIs);
 		}
 	}
 }
