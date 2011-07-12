@@ -31,16 +31,6 @@ public class ChemicalRoleAssignmentTest {
 	}
 	
 	@Test
-	public void assignedAsSolventDueToInpreciseVolumeTest(){
-		Element chemicalEl = new Element(MOLECULE_Container);
-		Chemical chemical = new Chemical("foo");
-		chemical.setVolumeValue("500");
-		chemical.setVolumeUnits("ml");
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.solvent, chemical.getRole());
-	}
-	
-	@Test
 	public void insufficientInformationToClassAsSolventOrCatalystTest(){
 		Element chemicalEl = new Element(MOLECULE_Container);
 		Chemical chemical = new Chemical("foo");
