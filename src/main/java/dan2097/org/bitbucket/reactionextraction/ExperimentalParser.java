@@ -16,10 +16,10 @@ import dan2097.org.bitbucket.utility.XMLTags;
 
 public class ExperimentalParser {
 	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
-	private final List<Reaction> documentReactions = new ArrayList<Reaction>();
+	private final  Map<Reaction, IndigoObject> documentReactions = new LinkedHashMap<Reaction, IndigoObject>();
 	private final Map<Reaction, IndigoObject> completeReactions = new LinkedHashMap<Reaction, IndigoObject>();
 
-	public List<Reaction> getAllFoundReactions() {
+	public Map<Reaction, IndigoObject> getAllFoundReactions() {
 		return documentReactions;
 	}
 	
@@ -41,29 +41,43 @@ public class ExperimentalParser {
 		sectionparser.parseForReactions();
 		List<Reaction> reactions = sectionparser.getReactions();
 		new ReactionStoichiometryDeterminer(reactions).processReactionStoichiometry();
-		documentReactions.addAll(reactions);
-		completeReactions.putAll(determineCompleteReactions(reactions));
-	}
-
-	private Map<Reaction, IndigoObject> determineCompleteReactions(List<Reaction> reactions) {
-		Map<Reaction, IndigoObject> validReactions = new LinkedHashMap<Reaction, IndigoObject>();
 		for (Reaction reaction : reactions) {
-			if (reactantsContainsProduct(reaction)){
-				continue;
-			}
 			IndigoObject indigoReaction = Utils.createIndigoReaction(reaction);
-			if (indigoReaction.countReactants() < 2 || indigoReaction.countProducts() < 1 ){
-				continue;
-			}
-			ReactionMapper mapper = new ReactionMapper(indigoReaction);
-			if (!mapper.mapReaction()){
-				continue;
-			}
-			if (mapper.allProductAtomsAreMapped()){
-				validReactions.put(reaction, indigoReaction);
+			documentReactions.put(reaction, indigoReaction);
+			if (reactionAppearsFeasible(reaction, indigoReaction)){
+				completeReactions.put(reaction, indigoReaction);
 			}
 		}
-		return validReactions;
+	}
+
+	/**
+	 * Performs a few santity checks e.g. at least 2 reactants and 1 product and that the product isn't a reactant
+	 * Then performs atom by atom mapping to check that all atoms in the product are accounted for
+	 * @param reaction
+	 * @param indigoReaction
+	 * @return
+	 */
+	private boolean reactionAppearsFeasible(Reaction reaction,IndigoObject indigoReaction) {
+		if (reactantsContainsProduct(reaction)){
+			System.out.println("f1");
+			return false;
+		}
+		if (indigoReaction.countReactants() < 2 || indigoReaction.countProducts() < 1 ){
+			System.out.println("f2");
+			return false;
+		}
+		ReactionMapper mapper = new ReactionMapper(indigoReaction);
+		if (!mapper.mapReaction()){
+			System.out.println("f3");
+			return false;
+		}
+		if (!mapper.allProductAtomsAreMapped()){
+			System.out.println("f4");
+		}
+		else{
+			System.out.println("suc");
+		}
+		return mapper.allProductAtomsAreMapped();
 	}
 
 	/**

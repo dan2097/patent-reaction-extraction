@@ -305,6 +305,7 @@ public class Utils {
 			if (product.getSmiles()!=null){
 				IndigoObject mol = indigo.loadMolecule(product.getSmiles());
 				mol.foldHydrogens();
+				mol.aromatize();
 				rxn.addProduct(mol);
 			}
 		}
@@ -312,6 +313,7 @@ public class Utils {
 			if (reactant.getSmiles()!=null){
 				IndigoObject mol = indigo.loadMolecule(reactant.getSmiles());
 				mol.foldHydrogens();
+				mol.aromatize();
 				rxn.addReactant(mol);
 			}
 		}
@@ -319,6 +321,7 @@ public class Utils {
 			if (spectator.getSmiles()!=null){
 				IndigoObject mol = indigo.loadMolecule(spectator.getSmiles());
 				mol.foldHydrogens();
+				mol.aromatize();
 				rxn.addCatalyst(mol);
 			}
 		}
