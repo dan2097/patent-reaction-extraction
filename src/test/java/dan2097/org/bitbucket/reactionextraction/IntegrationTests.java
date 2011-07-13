@@ -1,12 +1,14 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.*;
 
 import nu.xom.Document;
 
 import org.junit.Test;
+
+import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.Utils;
 
@@ -16,9 +18,9 @@ public class IntegrationTests{
 	public void integrationTest1() throws Exception{
 		Document doc = Utils.buildXmlFile(IntegrationTests.class.getResourceAsStream("patentText1.xml"));
 		ExperimentalParser parser = Utils.extractReactions(doc);
-		List<Reaction> reactions = parser.getAllFoundReactions();
+		Map<Reaction, IndigoObject> reactions = parser.getAllFoundReactions();
 		assertEquals(1, reactions.size());
-		Reaction reaction = reactions.get(0);
+		Reaction reaction = reactions.keySet().iterator().next();
 		assertEquals(1, reaction.getProducts().size());
 		Chemical product = reaction.getProducts().get(0);
 		assertEquals(null, product.getAmountUnits());
@@ -93,9 +95,9 @@ public class IntegrationTests{
 		//Logger.getLogger("dan2097.org.bitbucket.reactionextraction").setLevel(Level.TRACE);
 		Document doc = Utils.buildXmlFile(IntegrationTests.class.getResourceAsStream("patentText2.xml"));
 		ExperimentalParser parser = Utils.extractReactions(doc);
-		List<Reaction> reactions = parser.getAllFoundReactions();
+		Map<Reaction, IndigoObject> reactions = parser.getAllFoundReactions();
 		assertEquals(1, reactions.size());
-		Reaction reaction = reactions.get(0);
+		Reaction reaction = reactions.keySet().iterator().next();
 		assertEquals(1, reaction.getProducts().size());//resolved by reference to title compound
 		Chemical product = reaction.getProducts().get(0);
 		assertEquals(null, product.getAmountUnits());
