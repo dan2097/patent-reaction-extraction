@@ -59,23 +59,14 @@ public class ExperimentalParser {
 	 */
 	private boolean reactionAppearsFeasible(Reaction reaction,IndigoObject indigoReaction) {
 		if (reactantsContainsProduct(reaction)){
-			System.out.println("f1");
 			return false;
 		}
 		if (indigoReaction.countReactants() < 2 || indigoReaction.countProducts() < 1 ){
-			System.out.println("f2");
 			return false;
 		}
 		ReactionMapper mapper = new ReactionMapper(indigoReaction);
 		if (!mapper.mapReaction()){
-			System.out.println("f3");
 			return false;
-		}
-		if (!mapper.allProductAtomsAreMapped()){
-			System.out.println("f4");
-		}
-		else{
-			System.out.println("suc");
 		}
 		return mapper.allProductAtomsAreMapped();
 	}

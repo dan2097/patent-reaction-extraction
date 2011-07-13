@@ -56,17 +56,11 @@ public class ChemicalTypeAssigner {
 		else if (matchPluralEnding.matcher(chemicalName).matches()){
 			chem.setType(ChemicalType.chemicalClass);
 		}
-		else if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
-			chem.setType(ChemicalType.chemicalClass);
-		}
 		else{
 			Element nextEl = Utils.getNextElement(mol);
 			if (nextEl !=null){//examine the head noun
 				if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
 					chem.setType(ChemicalType.falsePositive);
-				}
-				else if (matchClassQualifier.matcher(nextEl.getValue()).matches()){
-					chem.setType(ChemicalType.chemicalClass);
 				}
 				else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
 					chem.setType(ChemicalType.fragment);
@@ -84,6 +78,14 @@ public class ChemicalTypeAssigner {
 					else if (previousEl.getLocalName().equals(ChemicalTaggerTags.DT_THE)){
 						chem.setType(ChemicalType.definiteReference);
 					}
+				}
+			}
+			if (chem.getType()==null){
+				if (nextEl !=null &&  matchClassQualifier.matcher(nextEl.getValue()).matches()){
+					chem.setType(ChemicalType.chemicalClass);
+				}
+				else if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
+					chem.setType(ChemicalType.chemicalClass);
 				}
 			}
 		}
