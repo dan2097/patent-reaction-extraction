@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
@@ -323,33 +325,35 @@ public class Utils {
 		return rxn;
 	}
 	
-	public static void serializeReactions(File directory, List<Reaction> reactions) throws IOException {
+	public static void serializeReactions(File directory, Map<Reaction, IndigoObject> reactionMap) throws IOException {
 		if (!directory.exists()){
 			FileUtils.forceMkdir(directory);
 		}
 		if (!directory.isDirectory()){
 			throw new IllegalArgumentException("A directory was expected");
 		}
-		for (int i = 0; i < reactions.size(); i++) {
-			Reaction reaction = reactions.get(i);
-			if (reaction.getProducts().size()>0 || reaction.getReactants().size()>0){
-				try {
-					File f = new File(directory, "reaction" + i + ".png");
-					ReactionDepicter.depictReaction(Utils.createIndigoReaction(reaction), f);
-						FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
-					    Serializer serializer = new Serializer(in);
-						serializer.setIndent(2);
-						serializer.write(reaction.getInput().getTaggedSentencesDocument());
-						IOUtils.closeQuietly(in);
-						
-					FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + i + ".cml"));
-				    serializer = new Serializer(out);
+		int i=0;
+		Set<Entry<Reaction, IndigoObject>> entries = reactionMap.entrySet();
+		for (Entry<Reaction, IndigoObject> entry : entries) {
+			Reaction reaction = entry.getKey();
+			IndigoObject indigoReaction = entry.getValue();
+			i++;
+			try {
+				File f = new File(directory, "reaction" + i + ".png");
+				ReactionDepicter.depictReaction(indigoReaction, f);
+					FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
+				    Serializer serializer = new Serializer(in);
 					serializer.setIndent(2);
-					serializer.write(new Document(reaction.toCML()));
-					IOUtils.closeQuietly(out);	
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					serializer.write(reaction.getInput().getTaggedSentencesDocument());
+					IOUtils.closeQuietly(in);
+					
+				FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + i + ".cml"));
+			    serializer = new Serializer(out);
+				serializer.setIndent(2);
+				serializer.write(new Document(reaction.toCML()));
+				IOUtils.closeQuietly(out);	
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

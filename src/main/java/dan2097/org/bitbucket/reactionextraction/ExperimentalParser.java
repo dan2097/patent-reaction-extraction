@@ -2,6 +2,7 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +17,13 @@ import dan2097.org.bitbucket.utility.XMLTags;
 public class ExperimentalParser {
 	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 	private final List<Reaction> documentReactions = new ArrayList<Reaction>();
-	private final List<Reaction> completeReactions = new ArrayList<Reaction>();
+	private final Map<Reaction, IndigoObject> completeReactions = new LinkedHashMap<Reaction, IndigoObject>();
 
 	public List<Reaction> getAllFoundReactions() {
 		return documentReactions;
 	}
 	
-	public List<Reaction> getAllCompleteReactions() {
+	public Map<Reaction, IndigoObject> getAllCompleteReactions() {
 		return completeReactions;
 	}
 
@@ -41,11 +42,11 @@ public class ExperimentalParser {
 		List<Reaction> reactions = sectionparser.getReactions();
 		new ReactionStoichiometryDeterminer(reactions).processReactionStoichiometry();
 		documentReactions.addAll(reactions);
-		completeReactions.addAll(determineCompleteReactions(reactions));
+		completeReactions.putAll(determineCompleteReactions(reactions));
 	}
 
-	private List<Reaction> determineCompleteReactions(List<Reaction> reactions) {
-		List<Reaction> validReactions = new ArrayList<Reaction>();
+	private Map<Reaction, IndigoObject> determineCompleteReactions(List<Reaction> reactions) {
+		Map<Reaction, IndigoObject> validReactions = new LinkedHashMap<Reaction, IndigoObject>();
 		for (Reaction reaction : reactions) {
 			if (reactantsContainsProduct(reaction)){
 				continue;
@@ -59,7 +60,7 @@ public class ExperimentalParser {
 				continue;
 			}
 			if (mapper.allProductAtomsAreMapped()){
-				validReactions.add(reaction);
+				validReactions.put(reaction, indigoReaction);
 			}
 		}
 		return validReactions;
