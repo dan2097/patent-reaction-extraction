@@ -8,7 +8,7 @@ import nu.xom.Element;
 public class ChemicalRoleAssigner {
 
 	private static Logger LOG = Logger.getLogger(ChemicalRoleAssigner.class);
-	private static String dmapInChI ="InChI=1/C7H10N2/c1-9(2)7-3-5-8-6-4-7/h3-6H,1-2H3";
+	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 
 	static void assignRoleToChemical(Element chemicalEl, Chemical chemical) {
 		if (chemical.getType()== ChemicalType.falsePositive){
@@ -17,7 +17,7 @@ public class ChemicalRoleAssigner {
 		else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 			chemical.setRole(ChemicalRole.solvent);
 		}
-		else if (dmapInChI.equals(chemical.getInchi())){
+		else if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
 		else if (ChemicalTaggerAtrs.CATALYST_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){

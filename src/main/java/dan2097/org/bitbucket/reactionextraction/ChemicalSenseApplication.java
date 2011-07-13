@@ -16,7 +16,7 @@ public class ChemicalSenseApplication {
 	private final Reaction reaction;
 	private List<IndigoObject> products = new ArrayList<IndigoObject>();
 	private Indigo indigo = IndigoHolder.getInstance();
-	private static AprioriKnowledge chemicalKnowledge = new AprioriKnowledge();
+	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 	
 	ChemicalSenseApplication(Reaction reaction) {
 		this.reaction = reaction;

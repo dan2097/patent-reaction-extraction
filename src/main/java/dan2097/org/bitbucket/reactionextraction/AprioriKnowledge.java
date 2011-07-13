@@ -14,14 +14,21 @@ import dan2097.org.bitbucket.utility.InchiNormaliser;
 public class AprioriKnowledge {
 
 	static String KNOWN_SOLVENTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventInChIs.txt";
+	static String KNOWN_CATALYSTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
 	private final Set<String> solventInChIs = new HashSet<String>();
+	private final Set<String> catalystInChIs = new HashSet<String>();
 
 	private final Pattern matchTab = Pattern.compile("\\t");
 	
-	public AprioriKnowledge() {
-		InputStream is = AprioriKnowledge.class.getResourceAsStream(KNOWN_SOLVENTS_LOCATION);
+	private AprioriKnowledge() {
+		populateInChISet(solventInChIs, KNOWN_SOLVENTS_LOCATION);
+		populateInChISet(catalystInChIs, KNOWN_CATALYSTS_LOCATION);
+	}
+
+	private void populateInChISet(Set<String> set, String fileLocation) {
+		InputStream is = AprioriKnowledge.class.getResourceAsStream(fileLocation);
 		if (is ==null){
-			throw new RuntimeException("Failed to read " +KNOWN_SOLVENTS_LOCATION);
+			throw new RuntimeException("Failed to read " +fileLocation);
 		}
 		try{
 			List<String> lines = IOUtils.readLines(is);
@@ -29,12 +36,20 @@ public class AprioriKnowledge {
 				if (line.startsWith("#") || line.equals("")){
 					continue;
 				}
-				solventInChIs.add(InchiNormaliser.normaliseInChI(matchTab.split(line)[0]));
+				set.add(InchiNormaliser.normaliseInChI(matchTab.split(line)[0]));
 			}
 		}
 		catch (IOException e ) {
-			throw new RuntimeException("Failed to read " +KNOWN_SOLVENTS_LOCATION, e);
+			throw new RuntimeException("Failed to read " +fileLocation, e);
 		}
+	}
+	 
+	private static class SingletonHolder { 
+		public static final AprioriKnowledge INSTANCE = new AprioriKnowledge();
+	}
+ 
+	public static AprioriKnowledge getInstance() {
+		return SingletonHolder.INSTANCE;
 	}
 	
 	/**
@@ -52,5 +67,22 @@ public class AprioriKnowledge {
 	 */
 	public boolean isKnownSolventInChI(String inchi) {
 		return solventInChIs.contains(inchi);
+	}
+	
+	/**
+	 * Returns the set of known catalyst InChIs
+	 * @return
+	 */
+	public Set<String> getCatalystInChIs() {
+		return catalystInChIs;
+	}
+
+	/**
+	 * Convenience method for checking whether catalystInChIs contains the given InChI
+	 * @param inchi
+	 * @return
+	 */
+	public boolean isKnownCatalystInChI(String inchi) {
+		return catalystInChIs.contains(inchi);
 	}
 }
