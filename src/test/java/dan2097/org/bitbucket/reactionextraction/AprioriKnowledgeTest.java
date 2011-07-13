@@ -30,4 +30,20 @@ public class AprioriKnowledgeTest {
 			solventInChIs.add(solventInChI);
 		}
 	}
+	
+	@Test
+	public void catalystFileContentTest() throws IOException {
+		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_CATALYSTS_LOCATION);
+		assertNotNull(is);
+		Set<String> catalystInChIs = new HashSet<String>();
+		List<String> lines = IOUtils.readLines(is);
+		for (String line : lines) {
+			if (line.startsWith("#") || line.equals("")){
+				continue;
+			}
+			String catalystInChI = InchiNormaliser.normaliseInChI(line.split("\\t")[0]);
+			assertFalse(catalystInChI + " appears multiple times", catalystInChIs.contains(catalystInChI));
+			catalystInChIs.add(catalystInChI);
+		}
+	}
 }
