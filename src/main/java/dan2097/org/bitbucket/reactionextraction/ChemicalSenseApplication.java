@@ -124,7 +124,7 @@ public class ChemicalSenseApplication {
 		for (int i = reactants.size()-1; i >=0; i--) {
 			Chemical reactant = reactants.get(i);
 			String inchi = reactant.getInchi();
-			if (chemicalKnowledge.isKnownSolventInChI(inchi) && reactant.getAmountValue()==null){
+			if (chemicalKnowledge.isKnownSolventInChI(inchi) && reactant.getAmountValue()==null && reactant.getEquivalents()==null){
 				reactant.setRole(ChemicalRole.solvent);
 				reaction.removeReactant(reactant);
 				reaction.addSpectator(reactant);
@@ -136,7 +136,7 @@ public class ChemicalSenseApplication {
 			for (int i = reactants.size()-1; i >=0; i--) {
 				Chemical reactant = reactants.get(i);
 				String inchi = reactant.getInchi();
-				if (!hasSolvent && reactant.getVolumeValue()!=null && reactant.getAmountValue()==null && reactant.hasImpreciseVolume()){
+				if (!hasSolvent && reactant.getVolumeValue()!=null && reactant.getAmountValue()==null && reactant.getEquivalents()==null && reactant.hasImpreciseVolume()){
 					//solvents will be liquids but typically with imprecise volume and no amount given
 					reactant.setRole(ChemicalRole.solvent);
 					reaction.removeReactant(reactant);

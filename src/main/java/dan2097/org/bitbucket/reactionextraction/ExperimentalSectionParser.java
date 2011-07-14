@@ -408,7 +408,7 @@ public class ExperimentalSectionParser {
 			if (chem.getType().equals(ChemicalType.falsePositive)){
 				continue;
 			}
-			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
+			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getEquivalents() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
 			if (foundProductWithQuantity && !hasQuantity){
 				continue;//skip erroneous characterisation chemicals
 			}
