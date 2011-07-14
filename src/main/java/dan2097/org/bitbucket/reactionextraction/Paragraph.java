@@ -81,7 +81,7 @@ public class Paragraph {
 					inWorkup = true;
 				}
 				else{
-					if (inWorkup && phraseContainsMoleculeWithAmount(phrase, moleculeToChemicalMap)){
+					if (inWorkup && phraseContainsMoleculeWithAmountOrEquivalents(phrase, moleculeToChemicalMap)){
 						inWorkup =false;
 					}
 					
@@ -111,11 +111,11 @@ public class Paragraph {
 		return XOMTools.getChildElementsWithTagNames(sentence, CONTAINER_ELS);
 	}
 
-	private boolean phraseContainsMoleculeWithAmount(Element phrase, BiMap<Element, Chemical> moleculeToChemicalMap) {
+	private boolean phraseContainsMoleculeWithAmountOrEquivalents(Element phrase, BiMap<Element, Chemical> moleculeToChemicalMap) {
 		Nodes molecules = phrase.query(".//*[self::MOLECULE or self::UNNAMEDMOLECULE]");
 		for (int j = 0; j < molecules.size(); j++) {
 			Chemical chem = moleculeToChemicalMap.get(molecules.get(j));
-			if (chem.getAmountValue()!=null){
+			if (chem.getAmountValue()!=null || chem.getEquivalents()!=null){
 				return true;
 			}
 		}

@@ -91,7 +91,7 @@ public class ChemicalPropertyDetermination {
 			LOG.debug("More than 1 molarity given for same chemical");
 		}
 		else if (molarAmounts.size()>0){
-			if (chemical.getAmountValue()!=null){
+			if (chemical.getMolarity()!=null){
 				LOG.debug("More than 1 molarity given for same chemical");
 			}
 			else{
