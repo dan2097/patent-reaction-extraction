@@ -134,7 +134,8 @@ public class ChemicalPropertyDetermination {
 				LOG.debug("More than 1 value for equivalents given for same chemical");
 			}
 			else{
-				String equivalentVal = equivalentsEls.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
+				Element equivalent = equivalentsEls.get(0);
+				String equivalentVal = equivalent.getFirstChildElement(ChemicalTaggerTags.CD).getValue();
 				try{ 
 					double d = Double.parseDouble(equivalentVal);
 					chemical.setEquivalents(d);
@@ -142,6 +143,7 @@ public class ChemicalPropertyDetermination {
 				catch (NumberFormatException e) {
 					LOG.debug("equivalents value was not numeric!");
 				}
+				chemical.setEquivalentsUnits(equivalent.getFirstChildElement(ChemicalTaggerTags.NN_EQ).getValue());
 			}
 		}
 	}
