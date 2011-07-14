@@ -20,6 +20,7 @@ public class Chemical{
 	private String volumeValue;
 	private String volumeUnits;
 	private Double equivalents;
+	private String equivalentsUnits;
 	private Double pH;
 	private Double percentYield;
 	private Double stoichiometry;
@@ -190,6 +191,19 @@ public class Chemical{
 		this.equivalents = equivalents;
 	}
 
+	/**
+	 * Gets a textual string for the units used to describe the number of equivalents of the chemical
+	 * (or null if unavailable)
+	 * @return
+	 */
+	public String getEquivalentsUnits() {
+		return equivalentsUnits;
+	}
+
+	void setEquivalentsUnits(String equivalentsUnits) {
+		this.equivalentsUnits = equivalentsUnits;
+	}
+
 	public Double getpH() {
 		return pH;
 	}
@@ -327,7 +341,7 @@ public class Chemical{
 		if (equivalents!=null){
 			Element amount = new Element("amount");
 			amount.appendChild(String.valueOf(equivalents));
-			amount.addAttribute(new Attribute("units", "equivalents"));
+			amount.addAttribute(new Attribute("units", equivalentsUnits));
 			reactant.appendChild(amount);
 		}
 		
