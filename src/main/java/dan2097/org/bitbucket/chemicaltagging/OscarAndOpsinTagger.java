@@ -59,7 +59,7 @@ public class OscarAndOpsinTagger extends OscarTagger {
 			}
 		}
 
-		posContainer.setOscarTagList(oscarAndOpsinList);
+		posContainer.registerTagList(oscarAndOpsinList);
 		return posContainer;
 	}
 
