@@ -227,7 +227,7 @@ public class ExperimentalSectionParser {
 			return findMoleculeNameFromOscarCM(oscarCM);
 		}
 		else if (elName.equals(UNNAMEDMOLECULE_Container)) {
-			return findMoleculeNameFromEl(molecule);
+			return findMoleculeNameFromUnnamedMoleculeEl(molecule);
 		}
 		throw new IllegalArgumentException("Unexpected tag type:" + elName +" The following are allowed" +
 				MOLECULE_Container + ", "+ UNNAMEDMOLECULE_Container);
@@ -239,7 +239,7 @@ public class ExperimentalSectionParser {
 	 * @param molecule
 	 * @return
 	 */
-	private String findMoleculeNameFromOscarCM(Element oscarCM) {
+	String findMoleculeNameFromOscarCM(Element oscarCM) {
 		if (oscarCM == null){
 			throw new IllegalArgumentException("Input oscarCM was null");
 		}
@@ -255,23 +255,49 @@ public class ExperimentalSectionParser {
 	}
 	
 	/**
-	 * Returns the space concatenated value of the tags except those tags that are quantity tags of children thereof
+	 * Returns the space concatenated values of the first set of adjective* noun+
 	 * @param molecule
 	 * @return
 	 */
-	private String findMoleculeNameFromEl(Element molecule) {
+	String findMoleculeNameFromUnnamedMoleculeEl(Element unnamedMoleculeEl) {
+		StringBuilder builder = new StringBuilder();
+		Elements children = unnamedMoleculeEl.getChildElements();
+		boolean foundStartOfName = false;
+		for (int i = 0; i < children.size(); i++) {
+			Element elToConsider = children.get(i);
+			String localName = elToConsider.getLocalName();
+			if (localName.startsWith("JJ") || localName.startsWith("NN")
+					|| localName.equals(REFERENCETOCOMPOUND_Container)){
+				foundStartOfName =true;
+				builder.append(getStringContent(elToConsider));
+			}
+			else if (foundStartOfName) {
+				break;
+			}
+		}
+		if (builder.length()==0){
+			return null;
+		}
+		builder.deleteCharAt(builder.length()-1);
+		return builder.toString();
+	}
+
+
+	/**
+	 * Uses a stack to iteratively enumerate and space concatenate the given element and its descendents in document order
+	 * @param startingEl
+	 * @return
+	 */
+	private StringBuilder getStringContent(Element startingEl) {
 		StringBuilder builder = new StringBuilder();
 		LinkedList<Element> stack = new LinkedList<Element>();
-		stack.add(molecule);
+		stack.add(startingEl);
 		while (!stack.isEmpty()) {
 			Element currentEl =stack.removeFirst();
 			Elements els = currentEl.getChildElements();
 			if (els.size()>0){
 				for (int i = 0; i < els.size(); i++) {
-					Element elToConsider =els.get(i);
-					if (!elToConsider.getLocalName().equals(QUANTITY_Container)){
-						stack.add(elToConsider);
-					}
+					stack.add(els.get(i));
 				}
 			}
 			else{
@@ -279,10 +305,8 @@ public class ExperimentalSectionParser {
 				builder.append(' ');
 			}
 		}
-		builder.deleteCharAt(builder.length()-1);
-		return builder.toString();
+		return builder;
 	}
-
 
 	/**
 	 * Creates a list of all MOLECULE or UNNAMEDMOLECULE elements
