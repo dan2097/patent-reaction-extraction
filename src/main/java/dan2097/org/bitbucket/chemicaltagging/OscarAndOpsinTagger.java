@@ -8,7 +8,6 @@ import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTagger;
-import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
 import uk.ac.cam.ch.wwmm.oscar.Oscar;
 import uk.ac.cam.ch.wwmm.oscar.document.NamedEntity;
 import uk.ac.cam.ch.wwmm.oscar.document.Token;
@@ -27,13 +26,12 @@ public class OscarAndOpsinTagger extends OscarTagger {
 	/***********************************************
 	 * Runs OSCAR over a list of tokens.
 	 * 
-	 * @param posContainer  (POSContainer)
-	 * @return posContainer (POSContainer)
+	 * @param tokenList (List<String>)
+	 * @return tagList (List<String>)
 	 ***********************************************/
-	public POSContainer runTagger(POSContainer posContainer) {
-		List<NamedEntity> neList = oscar.recogniseNamedEntities(posContainer.getTokenSequenceList());
+	public List<String> runTagger(List<String> tokenList, String inputSentence) {
+		List<NamedEntity> neList = oscar.recogniseNamedEntities(convertToOscarTokenSequences(tokenList, inputSentence));
         List<String> ignoreOscarList = Arrays.asList("cpr", "ont");
-		List<String> tokenList = posContainer.getWordTokenList();
 		List<String> oscarAndOpsinList = new ArrayList<String>();
 		String tag = "nil";
 		for (int i = 0; i < tokenList.size(); i++) {
@@ -59,8 +57,7 @@ public class OscarAndOpsinTagger extends OscarTagger {
 			}
 		}
 
-		posContainer.registerTagList(oscarAndOpsinList);
-		return posContainer;
+		return oscarAndOpsinList;
 	}
 
 }
