@@ -113,6 +113,10 @@ public class ChemicalPropertyDetermination {
 			}
 			else{
 				String ph = pH_els.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
+				Element possibleSymbol = pH_els.get(0).getFirstChildElement(ChemicalTaggerTags.SYM);
+				if (possibleSymbol !=null && !possibleSymbol.getValue().equals("=")){
+					return;
+				}
 				try{ 
 					double d = Double.parseDouble(ph);
 					chemical.setpH(d);
