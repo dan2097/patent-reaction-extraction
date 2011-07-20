@@ -375,7 +375,8 @@ public class ExperimentalSectionParser {
 					else if (ChemicalRole.reactant.equals(chemChem.getRole())){
 						tempReaction.addReactant(chemChem);
 					}
-					else if (ChemicalRole.solvent.equals(chemChem.getRole())){
+					else if (ChemicalRole.solvent.equals(chemChem.getRole())
+							|| ChemicalRole.catalyst.equals(chemChem.getRole())){
 						tempReaction.addSpectator(chemChem);
 					}
 					else if (!ChemicalType.falsePositive.equals(chemChem.getType())){
