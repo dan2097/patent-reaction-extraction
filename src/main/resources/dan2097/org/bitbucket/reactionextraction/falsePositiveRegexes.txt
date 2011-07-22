@@ -40,3 +40,4 @@ xenon
 #Miscellany
 .*=.*
 silica.*
+(?-i).*LCMS

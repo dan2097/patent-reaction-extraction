@@ -46,6 +46,7 @@ public class ExperimentalSectionParser {
 	private final Indigo indigo = IndigoHolder.getInstance();
 	private final ParagraphClassifier classifier = ParagraphClassifierHolder.getInstance();
 	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
+	private static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|title|final) (compound|product)", Pattern.CASE_INSENSITIVE);
 	
 	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
 		if (titleCompound ==null|| paragraphEls ==null|| aliasToChemicalMap==null){
@@ -528,11 +529,10 @@ public class ExperimentalSectionParser {
 				attemptToResolveBackReference(chemChem, reactions);
 			}
 		}
-		
 	}
 
 	boolean attemptToResolveBackReference(Chemical chemical, List<Reaction> reactionsToConsider) {
-		if (chemical.getName().equalsIgnoreCase("title compound")){
+		if (matchProductTextualAnaphora.matcher(chemical.getName()).matches()){
 			chemical.setSmiles(titleCompound.getSmiles());
 			chemical.setInchi(titleCompound.getInchi());
 			chemical.setRole(ChemicalRole.product);
