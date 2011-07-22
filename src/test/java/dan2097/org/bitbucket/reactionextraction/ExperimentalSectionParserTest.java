@@ -149,6 +149,66 @@ public class ExperimentalSectionParserTest {
 				"</UNNAMEDMOLECULE>");
 		assertEquals("fazazzale", parser.findMoleculeNameFromUnnamedMoleculeEl(unnamedMoleculeEl));
 	}
+	
+	@Test
+	public void testGetIdentifierFromReferenceToCompound1(){
+		Element reference = stringToXom(
+				"<REFERENCETOCOMPOUND>" +
+					"<CD>1</CD>" +
+				"</REFERENCETOCOMPOUND>");
+		assertEquals("1", parser.getIdentifierFromReference(reference));
+	}
+
+	@Test
+	public void testGetIdentifierFromReferenceToCompound2(){
+		Element reference = stringToXom(
+				"<REFERENCETOCOMPOUND>" +
+					"<_-LRB->(</_-LRB->" +
+					"<CD>1</CD>" +
+					"<_-RRB->)</_-RRB->" +
+				"</REFERENCETOCOMPOUND>");
+		assertEquals("1", parser.getIdentifierFromReference(reference));
+	}
+	
+	@Test
+	public void testGetIdentifierFromReferenceToCompound3(){
+		Element reference = stringToXom(
+				"<REFERENCETOCOMPOUND>" +
+					"<NN-IDENTIFIER>IX</NN-IDENTIFIER>" +
+				"</REFERENCETOCOMPOUND>");
+		assertEquals("IX", parser.getIdentifierFromReference(reference));
+	}
+	
+	@Test
+	public void testGetIdentifierFromReferenceToCompound4(){
+		Element reference = stringToXom(
+				"<REFERENCETOCOMPOUND>" +
+					"<LSQB>[</LSQB>" +
+					"<CD-ALPHANUM>7a</CD-ALPHANUM>" +
+					"<RSQB>]</RSQB>"+
+				"</REFERENCETOCOMPOUND>");
+		assertEquals("7a", parser.getIdentifierFromReference(reference));
+	}
+	
+	@Test
+	public void testGetIdentifierFromReferenceToCompound5(){
+		Element reference = stringToXom(
+				"<REFERENCETOCOMPOUND>" +
+					"<CD>3</CD>" +
+					"<NN-IDENTIFIER>III</NN-IDENTIFIER>" +
+				"</REFERENCETOCOMPOUND>");
+		assertEquals("3 III", parser.getIdentifierFromReference(reference));
+	}
+	
+	@Test
+	public void testGetIdentifierFromReferenceToCompound6(){
+		Element reference = stringToXom(
+				"<REFERENCETOCOMPOUND>" +
+					"<NN-EXAMPLE>example</NN-EXAMPLE>" +
+					"<CD>5</CD>" +
+				"</REFERENCETOCOMPOUND>");
+		assertEquals("5", parser.getIdentifierFromReference(reference));
+	}
 
 	private Element stringToXom(String stringXML) {
 		try{

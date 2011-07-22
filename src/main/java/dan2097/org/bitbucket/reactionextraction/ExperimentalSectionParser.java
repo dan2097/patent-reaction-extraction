@@ -25,6 +25,7 @@ import nu.xom.Nodes;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
+import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.InchiNormaliser;
 import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
@@ -68,7 +69,17 @@ public class ExperimentalSectionParser {
 						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
 						moleculeToChemicalMap.put(moleculeEl, cm);
 						ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+						if (cm.getType().equals(ChemicalType.definiteReference)){
+							attemptToResolveAnaphora(moleculeEl, cm);
+						}
 						aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+					}
+					List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(para);
+					for (Element unnamedMoleculeEl : unnamedMoleculeEls) {
+						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(unnamedMoleculeEl);
+						moleculeToChemicalMap.put(unnamedMoleculeEl, cm);
+						attemptToResolveAnaphora(unnamedMoleculeEl, cm);
+						ChemicalTypeAssigner.assignTypeToChemical(unnamedMoleculeEl, cm);
 					}
 				}
 			}
@@ -76,6 +87,42 @@ public class ExperimentalSectionParser {
 		reactions.addAll(determineReactions(paragraphs));
 	}
 	
+
+	private void attemptToResolveAnaphora(Element molOrUnnamedEl, Chemical cm) {
+		List<Element> references = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+		if (references.size()!=1){
+			if (references.size() >0){
+				LOG.debug("Multiple referenceToCompounds present in : " +molOrUnnamedEl.toXML());
+			}
+			return;
+		}
+		String identifier = getIdentifierFromReference(references.get(0));
+		Chemical referencedChemical = aliasToChemicalMap.get(identifier);
+		if (referencedChemical !=null){
+			cm.setSmiles(referencedChemical.getSmiles());
+			cm.setInchi(referencedChemical.getInchi());
+		}
+		else{
+			LOG.trace("Failed to resolve anaphora: " + identifier );
+		}
+	}
+
+	/**
+	 * Extracts the textual identifier from a referenceEl
+	 * @param referenceEl
+	 * @return
+	 */
+	String getIdentifierFromReference(Element referenceEl) {
+		List<Element> identifierEls = XOMTools.getChildElementsWithTagNames(referenceEl, new String[]{CD, CD_ALPHANUM, NN_IDENTIFIER});
+		StringBuilder sb = new StringBuilder();
+		for (Element identifierEl : identifierEls) {
+			if (sb.length()!=0){
+				sb.append(' ');
+			}
+			sb.append(identifierEl.getValue());
+		}
+		return sb.toString();
+	}
 
 	/**
 	 * Returns the text contained within a paragraph.
@@ -309,20 +356,22 @@ public class ExperimentalSectionParser {
 	}
 
 	/**
-	 * Creates a list of all MOLECULE or UNNAMEDMOLECULE elements
+	 * Creates a list of all MOLECULE elements in the given paragraph
 	 * @return
 	 */
 	private List<Element> findAllMolecules(Paragraph paragraph) {
-		List <Element> mols = new ArrayList<Element>();
 		Document chemicalTaggerResult =paragraph.getTaggedSentencesDocument();
-		Nodes molecules = chemicalTaggerResult.query("//*[self::MOLECULE or self::UNNAMEDMOLECULE]");
-		for (int i = 0; i < molecules.size(); i++) {
-			Element molecule = (Element) molecules.get(i);
-			mols.add(molecule);
-		}
-		return mols;
+		return XOMTools.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), MOLECULE_Container);
 	}
 
+	/**
+	 * Creates a list of all UNNAMEDMOLECULE elements in the given paragraph
+	 * @return
+	 */
+	private List<Element> findAllUnnamedMolecules(Paragraph paragraph) {
+		Document chemicalTaggerResult =paragraph.getTaggedSentencesDocument();
+		return XOMTools.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), UNNAMEDMOLECULE_Container);
+	}
 
 	/**
 	 * Master method for extracting reactions from a list of paragraphs
