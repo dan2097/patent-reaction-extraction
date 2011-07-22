@@ -14,6 +14,9 @@ public class ChemicalRoleAssigner {
 		if (chemical.getType()== ChemicalType.falsePositive){
 			LOG.trace(chemical.getName() +" is believed to be a false positive and has been ignored");
 		}
+		else if (chemical.getRole() !=null){//role already has been explicitly assigned
+			return;
+		}
 		else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 			chemical.setRole(ChemicalRole.solvent);
 		}
