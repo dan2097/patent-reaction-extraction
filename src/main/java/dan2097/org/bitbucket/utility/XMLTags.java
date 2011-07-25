@@ -18,9 +18,19 @@ public class XMLTags {
 	public static final String CHEMISTRY = "chemistry";
 	
 	/**
+	 * A definition list
+	 */
+	public static final String DL = "dl";
+	
+	/**
 	 * A heading element
 	 */
 	public static final String HEADING = "heading";
+	
+	/**
+	 * An ordered list
+	 */
+	public static final String OL = "ol";
 	
 	/**
 	 * A paragraph element
@@ -36,4 +46,9 @@ public class XMLTags {
 	 * Holds tables
 	 */
 	public static final String TABLES = "tables";
+	
+	/**
+	 * An unordered list
+	 */
+	public static final String UL = "ul";
 }
