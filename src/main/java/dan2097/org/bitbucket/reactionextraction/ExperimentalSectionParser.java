@@ -135,10 +135,10 @@ public class ExperimentalSectionParser {
 		if (!paragraphEl.getLocalName().equals(XMLTags.P)){
 			throw new IllegalArgumentException("A paragraph element was expected!");
 		}
-		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
+		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
 		if (elsToDetach.size()!=0){//for performance only do the defensive copying when necessary
 			paragraphEl = new Element(paragraphEl);
-			elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES});
+			elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
 			for (Element elToDetach : elsToDetach) {
 				elToDetach.detach();
 			}
