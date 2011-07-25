@@ -21,7 +21,6 @@ public class ChemicalTypeAssigner {
 	private static Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchTextualAnaphora= Pattern.compile("(crude|title|final) (compound|product)", Pattern.CASE_INSENSITIVE);
 	private static List<Pattern> falsePositivePatterns = new ArrayList<Pattern>();
 	private static String FALSE_POSITIVE_REGEXES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/falsePositiveRegexes.txt";
 	
@@ -109,7 +108,7 @@ public class ChemicalTypeAssigner {
 	}
 
 	private static boolean isTextualAnaphora(String chemicalName) {
-		return matchTextualAnaphora.matcher(chemicalName).matches();
+		return ExperimentalSectionParser.matchProductTextualAnaphora.matcher(chemicalName).matches();
 	}
 
 	private static boolean hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(Element mol, Chemical chem) {
