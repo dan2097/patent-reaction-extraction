@@ -448,7 +448,9 @@ public class ExperimentalSectionParser {
 		}
 		addImplicitTitleCompoundToFinalReactionIfRequired(reactions);
 		for (Reaction reaction : reactions) {
-			new ChemicalSenseApplication(reaction).reassignMisCategorisedReagents();
+			ChemicalSenseApplication chemicalSenseApplication = new ChemicalSenseApplication(reaction);
+			chemicalSenseApplication.mergeProductsByInChI();
+			chemicalSenseApplication.reassignMisCategorisedReagents();
 		}
 		return reactions;
 	}

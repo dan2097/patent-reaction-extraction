@@ -7,6 +7,41 @@ import org.junit.Test;
 public class ChemicalSenseApplicationTest {
 
 	@Test
+	public void mergeProductsByInchiTest1(){
+		Reaction reaction = new Reaction();
+		Chemical product1 = new Chemical("foo");
+		product1.setInchi("InChI=1/C4H6O6/c5-1(3(7)8)2(6)4(9)10/h1-2,5-6H,(H,7,8)(H,9,10)/t1-,2+");
+		product1.setAmountValue("5");
+		product1.setAmountUnits("mols");
+		Chemical product2 = new Chemical("foo");
+		product2.setInchi("InChI=1/C4H6O6/c5-1(3(7)8)2(6)4(9)10/h1-2,5-6H,(H,7,8)(H,9,10)/t1-,2+");
+		product2.setAmountValue("5");
+		product2.setAmountUnits("mols");
+		reaction.addProduct(product1);
+		reaction.addProduct(product2);
+		new ChemicalSenseApplication(reaction).mergeProductsByInChI();
+		assertEquals(1, reaction.getProducts().size());
+		assertEquals(product2, reaction.getProducts().get(0));
+	}
+
+	@Test
+	public void mergeProductsByInchiTest2(){
+		//last product is preferred unless a previous one has quantities and it does not
+		Reaction reaction = new Reaction();
+		Chemical product1 = new Chemical("foo");
+		product1.setInchi("InChI=1/C4H6O6/c5-1(3(7)8)2(6)4(9)10/h1-2,5-6H,(H,7,8)(H,9,10)/t1-,2+");
+		product1.setAmountValue("5");
+		product1.setAmountUnits("mols");
+		Chemical product2 = new Chemical("foo");
+		product2.setInchi("InChI=1/C4H6O6/c5-1(3(7)8)2(6)4(9)10/h1-2,5-6H,(H,7,8)(H,9,10)/t1-,2+");
+		reaction.addProduct(product1);
+		reaction.addProduct(product2);
+		new ChemicalSenseApplication(reaction).mergeProductsByInChI();
+		assertEquals(1, reaction.getProducts().size());
+		assertEquals(product1, reaction.getProducts().get(0));
+	}
+
+	@Test
 	public void transitionMetalCatalystTest() {
 		Reaction reaction = new Reaction();
 		Chemical catalyst = new Chemical("platinum");

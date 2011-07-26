@@ -1,9 +1,11 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ggasoftware.indigo.Indigo;
@@ -14,15 +16,34 @@ import dan2097.org.bitbucket.utility.IndigoHolder;
 public class ChemicalSenseApplication {
 
 	private final Reaction reaction;
-	private List<IndigoObject> products = new ArrayList<IndigoObject>();
 	private Indigo indigo = IndigoHolder.getInstance();
 	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 	
 	ChemicalSenseApplication(Reaction reaction) {
 		this.reaction = reaction;
-		for (Chemical product : reaction.getProducts()) {
-			if (product.getSmiles()!=null){
-				products.add(indigo.loadMolecule(product.getSmiles()));
+	}
+
+	/**
+	 * Keeps the last product with a particular InChI, unless a previous one has quantities and the last doesn't
+	 * then the latest one with quantities is retained
+	 */
+	void mergeProductsByInChI() {
+		List<Chemical> products = reaction.getProducts();
+		Map<String, Chemical> inchiToProduct = new HashMap<String, Chemical>();
+		for (int i = products.size() -1; i >=0; i--) {
+			Chemical product = products.get(i);
+			String inchi = product.getInchi();
+			if (inchiToProduct.containsKey(inchi)){
+				if (!inchiToProduct.get(inchi).hasAQuantity() && product.hasAQuantity()){
+					reaction.removeProduct(inchiToProduct.get(inchi));
+					inchiToProduct.put(inchi, product);
+				}
+				else{
+					reaction.removeProduct(product);
+				}
+			}
+			else{
+				inchiToProduct.put(inchi, product);
 			}
 		}
 	}
@@ -33,6 +54,12 @@ public class ChemicalSenseApplication {
 	}
 
 	void correctReactantsThatAreCatalysts() {
+		List<IndigoObject> products = new ArrayList<IndigoObject>();
+		for (Chemical product : reaction.getProducts()) {
+			if (product.getSmiles()!=null){
+				products.add(indigo.loadMolecule(product.getSmiles()));
+			}
+		}
 		List<Chemical> reactantsToReclassify = new ArrayList<Chemical>();
 		for (Chemical reactant : reaction.getReactants()) {
 			if (reactant.getSmiles()!=null){
