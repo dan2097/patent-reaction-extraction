@@ -53,6 +53,23 @@ public class ChemicalTypeAssignmentTest {
 	}
 	
 	@Test
+	public void typeDetectionTestFP4(){//an ice-H2O bath
+		Element sentence = new Element(SENTENCE_Container);
+		Element apparatusContainer = new Element(APPARATUS_Container);
+		sentence.appendChild(apparatusContainer);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		apparatusContainer.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("ice-H2O");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Chemical chem = new Chemical("ice-H2O");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.falsePositive, chem.getType());
+	}
+	
+	@Test
 	public void typeDetectionTestSpecific(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);

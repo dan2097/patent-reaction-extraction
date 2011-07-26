@@ -292,6 +292,15 @@ public class Chemical{
 		return false;
 	}
 
+	/**
+	 * Returns true if the chemical has been associated with any quantities or a yield e.g. amount, volume, weight etc.
+	 * @return
+	 */
+	boolean hasAQuantity() {
+		return (massValue !=null || massUnits !=null || amountValue !=null || amountUnits !=null || molarityValue != null || molarityUnits !=null ||
+				volumeValue !=null || volumeUnits !=null || equivalents !=null || equivalentsUnits !=null || pH !=null || percentYield !=null);
+	}
+
 	public Element toCML(String id){
 		Element reactant = new Element("reactant");
 		Element molecule = new Element("molecule");

@@ -123,6 +123,9 @@ public class ChemicalTypeAssigner {
 		if (ChemicalTaggerTags.ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
 			return true;
 		}
+		if (ChemicalTaggerTags.APPARATUS_Container.equals(((Element) mol.getParent()).getLocalName())){
+			return true;
+		}
 		for (Pattern pat : falsePositivePatterns) {
 			if (pat.matcher(chemicalName).matches()){
 				return true;
