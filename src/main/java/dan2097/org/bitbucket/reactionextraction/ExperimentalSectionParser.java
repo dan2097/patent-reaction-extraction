@@ -315,7 +315,8 @@ public class ExperimentalSectionParser {
 			Element elToConsider = children.get(i);
 			String localName = elToConsider.getLocalName();
 			if (localName.startsWith("JJ") || localName.startsWith("NN")
-					|| localName.equals(REFERENCETOCOMPOUND_Container)){
+					|| localName.equals(REFERENCETOCOMPOUND_Container)
+					|| localName.equals(OSCAR_ASE)){
 				foundStartOfName =true;
 				builder.append(getStringContent(elToConsider));
 			}
