@@ -70,9 +70,7 @@ public class ExperimentalSectionParser {
 						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
 						moleculeToChemicalMap.put(moleculeEl, cm);
 						ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
-						if (cm.getType().equals(ChemicalType.definiteReference)){
-							attemptToResolveAnaphora(moleculeEl, cm);
-						}
+						attemptToResolveAnaphora(moleculeEl, cm);
 						aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
 					}
 					List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(para);
@@ -158,9 +156,7 @@ public class ExperimentalSectionParser {
 	}
 
 	/**
-	 * Determines where the moleculeEl contains two OSCAR-CM parents, one of which has no resolvable structure
-	 * Such cases are assumed to be defining aliases.
-	 * The returned map will typically be of size 0 or 1
+	 * Finds chemical name or identifier to chemical relationships
 	 * @param moleculeEl
 	 * @param type
 	 * @return
@@ -170,6 +166,27 @@ public class ExperimentalSectionParser {
 		if (type!=ChemicalType.exact && type!=ChemicalType.definiteReference){
 			return aliasToChemicalMap;
 		}
+		aliasToChemicalMap.putAll(extractSynonymousChemicalNameAliases(moleculeEl));
+		List<Element> references = XOMTools.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+		if (references.size()==1){
+			String identifier = getIdentifierFromReference(references.get(0));
+			aliasToChemicalMap.put(identifier, moleculeToChemicalMap.get(moleculeEl));
+		}
+		else if (references.size() >1){
+			LOG.debug("Multiple referenceToCompounds present in : " +moleculeEl.toXML());
+		}
+		return aliasToChemicalMap;
+	}
+
+	/**
+	 * Determines where the moleculeEl contains two OSCAR-CM parents, one of which has no resolvable structure
+	 * Such cases are assumed to be defining aliases.
+	 * The returned map will typically be of size 0 or 1
+	 * @param moleculeEl
+	 * @return
+	 */
+	private Map<String, Chemical> extractSynonymousChemicalNameAliases(Element moleculeEl) {
+		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 		List<Element> oscarCMsAndMixtures = XOMTools.getChildElementsWithTagNames(moleculeEl, new String[]{OSCARCM_Container, MIXTURE_Container});
 		if (oscarCMsAndMixtures.size()==2 && oscarCMsAndMixtures.get(0).getLocalName().equals(OSCARCM_Container)){
 			//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
