@@ -168,7 +168,9 @@ public class ChemicalSenseApplication {
 					reactant.setRole(ChemicalRole.solvent);
 					reaction.removeReactant(reactant);
 					reaction.addSpectator(reactant);
-					newSolventInChIs.add(inchi);
+					if (inchi !=null){
+						newSolventInChIs.add(inchi);
+					}
 					hasSolvent = true;
 				}
 			}

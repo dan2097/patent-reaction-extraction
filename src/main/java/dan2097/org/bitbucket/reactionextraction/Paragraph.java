@@ -72,7 +72,7 @@ public class Paragraph {
 				Boolean workup = false;
 				if (phrase.getLocalName().equals(ACTIONPHRASE_Container)){
 					String phraseType = phrase.getAttributeValue(ChemicalTaggerAtrs.TYPE_ATR);
-					if (WORKUP_PHRASES.contains(phraseType)){
+					if (WORKUP_PHRASES.contains(phraseType) && !phraseContainsMoleculeWithAmountEquivalentsOrYields(phrase, moleculeToChemicalMap)){
 						workup =true;
 					}
 				}
@@ -81,7 +81,7 @@ public class Paragraph {
 					inWorkup = true;
 				}
 				else{
-					if (inWorkup && phraseContainsMoleculeWithAmountOrEquivalents(phrase, moleculeToChemicalMap)){
+					if (inWorkup && phraseContainsMoleculeWithAmountEquivalentsOrYields(phrase, moleculeToChemicalMap)){
 						inWorkup =false;
 					}
 					
@@ -111,11 +111,11 @@ public class Paragraph {
 		return XOMTools.getChildElementsWithTagNames(sentence, CONTAINER_ELS);
 	}
 
-	private boolean phraseContainsMoleculeWithAmountOrEquivalents(Element phrase, BiMap<Element, Chemical> moleculeToChemicalMap) {
+	private boolean phraseContainsMoleculeWithAmountEquivalentsOrYields(Element phrase, BiMap<Element, Chemical> moleculeToChemicalMap) {
 		Nodes molecules = phrase.query(".//*[self::MOLECULE or self::UNNAMEDMOLECULE]");
 		for (int j = 0; j < molecules.size(); j++) {
 			Chemical chem = moleculeToChemicalMap.get(molecules.get(j));
-			if (chem.getAmountValue()!=null || chem.getEquivalents()!=null){
+			if (chem.getAmountValue()!=null || chem.getEquivalents()!=null || chem.getPercentYield()!=null){
 				return true;
 			}
 		}
