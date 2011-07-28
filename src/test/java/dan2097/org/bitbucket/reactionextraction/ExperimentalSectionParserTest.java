@@ -209,6 +209,32 @@ public class ExperimentalSectionParserTest {
 				"</REFERENCETOCOMPOUND>");
 		assertEquals("5", parser.getIdentifierFromReference(reference));
 	}
+	
+	@Test
+	public void testPercentAsAPercentYield(){
+		Element reference = stringToXom(
+				"<UNNAMEDMOLECULE>" +
+					"<JJ-COMPOUND>title</JJ-COMPOUND>" +
+					"<NN-CHEMENTITY>compound</NN-CHEMENTITY>" +
+					"<QUANTITY>" +
+						"<_-LRB->(</_-LRB->" +
+						"<MASS>" +
+							"<CD>21.3</CD>" +
+							"<NN-MASS>g</NN-MASS>" +
+						"</MASS>" +
+						"<COMMA>,</COMMA>" +
+						"<PERCENT>" +
+							"<CD>83</CD>" +
+							"<NN-PERCENT>%</NN-PERCENT>" +
+						"</PERCENT>" +
+						"<_-RRB->)</_-RRB->" +
+					"</QUANTITY>" +
+				"</UNNAMEDMOLECULE>");
+		Chemical chem = new Chemical("title compound");
+		assertEquals(null, chem.getPercentYield());
+		parser.interpretPercentAsAyield(reference, chem);
+		assertEquals(83, chem.getPercentYield(), 0.5);
+	}
 
 	private Element stringToXom(String stringXML) {
 		try{

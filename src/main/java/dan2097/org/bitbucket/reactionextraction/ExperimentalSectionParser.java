@@ -414,18 +414,20 @@ public class ExperimentalSectionParser {
 				else{
 					reagents = Collections.emptySet();
 				}
+				Set<Element> products = new LinkedHashSet<Element>();
 				Set<Element> productAfterReagants = identifyYieldedProduct(phrase);
+				productAfterReagants.addAll(reagentsWithAYield(reagents));
 				if (productAfterReagants.size() >0 && currentReaction.getReactants().size()==0 && isBackReference(productAfterReagants)){
 					productAfterReagants.clear();
 				}
 				if (productAfterReagants.size() >0 ){
 					reagentsExpectedAfterProduct = false;
 				}
+				products.addAll(productAfterReagants);
 				Set<Element> productBeforeReagents = identifyProductBeforeReagents(phrase);
 				if (productBeforeReagents.size() >0 ){
 					reagentsExpectedAfterProduct = true;
 				}
-				Set<Element> products = new LinkedHashSet<Element>(productAfterReagants);
 				products.addAll(productBeforeReagents);
 				reagents.removeAll(products);
 				Set<Element> chemicals = new LinkedHashSet<Element>();
@@ -438,6 +440,7 @@ public class ExperimentalSectionParser {
 				for (Element chemical : chemicals) {
 					Chemical chemChem = moleculeToChemicalMap.get(chemical);
 					if (ChemicalRole.product.equals(chemChem.getRole())){
+						interpretPercentAsAyield(chemical, chemChem);
 						tempReaction.addProduct(chemChem);
 					}
 					else if (ChemicalRole.reactant.equals(chemChem.getRole())){
@@ -471,6 +474,45 @@ public class ExperimentalSectionParser {
 			chemicalSenseApplication.reassignMisCategorisedReagents();
 		}
 		return reactions;
+	}
+
+	/**
+	 * Returns those for which the corresponding molecule has a percent yield
+	 * @param reagents
+	 * @return
+	 */
+	private Set<Element> reagentsWithAYield(Set<Element> reagents) {
+		Set<Element> reagentsWithYield = new LinkedHashSet<Element>();
+		for (Element reagent : reagents) {
+			Chemical chem = moleculeToChemicalMap.get(reagent);
+			if (moleculeToChemicalMap.get(reagent).getPercentYield()!=null){
+				reagentsWithYield.add(reagent);
+				chem.setXpathUsedToIdentify("//YIELD");
+				chem.setRole(ChemicalRole.product);
+			}
+		}
+		return reagentsWithYield;
+	}
+
+	/**
+	 * If the chemical does not currently have a yield look for a percent that could be a yield
+	 * @param molOrUnnamedMolEl
+	 * @param chemical
+	 */
+	void interpretPercentAsAyield(Element molOrUnnamedMolEl, Chemical chemical) {
+		if (chemical.getPercentYield()==null){
+			List<Element> percents = XOMTools.getDescendantElementsWithTagName(molOrUnnamedMolEl, PERCENT_Container);
+			if (percents.size() ==1){
+				String value = percents.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
+				try{ 
+					double d = Double.parseDouble(value);
+					chemical.setPercentYield(d);
+				}
+				catch (NumberFormatException e) {
+					LOG.debug("Percent was not a numeric percentage");
+				}
+			}
+		}
 	}
 
 	private boolean isBackReference(Set<Element> yieldedCompounds) {
