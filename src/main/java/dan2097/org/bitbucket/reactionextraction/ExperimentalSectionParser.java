@@ -467,7 +467,11 @@ public class ExperimentalSectionParser {
 				reactions.add(currentReaction);
 			}
 		}
-		addImplicitTitleCompoundToFinalReactionIfRequired(reactions);
+		if (!compoundIsProductOfAReaction(reactions, titleCompound)){
+			if (!addTitleCompoundToLastReactionWithReactantsIfHasNoProduct(reactions)){
+				LOG.trace("Failed to assign: " + titleCompound.getName() + " to a reaction!");
+			}
+		}
 		for (Reaction reaction : reactions) {
 			ChemicalSenseApplication chemicalSenseApplication = new ChemicalSenseApplication(reaction);
 			chemicalSenseApplication.mergeProductsByInChI();
@@ -675,26 +679,46 @@ public class ExperimentalSectionParser {
 		return false;
 	}
 
-	private void addImplicitTitleCompoundToFinalReactionIfRequired(List<Reaction> reactions) {
-		if (reactions.size()>0){
-			Reaction lastReaction = reactions.get(reactions.size()-1);
-			if (lastReaction.getProducts().size()==0){//product was probably implicitly the title compound
-				boolean titleCompoundUsedAsProduct =false;
-				if (titleCompound.getInchi()!=null){
-					reactionLoop: for (int i = 0; i < reactions.size()-1; i++) {
-						Reaction reaction =reactions.get(i);
-						for (Chemical product : reaction.getProducts()) {
-							if (titleCompound.getInchi().equals(product.getInchi())){
-								titleCompoundUsedAsProduct =true;
-								break reactionLoop;
-							}
-						}
-					}
-				}
-				if (!titleCompoundUsedAsProduct){
-					lastReaction.addProduct(titleCompound);
+	
+	/**
+	 * Uses InChIs to check whether the compound has been the product of any of the given reactions
+	 * @param reactions
+	 * @param compound
+	 * @return
+	 */
+	private boolean compoundIsProductOfAReaction(List<Reaction> reactions, Chemical potentialProduct) {
+		String inchi = potentialProduct.getInchi();
+		if (inchi==null){
+			return false;
+		}
+		for (Reaction reaction : reactions) {
+			for (Chemical product : reaction.getProducts()) {
+				if (inchi.equals(product.getInchi())){
+					return true;
 				}
 			}
 		}
+		return false;
+	}
+	
+	/**
+	 * Returns true or false depending on whether a suitable reaction was found to add the title compound to
+	 * @param reactions
+	 * @return
+	 */
+	private boolean addTitleCompoundToLastReactionWithReactantsIfHasNoProduct(List<Reaction> reactions) {
+		for (int i = reactions.size()-1; i >=0; i--) {
+			Reaction reaction = reactions.get(i);
+			if (reaction.getReactants().size()>0){
+				if (reaction.getProducts().size()==0){
+					reaction.addProduct(titleCompound);
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		return false;
 	}
 }
