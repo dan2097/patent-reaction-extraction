@@ -165,17 +165,17 @@ public class ChemicalSenseApplicationTest {
 	@Test
 	public void correctReactantToSolventUsingKnowledge4() {
 		Reaction reaction = new Reaction();
-		Chemical misclassifiedSolvent1 = new Chemical("foo");//can be a solvent
-		misclassifiedSolvent1.setVolumeValue("500");
-		misclassifiedSolvent1.setVolumeUnits("ml");
-		misclassifiedSolvent1.setRole(ChemicalRole.reactant);
-		reaction.addReactant(misclassifiedSolvent1);
-		Chemical misclassifiedSolvent2 = new Chemical("foo");
-		misclassifiedSolvent2.setRole(ChemicalRole.reactant);
-		reaction.addReactant(misclassifiedSolvent2);
+		Chemical misclassifiedSolvent = new Chemical("foo");//can be a solvent
+		misclassifiedSolvent.setVolumeValue("500");
+		misclassifiedSolvent.setVolumeUnits("ml");
+		misclassifiedSolvent.setRole(ChemicalRole.reactant);
+		reaction.addReactant(misclassifiedSolvent);
+		Chemical reactant = new Chemical("foo");
+		reactant.setRole(ChemicalRole.reactant);
+		reaction.addReactant(reactant);
 		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
-		assertEquals(ChemicalRole.solvent, misclassifiedSolvent1.getRole());
-		assertEquals(ChemicalRole.solvent, misclassifiedSolvent2.getRole());
+		assertEquals(ChemicalRole.solvent, misclassifiedSolvent.getRole());
+		assertEquals(ChemicalRole.reactant, reactant.getRole());
 	}
 
 	@Test
