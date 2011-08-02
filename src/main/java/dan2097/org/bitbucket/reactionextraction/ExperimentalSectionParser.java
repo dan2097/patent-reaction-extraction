@@ -714,9 +714,34 @@ public class ExperimentalSectionParser {
 					reaction.addProduct(titleCompound);
 					return true;
 				}
+				else if (productCouldBeTheTitleCompound(reaction)){
+					Chemical product = reaction.getProducts().get(0);
+					product.setSmiles(titleCompound.getSmiles());
+					product.setInchi(titleCompound.getInchi());
+					return true;
+				}
 				else{
 					return false;
 				}
+			}
+		}
+		return false;
+	}
+
+	private boolean productCouldBeTheTitleCompound(Reaction reaction) {
+		if(reaction.getProducts().size()==1){
+			Chemical product = reaction.getProducts().get(0);
+			if (product.getSmiles()==null){
+				Element el = moleculeToChemicalMap.inverse().get(product);
+				if (el.getLocalName().equals(UNNAMEDMOLECULE_Container)){
+					List<Element> references = XOMTools.getDescendantElementsWithTagName(el, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+					if (references.size()==0){
+						return true;
+					}
+				}
+			}
+			else if (product.getType().equals(ChemicalType.chemicalClass)){
+				return true;
 			}
 		}
 		return false;
