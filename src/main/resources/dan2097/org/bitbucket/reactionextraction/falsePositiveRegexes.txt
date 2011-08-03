@@ -6,13 +6,16 @@
 (?-i)\d+H
 .*nmr
 .*-d\d*
+d\d+-.*
 CD3COOD
 CD3COCD3
 CD3CN
 C6D6
 CDCl3
 CD2Cl2
+CD3Cl
 CD3SOCD3
+(CD3)2SO
 CD3CD2OD
 CD3OD
 C6D5NO2
@@ -23,8 +26,17 @@ C6D5CD3
 CF3COOD
 CF3CD2OD
 D2O
-Tetramethylsilane|TMS|DSS|TSP|TMSP 
+Tetramethylsilane|TMS|DSS|TSP|TMSP
+dd[d]?
+\d+(\.\d+)?[\(\[][a-z]
 
+#parts of MS patterns
+.*M([\+]|[\-](1|H|Na|NH4)|(H|Na|NH4)?[\)\]]?\+).*
+(?-i).*LC[/]?MS
+MS[\-]?\(\+\).*
+H[2]?
+C(H[23]?)?
+Mw
 
 #Inert gases and elements that are part of materials
 nitrogen
@@ -38,6 +50,16 @@ xenon
 
 
 #Miscellany
+ESI\+
+ESMS
+.*ES[\+\-].*
 .*=.*
 silica.*
-(?-i).*LCMS
+alumina
+Rf
+Calc
+TLC
+[mb][.]?p[.]?
+ABX
+SCX(-2)?
+FAB[\+]?
