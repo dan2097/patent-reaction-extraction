@@ -1,15 +1,10 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
 
 import dan2097.org.bitbucket.utility.InchiNormaliser;
+import dan2097.org.bitbucket.utility.Utils;
 
 public class AprioriKnowledge {
 
@@ -17,30 +12,15 @@ public class AprioriKnowledge {
 	static String KNOWN_CATALYSTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
 	private final Set<String> solventInChIs = new HashSet<String>();
 	private final Set<String> catalystInChIs = new HashSet<String>();
-
-	private final Pattern matchTab = Pattern.compile("\\t");
 	
 	private AprioriKnowledge() {
-		populateInChISet(solventInChIs, KNOWN_SOLVENTS_LOCATION);
-		populateInChISet(catalystInChIs, KNOWN_CATALYSTS_LOCATION);
-	}
-
-	private void populateInChISet(Set<String> set, String fileLocation) {
-		InputStream is = AprioriKnowledge.class.getResourceAsStream(fileLocation);
-		if (is ==null){
-			throw new RuntimeException("Failed to read " +fileLocation);
+		Set<String> solventInchis = Utils.fileToStringSet(KNOWN_SOLVENTS_LOCATION);
+		for (String inchi : solventInchis) {
+			solventInChIs.add(InchiNormaliser.normaliseInChI(inchi));
 		}
-		try{
-			List<String> lines = IOUtils.readLines(is);
-			for (String line : lines) {
-				if (line.startsWith("#") || line.equals("")){
-					continue;
-				}
-				set.add(InchiNormaliser.normaliseInChI(matchTab.split(line)[0]));
-			}
-		}
-		catch (IOException e ) {
-			throw new RuntimeException("Failed to read " +fileLocation, e);
+		Set<String> catalystInchis = Utils.fileToStringSet(KNOWN_CATALYSTS_LOCATION);
+		for (String inchi : catalystInchis) {
+			catalystInChIs.add(InchiNormaliser.normaliseInChI(inchi));
 		}
 	}
 	 

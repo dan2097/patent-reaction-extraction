@@ -7,10 +7,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
 import nu.xom.Builder;
@@ -53,6 +55,7 @@ import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 public class Utils {
 	
 	private static Builder xomBuilder;
+	private final static Pattern matchTab = Pattern.compile("\\t");
 	
 	static {
 		XMLReader xmlReader;
@@ -359,5 +362,32 @@ public class Utils {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Reads a file. For every line that is neither empty or starts with a tab
+	 * the line is split on tab and the first part added to the set of strings to be returned
+	 * @param fileLocation
+	 * @return 
+	 */
+	public static Set<String> fileToStringSet(String fileLocation) {
+		Set<String> strings = new HashSet<String>();
+		InputStream is = Utils.class.getResourceAsStream(fileLocation);
+		if (is ==null){
+			throw new RuntimeException("Failed to read " +fileLocation);
+		}
+		try{
+			List<String> lines = IOUtils.readLines(is);
+			for (String line : lines) {
+				if (line.startsWith("#") || line.equals("")){
+					continue;
+				}
+				strings.add(matchTab.split(line)[0]);
+			}
+		}
+		catch (IOException e ) {
+			throw new RuntimeException("Failed to read " +fileLocation, e);
+		}
+		return strings;
 	}
 }

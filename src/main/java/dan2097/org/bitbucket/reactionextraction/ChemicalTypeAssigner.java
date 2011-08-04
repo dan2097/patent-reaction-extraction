@@ -1,13 +1,10 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
-
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
@@ -21,25 +18,13 @@ public class ChemicalTypeAssigner {
 	private static Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
-	private static List<Pattern> falsePositivePatterns = new ArrayList<Pattern>();
+	public static List<Pattern> falsePositivePatterns = new ArrayList<Pattern>();
 	private static String FALSE_POSITIVE_REGEXES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/falsePositiveRegexes.txt";
 	
 	static{
-		InputStream is = ChemicalTypeAssigner.class.getResourceAsStream(FALSE_POSITIVE_REGEXES_LOCATION);
-		if (is ==null){
-			throw new RuntimeException("Failed to read " +FALSE_POSITIVE_REGEXES_LOCATION);
-		}
-		try{
-			List<String> lines = IOUtils.readLines(is);
-			for (String line : lines) {
-				if (line.startsWith("#") || line.equals("")){
-					continue;
-				}
-				falsePositivePatterns.add(Pattern.compile(line, Pattern.CASE_INSENSITIVE));
-			}
-		}
-		catch (IOException e ) {
-			throw new RuntimeException("Failed to read " + FALSE_POSITIVE_REGEXES_LOCATION, e);
+		Set<String> regexes = Utils.fileToStringSet(FALSE_POSITIVE_REGEXES_LOCATION);
+		for (String regex : regexes) {
+			falsePositivePatterns.add(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
 		}
 	}
 

@@ -3,9 +3,12 @@ package dan2097.org.bitbucket.chemicaltagging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
+
+import dan2097.org.bitbucket.utility.Utils;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTagger;
 import uk.ac.cam.ch.wwmm.oscar.Oscar;
@@ -18,9 +21,13 @@ import uk.ac.cam.ch.wwmm.oscar.document.Token;
  * @author lh359, dl387
  *****************************************************/
 public class OscarAndOpsinTagger extends OscarTagger {
+	
+	private static String STOPWORDS_LOCATION = "/dan2097/org/bitbucket/chemicaltagging/stopWords.txt";
+	private final Set<String> stopWords;
 
 	public OscarAndOpsinTagger(Oscar oscar) {
 		super(oscar);
+		stopWords = Utils.fileToStringSet(STOPWORDS_LOCATION);
 	}
 	
 	/***********************************************
@@ -42,7 +49,8 @@ public class OscarAndOpsinTagger extends OscarTagger {
 				List<Token> tokens = ne.getTokens();
                  
 				for (Token token : tokens) {
-					if (tokenList.get(token.getIndex()).contains(token.getSurface())) {
+					String tokenSurface = token.getSurface();
+					if (!stopWords.contains(tokenSurface.toLowerCase())){
 						oscarAndOpsinList.set(token.getIndex(), "OSCAR-"+ne.getType().getName());
 					}
 				}
