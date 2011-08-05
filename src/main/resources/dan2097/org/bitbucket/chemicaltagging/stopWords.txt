@@ -1,8 +1,7 @@
 #Words that may not appear in a chemical name.
 #If OSCAR identifies such a word as chemical it is treated as if OSCAR had not identified the word as chemical
-at
-it
 aqueous
+hydrogenate
 hydrogenated
 triturate
 inc
