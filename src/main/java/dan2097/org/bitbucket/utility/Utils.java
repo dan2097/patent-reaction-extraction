@@ -56,6 +56,7 @@ public class Utils {
 	
 	private static Builder xomBuilder;
 	private final static Pattern matchTab = Pattern.compile("\\t");
+	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	
 	static {
 		XMLReader xmlReader;
@@ -93,6 +94,15 @@ public class Utils {
 		ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(tagged);
 		chemistrySentenceParser.parseTags();
 		return chemistrySentenceParser.makeXMLDocument();
+	}
+	
+	/**
+	 * Convenience method to tag and parse a string of text
+	 * @param tagged
+	 * @return
+	 */
+	public static Document runChemicalTagger(String text) {
+		return runChemicalSentenceParsingOnTaggedString(tagString(text));
 	}
 
 	/**
@@ -141,6 +151,37 @@ public class Utils {
 	 */
 	public static Document buildXmlFile(InputStream inputStream) throws ValidityException, ParsingException, IOException {
 		return xomBuilder.build(inputStream);
+	}
+	
+	/**
+	 * Builds an XML document from text
+	 * @param xmlAsText
+	 * @return
+	 * @throws ValidityException
+	 * @throws ParsingException
+	 * @throws IOException
+	 */
+	public static Document buildXmlFromString(String xmlAsText) throws ValidityException, ParsingException, IOException {
+		return xomBuilder.build(xmlAsText, "");
+	}
+	
+	/**
+	 * Returns the text contained within a paragraph.
+	 * Tables and lists are detached, white space is normalised
+	 * @param paragraphEl
+	 * @return
+	 */
+	public static String detachIrrelevantElementsAndGetParagraphText(Element paragraphEl) {
+		if (!paragraphEl.getLocalName().equals(XMLTags.P)){
+			throw new IllegalArgumentException("A paragraph element was expected!");
+		}
+		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
+		for (Element elToDetach : elsToDetach) {
+			elToDetach.detach();
+		}
+		String text = paragraphEl.getValue();
+		text = matchWhiteSpace.matcher(text).replaceAll(" ");
+		return text.trim();
 	}
 	
 	public static ExperimentalParser extractReactions(Document doc){

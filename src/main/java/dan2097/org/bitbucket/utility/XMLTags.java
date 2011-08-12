@@ -17,6 +17,13 @@ public class XMLTags {
 	 */
 	public static final String CHEMISTRY = "chemistry";
 	
+	
+	/**
+	 * A description element. Hold the description of the invention the patent is for.
+	 * Typically this is the bulk of the patent
+	 */
+	public static final String DESCRIPTION = "description";
+	
 	/**
 	 * A definition list
 	 */
