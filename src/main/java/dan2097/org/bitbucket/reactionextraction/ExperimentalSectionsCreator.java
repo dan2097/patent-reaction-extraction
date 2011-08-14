@@ -214,7 +214,7 @@ public class ExperimentalSectionsCreator {
 				if ((firstPhrase.getLocalName().equals(ACTIONPHRASE_Container) && actionPhraseContainsRecognisedHeadingForm(firstPhrase))
 						|| (firstPhrase.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstPhrase))){
 					Element secondPhrase = children.get(1);
-					if (isPeriodOrColon(secondPhrase)){
+					if (isPeriodOrSemiColonOrColon(secondPhrase)){
 						heading = new Element(XMLTags.HEADING);
 						firstPhrase.detach();
 						secondPhrase.detach();
@@ -225,7 +225,7 @@ public class ExperimentalSectionsCreator {
 							Element fourthPhrase =children.get(3);
 							if (thirdPhrase.getLocalName().equals(NOUN_PHRASE_Container) 
 									&& nounphraseContainsRecognisedHeadingForm(thirdPhrase)
-									&& isPeriodOrColon(fourthPhrase)){
+									&& isPeriodOrSemiColonOrColon(fourthPhrase)){
 								thirdPhrase.detach();
 								fourthPhrase.detach();
 								heading.appendChild(thirdPhrase);
@@ -254,7 +254,7 @@ public class ExperimentalSectionsCreator {
 			Element secondChild = children.get(1);
 			Element thirdChild = children.get(2);
 			if ((firstChild.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstChild))
-				&& isPeriodOrColon(secondChild)
+				&& isPeriodOrSemiColonOrColon(secondChild)
 				&& (thirdChild.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(thirdChild))){
 				return true;
 			}
@@ -317,13 +317,13 @@ public class ExperimentalSectionsCreator {
 	}
 
 	/**
-	 * Is the value of this element a period or colon
+	 * Is the value of this element a period/semicolon/colon
 	 * @param secondPhrase
 	 * @return
 	 */
-	private boolean isPeriodOrColon(Element el) {
+	private boolean isPeriodOrSemiColonOrColon(Element el) {
 		String value = el.getValue();
-		return (value.equals(".") || value.equals(":"));
+		return (value.equals(".") || value.equals(";") || value.equals(":"));
 	}
 
 	/**
