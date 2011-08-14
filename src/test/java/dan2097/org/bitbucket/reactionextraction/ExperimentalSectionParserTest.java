@@ -2,7 +2,6 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import nu.xom.Element;
@@ -13,7 +12,7 @@ import static org.mockito.Mockito.mock;
 
 public class ExperimentalSectionParserTest {
 
-	private ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(Chemical.class), new ArrayList<Element>(), new HashMap<String, Chemical>());
+	private ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new HashMap<String, Chemical>());
 	
 	@Test
 	public void testGetIdentifierFromReferenceToCompound1(){

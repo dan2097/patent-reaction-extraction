@@ -10,6 +10,7 @@ import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
 import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
@@ -55,7 +56,7 @@ public class ExperimentalSectionsCreator {
 			return true;
 		}
 		if (name.equals(XMLTags.P)){
-			String id = headingOrParagraph.getAttributeValue("id"); 
+			String id = headingOrParagraph.getAttributeValue(XMLAtrs.ID); 
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
 				return true;
 			}
@@ -68,8 +69,13 @@ public class ExperimentalSectionsCreator {
 		}
 	}
 	
+	/**
+	 * Extracts a procedures and/or molecule from the heading and adds it to the current section
+	 * or step of the current section as a appropriate
+	 * @param headingEl
+	 */
 	private void handleHeading(Element headingEl) {
-		String text = Utils.detachIrrelevantElementsAndGetParagraphText(headingEl);
+		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
 		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
@@ -106,7 +112,7 @@ public class ExperimentalSectionsCreator {
 		}
 		if (namesFoundByOpsin.size()==1){
 			String name = namesFoundByOpsin.get(0);
-			
+			//TODO greater specificicty
 			if (currentSection.getCurrentStepProcedureElement()!=null && currentSection.getCurrentStepTargetChemicalName()==null && !currentSection.currentStepHasParagraphs()){
 				currentSection.setCurrentStepTargetChemicalName(name);
 			}
@@ -132,7 +138,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	boolean isPotentialSubHeading(Element heading, Element taggedDocRoot) {
 		if (heading.getLocalName().equals(XMLTags.P)){
-			String id = heading.getAttributeValue("id"); 
+			String id = heading.getAttributeValue(XMLAtrs.ID); 
 			if (id !=null && id.startsWith("h-")){
 				return true;
 			}
@@ -163,14 +169,15 @@ public class ExperimentalSectionsCreator {
 		//Sometimes headings are present within paragraphs...
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
 		if (hiddenHeadingEl !=null){
-			String headingText = Utils.detachIrrelevantElementsAndGetParagraphText(hiddenHeadingEl);
+			String headingText = Utils.getElementText(hiddenHeadingEl);
 			List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(headingText);
 			List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 			boolean isPotentialSubHeading = isPotentialSubHeading(paraEl, hiddenHeadingEl);
 			addHeadingContentToStep(procedureNames, namesFoundByOpsin, isPotentialSubHeading);
 		}
 
-		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null){//typically experimental paragraphs are preceded by a suitable heading
+		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null 
+				&& currentSection.getTargetChemicalName()==null && currentSection.getCurrentStepTargetChemicalName()==null ){//typically experimental paragraphs are preceded by a suitable heading
 			if (isSelfStandingParagraph(para.getTaggedSentencesDocument())){
 				currentSection.addParagraphToCurrentStep(para);
 			}

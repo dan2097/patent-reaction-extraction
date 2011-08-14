@@ -1,4 +1,5 @@
 <document>
+<description>
 <heading level="2" id="h-0020">EXAMPLE 3 </heading>
 <heading level="2" id="h-0021">6-(4-Chloropyrid-2-yl)-2-pyrid-2-yl-pyrimidin-4-ol (Ligand PM1) </heading>
 <p id="p-0247" num="0325">  
@@ -8,4 +9,5 @@
 </p>
 <p id="p-0248" num="0326"> 13.15 g (58 mmol) of 3-(4-chloropyrid-2-yl)-3-oxopropionic acid ethyl ester are dissolved in 400 ml of ethanol, and 9.10 g (58 mmol) of 2-amidinopyridine hydrochloride are added. After the addition of 14.44 ml of 4N sodium hydroxide solution, refluxing is carried out for 7 hours. The mixture is cooled and concentrated to a fifth of its original volume. The crude product is filtered off and recrystallised from methanol, yielding 6-(4-chloropyrid-2-yl)-2-pyrid-2-yl-pyrimidin-4-ol in the form of beige needles. </p>
 <p id="p-0249" num="0327"> <sup>1</sup>H-NMR (360 MHz, CDCl<sub>3</sub>): 12.33 (br s, 1H); 8.76 (d, J=4.5 Hz, 1H); 8.69 (d, J=5.4 Hz, 1H); 8.62 (d, J=7.7 Hz, 1H); 8.50 (d, J=1.8 Hz, 1H); 8.15-8.03 (tm, 1H); 7.75-7.63 (m, 2H); 7.25 (s, 1H). </p>
+</description>
 </document>
