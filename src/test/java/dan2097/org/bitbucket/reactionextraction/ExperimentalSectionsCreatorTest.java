@@ -135,4 +135,12 @@ public class ExperimentalSectionsCreatorTest {
 		assertEquals(4, heading.getChildElements().size());
 		assertEquals(0, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
 	}
+	
+	@Test
+	public void hasHiddenHeading10CounterExample() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><MOLECULE></MOLECULE></NounPhrase><STOP>;</STOP></Sentence><Sentence><NounPhrase><NN-CHEMENTITY>compound</NN-CHEMENTITY></NounPhrase><PrepPhrase><IN-WITH>with</IN-WITH><NounPhrase><MOLECULE></MOLECULE></NounPhrase></PrepPhrase></Sentence></Document>");
+		Element heading = sectionCreator.findAndDetachHiddenHeadingContent(taggedDoc);
+		assertNull(heading);
+	}
 }
