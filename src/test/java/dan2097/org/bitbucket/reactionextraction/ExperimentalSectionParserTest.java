@@ -96,7 +96,7 @@ public class ExperimentalSectionParserTest {
 				"</UNNAMEDMOLECULE>");
 		Chemical chem = new Chemical("title compound");
 		assertEquals(null, chem.getPercentYield());
-		parser.interpretPercentAsAyield(reference, chem);
+		ExperimentalStepParser.interpretPercentAsAyield(reference, chem);
 		assertEquals(83, chem.getPercentYield(), 0.5);
 	}
 }
