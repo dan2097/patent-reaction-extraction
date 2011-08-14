@@ -93,7 +93,7 @@ public class ChemicalTypeAssigner {
 	}
 
 	private static boolean isTextualAnaphora(String chemicalName) {
-		return ExperimentalSectionParser.matchProductTextualAnaphora.matcher(chemicalName).matches();
+		return ExperimentalStepParser.matchProductTextualAnaphora.matcher(chemicalName).matches();
 	}
 
 	private static boolean hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(Element mol, Chemical chem) {
