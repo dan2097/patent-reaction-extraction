@@ -100,7 +100,7 @@ public class ExperimentalSectionsCreator {
 						currentSection.moveToNextStep();
 					}
 					else{
-						LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded");
+						LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
 					}
 				}
 				currentSection.setCurrentStepProcedure(procedure);
@@ -112,15 +112,19 @@ public class ExperimentalSectionsCreator {
 		}
 		if (namesFoundByOpsin.size()==1){
 			String name = namesFoundByOpsin.get(0);
-			//TODO greater specificicty
-			if (currentSection.getCurrentStepProcedureElement()!=null && currentSection.getCurrentStepTargetChemicalName()==null && !currentSection.currentStepHasParagraphs()){
+			if (currentSection.currentStepHasParagraphs()){
+				addCurrentSectionIfNonEmptyAndReset();
+			}
+			if (currentSection.getCurrentStepProcedureElement()!=null){
+				if (currentSection.getCurrentStepTargetChemicalName()!=null){
+					LOG.trace(currentSection.getCurrentStepTargetChemicalName() + " was discarded!");
+				}
 				currentSection.setCurrentStepTargetChemicalName(name);
 			}
-			else if (currentSection.getTargetChemicalName()==null){
-				currentSection.setTargetChemicalName(name);
-			}
 			else{
-				addCurrentSectionIfNonEmptyAndReset();
+				if (currentSection.getTargetChemicalName()!=null){
+					LOG.trace(currentSection.getTargetChemicalName() + " was discarded!");
+				}
 				currentSection.setTargetChemicalName(name);
 			}
 		}
@@ -151,6 +155,11 @@ public class ExperimentalSectionsCreator {
 		return false;
 	}
 
+	/**
+	 * Examines paragraph for a starting procedure/chemical name heading
+	 * Then adds pargagraph to the current step
+	 * @param paraEl
+	 */
 	private void handleParagraph(Element paraEl) {
 		String text = Utils.detachIrrelevantElementsAndGetParagraphText(paraEl);
 		if (text.equals("")){//blank paragraph
@@ -166,7 +175,7 @@ public class ExperimentalSectionsCreator {
 			return;
 		}
 		
-		//Sometimes headings are present within paragraphs...
+		//Sometimes headings are present at the start of paragraphs...
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
 		if (hiddenHeadingEl !=null){
 			String headingText = Utils.getElementText(hiddenHeadingEl);
@@ -178,12 +187,11 @@ public class ExperimentalSectionsCreator {
 
 		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null 
 				&& currentSection.getTargetChemicalName()==null && currentSection.getCurrentStepTargetChemicalName()==null ){//typically experimental paragraphs are preceded by a suitable heading
+			addCurrentSectionIfNonEmptyAndReset();
 			if (isSelfStandingParagraph(para.getTaggedSentencesDocument())){
 				currentSection.addParagraphToCurrentStep(para);
 			}
-			else{
-				addCurrentSectionIfNonEmptyAndReset();
-			}
+			//non self standing paragraphs are discarded
 		}
 		else{
 			currentSection.addParagraphToCurrentStep(para);
@@ -206,7 +214,7 @@ public class ExperimentalSectionsCreator {
 				if ((firstPhrase.getLocalName().equals(ACTIONPHRASE_Container) && actionPhraseContainsRecognisedHeadingForm(firstPhrase))
 						|| (firstPhrase.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstPhrase))){
 					Element secondPhrase = children.get(1);
-					if (isStopOrColon(secondPhrase)){
+					if (isPeriodOrColon(secondPhrase)){
 						heading = new Element(XMLTags.HEADING);
 						firstPhrase.detach();
 						secondPhrase.detach();
@@ -217,7 +225,7 @@ public class ExperimentalSectionsCreator {
 							Element fourthPhrase =children.get(3);
 							if (thirdPhrase.getLocalName().equals(NOUN_PHRASE_Container) 
 									&& nounphraseContainsRecognisedHeadingForm(thirdPhrase)
-									&& isStopOrColon(fourthPhrase)){
+									&& isPeriodOrColon(fourthPhrase)){
 								thirdPhrase.detach();
 								fourthPhrase.detach();
 								heading.appendChild(thirdPhrase);
@@ -246,7 +254,7 @@ public class ExperimentalSectionsCreator {
 			Element secondChild = children.get(1);
 			Element thirdChild = children.get(2);
 			if ((firstChild.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstChild))
-				&& isStopOrColon(secondChild)
+				&& isPeriodOrColon(secondChild)
 				&& (thirdChild.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(thirdChild))){
 				return true;
 			}
@@ -309,13 +317,13 @@ public class ExperimentalSectionsCreator {
 	}
 
 	/**
-	 * Is this a stop or colon element
+	 * Is the value of this element a period or colon
 	 * @param secondPhrase
 	 * @return
 	 */
-	private boolean isStopOrColon(Element phrase) {
-		String lcname = phrase.getLocalName();
-		return (lcname.equals(STOP) || lcname.equals(COLON));
+	private boolean isPeriodOrColon(Element el) {
+		String value = el.getValue();
+		return (value.equals(".") || value.equals(":"));
 	}
 
 	/**
@@ -354,7 +362,6 @@ public class ExperimentalSectionsCreator {
 				experimentalSections.add(currentSection);
 			}
 		}
-
 	}
 
 }
