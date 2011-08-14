@@ -14,13 +14,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.Node;
-import nu.xom.Nodes;
 import nu.xom.ParentNode;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
@@ -35,20 +33,14 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
-import uk.ac.cam.ch.wwmm.opsin.NameToInchi;
-import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
-import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
-import uk.ac.cam.ch.wwmm.opsin.OpsinResult;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-import uk.ac.cam.ch.wwmm.opsin.OpsinResult.OPSIN_RESULT_STATUS;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.reactionextraction.Chemical;
-import dan2097.org.bitbucket.reactionextraction.ExperimentalParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
-import dan2097.org.bitbucket.reactionextraction.FunctionalGroupDefinitions;
+import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionsCreator;
 import dan2097.org.bitbucket.reactionextraction.Reaction;
 import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 
@@ -115,14 +107,14 @@ public class Utils {
 	}
 	
 	/**
-	 * Uses OSCAR4's dictionaries/OPSIN to convert a name to InChI
+	 * Uses OSCAR4's dictionaries/OPSIN to convert a name to a normalised InChI
 	 * @param name
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
 		Set<String> inchis = OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getInchis(name);
 		if (!inchis.isEmpty()){
-			return inchis.iterator().next();
+			return InchiNormaliser.normaliseInChI(inchis.iterator().next());
 		}
 		return null;
 	}
@@ -179,67 +171,20 @@ public class Utils {
 		for (Element elToDetach : elsToDetach) {
 			elToDetach.detach();
 		}
-		String text = paragraphEl.getValue();
+		return getElementText(paragraphEl);
+	}
+
+	/**
+	 * Returns the space normalised, trimmed string contents of the given element
+	 * @param element
+	 * @return
+	 */
+	public static String getElementText(Element element) {
+		String text = element.getValue();
 		text = matchWhiteSpace.matcher(text).replaceAll(" ");
 		return text.trim();
 	}
-	
-	public static ExperimentalParser extractReactions(Document doc){
-		ExperimentalParser parser = new ExperimentalParser();
-		Nodes headings = doc.getRootElement().query("//heading|//p[starts-with(@id, 'h-')]");
-		for (int i = 0; i < headings.size(); i++) {
-			Element heading = (Element) headings.get(i);
-	    	Element headingElementToProcess = new Element(XMLTags.HEADING);
-	    	String headingText = heading.getValue();
-	    	if (heading.getLocalName().equals(XMLTags.P) && headingText.contains("\n")){
-	    		continue;
-	    	}
-	    	headingElementToProcess.addAttribute(new Attribute(XMLAtrs.TITLE, headingText));
-	    	List<Element> paragraphs = getAdjacentSiblingsParagraphs(heading);
-	    	for (Element paragraph : paragraphs) {
-		        Element paragraphToProcess = new Element(paragraph);
-		        headingElementToProcess.appendChild(paragraphToProcess);
-			}
-	    	if (paragraphs.size()>0){
-		    	parser.parseExperimentalSection(headingElementToProcess);
-	    	}
-		}
-		return parser;
-	}
-	
-	/**
-	 * Returns an arrayList containing sibling elements of type "p" which are not believed to be subheadings
-	 * @param currentElem: the element to look for following siblings of
-	 * @return
-	 */
-	private static List<Element> getAdjacentSiblingsParagraphs(Element currentElem) {
-		List<Element> siblingElementsOfType= new ArrayList<Element>();
-		Element parent =(Element) currentElem.getParent();
-		if (parent==null){
-			return siblingElementsOfType;
-		}
-		Node nextSibling = XOMTools.getNextSibling(currentElem);
-		while (nextSibling !=null){
-			if (nextSibling instanceof Element){
-				if (((Element)nextSibling).getLocalName().equals(XMLTags.P)){
-					String id = ((Element)nextSibling).getAttributeValue(XMLAtrs.ID);
-					if (id !=null && id.startsWith("h-")){
-						break;//break on subheadings
-					}
-					else{
-						siblingElementsOfType.add(((Element)nextSibling));
-					}
-				}
-				else{
-					break;
-				}
-			}
-			nextSibling = XOMTools.getNextSibling(nextSibling);
-		}
 
-		return siblingElementsOfType;
-	}
-	
 	/**
 	 * Gets the next element. This element need not be a sibling
 	 * @param startingEl
@@ -294,34 +239,21 @@ public class Utils {
 		return previous;
 	}
 	
-	public static Chemical extractResolvableChemicalFromHeading(String title) {
-		if (title==null){
-			throw new IllegalArgumentException("Input title text was null");
+	/**
+	 * Creates a chemical from a given name with if possible resolved smiles and InChI
+	 * @param name
+	 * @return
+	 */
+	public static Chemical createChemicalFromName(String name) {
+		if (name==null){
+			throw new IllegalArgumentException("Input name was null");
 		}
-		List<String> names = getSystematicChemicalNamesFromText(title);
-		if (names.size()==1){
-			String name = names.get(0);
-			NameToStructure n2s;
-			try {
-				n2s = NameToStructure.getInstance();
-			} catch (NameToStructureException e) {
-				throw new RuntimeException("OPSIN failed to initialise", e);
-			}
-			OpsinResult result = n2s.parseChemicalName(name);
-			if (result.getStatus() != OPSIN_RESULT_STATUS.FAILURE){
-				Chemical chem = new Chemical(name);
-				chem.setSmiles(result.getSmiles());
-				String rawInchi = NameToInchi.convertResultToInChI(result);
-				if (rawInchi!=null){
-					chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
-				}
-				chem.setSmarts(FunctionalGroupDefinitions.getSmartsFromChemicalName(name));
-				return chem;
-			}
-		}
-		return null;
+		Chemical chem = new Chemical(name);
+		chem.setSmiles(resolveNameToSmiles(name));
+		chem.setInchi(resolveNameToInchi(name));
+		return chem;
 	}
-	
+
 	/**
 	 * Convenience method for creating an experimental section parser
 	 * @param title
@@ -329,12 +261,15 @@ public class Utils {
 	 * @return
 	 */
 	public static ExperimentalSectionParser createExperimentalSectionParser(String title, String content){
-		Chemical titleCompound = extractResolvableChemicalFromHeading(title);
-		List<Element> paragraphEls = new ArrayList<Element>();
+		List<Element> orderedHeadingsAndParagraphs = new ArrayList<Element>();
+		Element heading = new Element(XMLTags.HEADING);
+		heading.appendChild(title);
+		orderedHeadingsAndParagraphs.add(heading);
 		Element paragraph = new Element(XMLTags.P);
 		paragraph.appendChild(content);
-		paragraphEls.add(paragraph);
-		return new ExperimentalSectionParser(titleCompound, paragraphEls, new HashMap<String, Chemical>());
+		orderedHeadingsAndParagraphs.add(paragraph);
+		ExperimentalSectionsCreator sectionsCreator = new ExperimentalSectionsCreator(orderedHeadingsAndParagraphs);
+		return new ExperimentalSectionParser(sectionsCreator.createSections().get(0), new HashMap<String, Chemical>());
 	}
 	
 	/**

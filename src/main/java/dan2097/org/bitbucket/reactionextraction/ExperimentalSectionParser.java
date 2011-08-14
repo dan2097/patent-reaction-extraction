@@ -23,66 +23,68 @@ import nu.xom.Nodes;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
-import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
-import dan2097.org.bitbucket.utility.InchiNormaliser;
 import dan2097.org.bitbucket.utility.IndigoHolder;
-import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
 import dan2097.org.bitbucket.utility.Utils;
 
 public class ExperimentalSectionParser {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionParser.class);
+	private final ExperimentalSection experimentalSection;
 	private final BiMap<Element, Chemical>  moleculeToChemicalMap = HashBiMap.create();
 	private final Map<String, Chemical> aliasToChemicalMap;
-	private final Chemical titleCompound;
-	private final List<Element> paragraphEls;
-	private final List<Reaction> reactions = new ArrayList<Reaction>();
+	private Chemical currentTargetCompound;
+	private Chemical ultimateTargetCompound;
+	private final List<Reaction> sectionReactions = new ArrayList<Reaction>();
 	/*A yield phrase*/
 	private final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
 	private final String synthesizePhraseProduct = "self::node()/descendant-or-self::NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	private final Indigo indigo = IndigoHolder.getInstance();
-	private final ParagraphClassifier classifier = ParagraphClassifierHolder.getInstance();
 	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title|final) (compound|product)", Pattern.CASE_INSENSITIVE);
-	
-	public ExperimentalSectionParser(Chemical titleCompound, List<Element> paragraphEls, Map<String, Chemical> aliasToChemicalMap) {
-		if (titleCompound ==null|| paragraphEls ==null|| aliasToChemicalMap==null){
+
+	public ExperimentalSectionParser(ExperimentalSection experimentalSection, Map<String, Chemical> aliasToChemicalMap) {
+		if (experimentalSection ==null || aliasToChemicalMap==null){
 			throw new IllegalArgumentException("Null input parameter");
 		}
-		this.titleCompound = titleCompound;
-		this.paragraphEls = paragraphEls;
+		this.experimentalSection = experimentalSection;
 		this.aliasToChemicalMap = aliasToChemicalMap;
 	}
 
 	public void parseForReactions(){
-		List<Paragraph> paragraphs = new ArrayList<Paragraph>();
-		for (Element p : paragraphEls) {
-			String paragraphText = Utils.detachIrrelevantElementsAndGetParagraphText(p);
-			if (classifier.isExperimental(paragraphText)){
-				Paragraph para = new Paragraph(paragraphText);
-				if (!para.getTaggedString().equals("")){
-					paragraphs.add(para);
-					List<Element> moleculeEls = findAllMolecules(para);
-					for (Element moleculeEl : moleculeEls) {
-						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
-						moleculeToChemicalMap.put(moleculeEl, cm);
-						ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
-						attemptToResolveAnaphora(moleculeEl, cm);
-						aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
-					}
-					List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(para);
-					for (Element unnamedMoleculeEl : unnamedMoleculeEls) {
-						Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(unnamedMoleculeEl);
-						moleculeToChemicalMap.put(unnamedMoleculeEl, cm);
-						attemptToResolveAnaphora(unnamedMoleculeEl, cm);
-						ChemicalTypeAssigner.assignTypeToChemical(unnamedMoleculeEl, cm);
-					}
+		if (experimentalSection.getTargetChemicalName()!=null){
+			ultimateTargetCompound = Utils.createChemicalFromName(experimentalSection.getTargetChemicalName());
+		}
+		for (ExperimentalStep step : experimentalSection.getExperimentalSteps()) {
+			if (step.getTargetChemicalName()!=null){
+				currentTargetCompound = Utils.createChemicalFromName(step.getTargetChemicalName());
+			}
+			else{
+				currentTargetCompound = ultimateTargetCompound;
+			}
+			for (Paragraph paragraph : step.getParagraphs()) {
+				List<Element> moleculeEls = findAllMolecules(paragraph);
+				for (Element moleculeEl : moleculeEls) {
+					Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
+					moleculeToChemicalMap.put(moleculeEl, cm);
+					ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+					attemptToResolveAnaphora(moleculeEl, cm);
+					aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+				}
+				List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(paragraph);
+				for (Element unnamedMoleculeEl : unnamedMoleculeEls) {
+					Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(unnamedMoleculeEl);
+					moleculeToChemicalMap.put(unnamedMoleculeEl, cm);
+					attemptToResolveAnaphora(unnamedMoleculeEl, cm);
+					ChemicalTypeAssigner.assignTypeToChemical(unnamedMoleculeEl, cm);
 				}
 			}
+			List<Reaction> reactions = determineReactions(step.getParagraphs());
+			for (Reaction reaction : reactions) {
+				new ReactionStoichiometryDeterminer(reaction).processReactionStoichiometry();
+				sectionReactions.add(reaction);
+			}
 		}
-		reactions.addAll(determineReactions(paragraphs));
 	}
-	
 
 	private void attemptToResolveAnaphora(Element molOrUnnamedEl, Chemical cm) {
 		List<Element> references = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
@@ -124,8 +126,8 @@ public class ExperimentalSectionParser {
 	 * Retrieves the reactions found by this experimental section parser
 	 * @return
 	 */
-	public List<Reaction> getReactions() {
-		return reactions;
+	public List<Reaction> getSectionReactions() {
+		return sectionReactions;
 	}
 
 	/**
@@ -229,12 +231,7 @@ public class ExperimentalSectionParser {
 
 	private Chemical generateChemicalFromMoleculeElAndLocalInformation(Element moleculeEl) {
 		String name = ChemTaggerOutputNameExtraction.findMoleculeName(moleculeEl);
-		Chemical chem = new Chemical(name);
-		chem.setSmiles(Utils.resolveNameToSmiles(name));
-		String rawInchi = Utils.resolveNameToInchi(name);
-		if (rawInchi!=null){
-			chem.setInchi(InchiNormaliser.normaliseInChI(rawInchi));
-		}
+		Chemical chem = Utils.createChemicalFromName(name);
 		Chemical referencedChemical = aliasToChemicalMap.get(name);
 		if (referencedChemical != null){
 			chem.setSmiles(referencedChemical.getSmiles());
@@ -343,9 +340,11 @@ public class ExperimentalSectionParser {
 				reactions.add(currentReaction);
 			}
 		}
-		if (!compoundIsProductOfAReaction(reactions, titleCompound)){
-			if (!addTitleCompoundToLastReactionWithReactantsIfHasNoProduct(reactions)){
-				LOG.trace("Failed to assign: " + titleCompound.getName() + " to a reaction!");
+		if (currentTargetCompound !=null){
+			if (!compoundIsProductOfAReaction(reactions, currentTargetCompound)){
+				if (!addTitleCompoundToLastReactionWithReactantsIfHasNoProduct(reactions)){
+					LOG.trace("Failed to assign: " + currentTargetCompound.getName() + " to a reaction!");
+				}
 			}
 		}
 		for (Reaction reaction : reactions) {
@@ -475,8 +474,10 @@ public class ExperimentalSectionParser {
 
 	boolean attemptToResolveBackReference(Chemical chemical, List<Reaction> reactionsToConsider) {
 		if (matchProductTextualAnaphora.matcher(chemical.getName()).matches()){
-			chemical.setSmiles(titleCompound.getSmiles());
-			chemical.setInchi(titleCompound.getInchi());
+			if (currentTargetCompound!=null){
+				chemical.setSmiles(currentTargetCompound.getSmiles());
+				chemical.setInchi(currentTargetCompound.getInchi());
+			}
 			chemical.setRole(ChemicalRole.product);
 			return true;
 		}
@@ -499,8 +500,8 @@ public class ExperimentalSectionParser {
 		}
 		else if (chemical.getSmiles()!=null){
 			List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactionsToConsider);
-			if (ChemicalRole.product.equals(chemical.getRole())){
-				chemicalsToMatchAgainst.add(titleCompound);
+			if (ChemicalRole.product.equals(chemical.getRole()) && currentTargetCompound !=null){
+				chemicalsToMatchAgainst.add(currentTargetCompound);
 			}
 			String smarts = generateAromaticSmiles(chemical.getSmiles());
 			boolean success = attemptToResolveViaSmartsMatch(smarts, chemical, chemicalsToMatchAgainst);
@@ -587,13 +588,13 @@ public class ExperimentalSectionParser {
 			Reaction reaction = reactions.get(i);
 			if (reaction.getReactants().size()>0){
 				if (reaction.getProducts().size()==0){
-					reaction.addProduct(titleCompound);
+					reaction.addProduct(currentTargetCompound);
 					return true;
 				}
 				else if (productCouldBeTheTitleCompound(reaction)){
 					Chemical product = reaction.getProducts().get(0);
-					product.setSmiles(titleCompound.getSmiles());
-					product.setInchi(titleCompound.getInchi());
+					product.setSmiles(currentTargetCompound.getSmiles());
+					product.setInchi(currentTargetCompound.getInchi());
 					return true;
 				}
 				else{
