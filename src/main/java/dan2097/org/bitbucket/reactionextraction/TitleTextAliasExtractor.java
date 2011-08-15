@@ -12,6 +12,12 @@ public class TitleTextAliasExtractor {
 	private final static Pattern matchStereochemicalQualificationToIgnore = Pattern.compile("(\u00B1|\\(\u00B1\\))-?");
 	private final static Pattern matchPreIdentifierWord = Pattern.compile("formula|intermediate|example|preparation|synthesis", Pattern.CASE_INSENSITIVE);
 	
+	/**
+	 * Attempts to find an identifier in the given heading text
+	 * Returns null if one cannot be found
+	 * @param text
+	 * @return
+	 */
 	public static String findAlias(String text) {
 		text = text.trim();
 		if (text.length()==0){

@@ -8,7 +8,7 @@ import nu.xom.Element;
 public class ExperimentalStep {
 
 	private Element procedureEl; 
-	private String targetChemicalName;
+	private ChemicalNameAliasPair targetChemicalNamePair;
 	private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
 	
 	Element getProcedureEl() {
@@ -27,11 +27,11 @@ public class ExperimentalStep {
 		return paragraphs;
 	}
 
-	String getTargetChemicalName() {
-		return targetChemicalName;
+	ChemicalNameAliasPair getTargetChemicalNamePair() {
+		return targetChemicalNamePair;
 	}
 
-	void setTargetChemicalName(String name) {
-		targetChemicalName = name;
+	void setTargetChemicalNamePair(ChemicalNameAliasPair targetChemicalNamePair) {
+		this.targetChemicalNamePair = targetChemicalNamePair;
 	}
 }
