@@ -37,14 +37,22 @@ public class ExperimentalSectionParser {
 	public void parseForReactions(){
 		Chemical ultimateTargetCompound = null;
 		Chemical currentStepTargetCompound = null;
-		if (experimentalSection.getTargetChemicalName()!=null){
-			ultimateTargetCompound = Utils.createChemicalFromName(experimentalSection.getTargetChemicalName());
+		if (experimentalSection.getTargetChemicalNamePair()!=null){
+			ChemicalNameAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
+			ultimateTargetCompound = Utils.createChemicalFromName(nameAliasPair.getChemicalName());
+			if (nameAliasPair.getAlias() !=null){
+				aliasToChemicalMap.put(nameAliasPair.getAlias(), ultimateTargetCompound);
+			}
 		}
 		List<ExperimentalStep> steps = experimentalSection.getExperimentalSteps();
 		for (int i = 0; i < steps.size(); i++) {
 			ExperimentalStep step = steps.get(i);
-			if (step.getTargetChemicalName()!=null){
-				currentStepTargetCompound = Utils.createChemicalFromName(step.getTargetChemicalName());
+			if (step.getTargetChemicalNamePair()!=null){
+				ChemicalNameAliasPair nameAliasPair = step.getTargetChemicalNamePair();
+				currentStepTargetCompound = Utils.createChemicalFromName(nameAliasPair.getChemicalName());
+				if (nameAliasPair.getAlias() !=null){
+					aliasToChemicalMap.put(nameAliasPair.getAlias(), currentStepTargetCompound);
+				}
 			}
 			else if (i == steps.size()-1){
 				//last step can be implicitly the ultimate target compound

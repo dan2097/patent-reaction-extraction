@@ -7,7 +7,7 @@ import nu.xom.Element;
 
 public class ExperimentalSection {
 	private Element procedureElement;
-	private String targetChemicalName;
+	private ChemicalNameAliasPair targetChemicalNamePair;
 	private final List<ExperimentalStep> experimentalSteps = new ArrayList<ExperimentalStep>();
 	private ExperimentalStep currentStep = new ExperimentalStep();
 	
@@ -23,12 +23,12 @@ public class ExperimentalSection {
 		this.procedureElement = procedureElement;
 	}
 
-	String getTargetChemicalName() {
-		return targetChemicalName;
+	ChemicalNameAliasPair getTargetChemicalNamePair() {
+		return targetChemicalNamePair;
 	}
 
-	void setTargetChemicalName(String targetChemicalName) {
-		this.targetChemicalName = targetChemicalName;
+	void setTargetChemicalNamePair(ChemicalNameAliasPair targetChemicalNamePair) {
+		this.targetChemicalNamePair = targetChemicalNamePair;
 	}
 	
 	List<ExperimentalStep> getExperimentalSteps() {
@@ -51,12 +51,12 @@ public class ExperimentalSection {
 		currentStep.addParagraph(para);
 	}
 
-	String getCurrentStepTargetChemicalName(){
-		return currentStep.getTargetChemicalName();
+	ChemicalNameAliasPair getCurrentStepTargetChemicalNamePair(){
+		return currentStep.getTargetChemicalNamePair();
 	}
 	
-	void setCurrentStepTargetChemicalName(String name) {
-		currentStep.setTargetChemicalName(name);
+	void setCurrentStepTargetChemicalNamePair(ChemicalNameAliasPair targetChemicalNamePair) {
+		currentStep.setTargetChemicalNamePair(targetChemicalNamePair);
 	}
 	
 	void moveToNextStep() {

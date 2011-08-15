@@ -77,18 +77,18 @@ public class ExperimentalSectionsCreator {
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
+		addHeadingContentToStep(text, taggedDoc.getRootElement(), headingEl);
+	}
+	
+	private void addHeadingContentToStep(String text, Element taggedDocRootEl, Element headingEl) {
 		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
-		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
+		List<Element> procedureNames = extractProcedureNames(taggedDocRootEl);
 		if (namesFoundByOpsin.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
 		}
-		boolean isPotentialSubHeading = isPotentialSubHeading(headingEl, taggedDoc.getRootElement());
-		addHeadingContentToStep(procedureNames, namesFoundByOpsin, isPotentialSubHeading);
-	}
-	
-	private void addHeadingContentToStep(List<Element> procedureNames, List<String> namesFoundByOpsin, boolean isPotentialSubHeading) {
+		boolean isPotentialSubHeading = isPotentialSubHeading(headingEl, taggedDocRootEl);
 		if (procedureNames.size()==1){
 			Element procedure = procedureNames.get(0);
 			if (currentSection.getProcedureElement()==null){
@@ -111,21 +111,22 @@ public class ExperimentalSectionsCreator {
 			}
 		}
 		if (namesFoundByOpsin.size()==1){
+			String alias = TitleTextAliasExtractor.findAlias(text);
 			String name = namesFoundByOpsin.get(0);
 			if (currentSection.currentStepHasParagraphs()){
 				addCurrentSectionIfNonEmptyAndReset();
 			}
 			if (currentSection.getCurrentStepProcedureElement()!=null){
-				if (currentSection.getCurrentStepTargetChemicalName()!=null){
-					LOG.trace(currentSection.getCurrentStepTargetChemicalName() + " was discarded!");
+				if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
+					LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
 				}
-				currentSection.setCurrentStepTargetChemicalName(name);
+				currentSection.setCurrentStepTargetChemicalNamePair(new ChemicalNameAliasPair(name, alias));
 			}
 			else{
-				if (currentSection.getTargetChemicalName()!=null){
-					LOG.trace(currentSection.getTargetChemicalName() + " was discarded!");
+				if (currentSection.getTargetChemicalNamePair()!=null){
+					LOG.trace(currentSection.getTargetChemicalNamePair() + " was discarded!");
 				}
-				currentSection.setTargetChemicalName(name);
+				currentSection.setTargetChemicalNamePair(new ChemicalNameAliasPair(name, alias));
 			}
 		}
 	}
@@ -179,19 +180,16 @@ public class ExperimentalSectionsCreator {
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
 		if (hiddenHeadingEl !=null){
 			String headingText = Utils.getElementText(hiddenHeadingEl);
-			List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(headingText);
-			List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
-			boolean isPotentialSubHeading = isPotentialSubHeading(paraEl, hiddenHeadingEl);
-			addHeadingContentToStep(procedureNames, namesFoundByOpsin, isPotentialSubHeading);
+			addHeadingContentToStep(headingText, hiddenHeadingEl, paraEl);
 		}
 
 		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null 
-				&& currentSection.getTargetChemicalName()==null && currentSection.getCurrentStepTargetChemicalName()==null ){//typically experimental paragraphs are preceded by a suitable heading
+				&& currentSection.getTargetChemicalNamePair()==null && currentSection.getCurrentStepTargetChemicalNamePair()==null ){//typically experimental paragraphs are preceded by a suitable heading
 			addCurrentSectionIfNonEmptyAndReset();
 			if (isSelfStandingParagraph(para.getTaggedSentencesDocument())){
 				currentSection.addParagraphToCurrentStep(para);
 			}
-			//non self standing paragraphs are discarded
+			//non self standing paragraphs with no heading are discarded
 		}
 		else{
 			currentSection.addParagraphToCurrentStep(para);
