@@ -10,7 +10,6 @@ import nu.xom.Element;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import dan2097.org.bitbucket.utility.Utils;
@@ -113,7 +112,7 @@ public class ExperimentalSectionsCreatorTest {
 		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><ActionPhrase type=\"Synthesize\"><NounPhrase><PROCEDURE><NN-METHOD>Step</NN-METHOD><CD>1</CD></PROCEDURE></NounPhrase><COLON>:</COLON><NounPhrase><NN-SYNTHESIZE>Synthesis</NN-SYNTHESIZE><PrepPhrase><IN-OF>of</IN-OF><NounPhrase><MOLECULE><OSCARCM><OSCAR-CM>17,17-ethylenedioxyandrosta-1,4-dien-3-one</OSCAR-CM></OSCARCM><REFERENCETOCOMPOUND><_-LRB->(</_-LRB-><CD>2</CD><_-RRB->)</_-RRB-></REFERENCETOCOMPOUND></MOLECULE></NounPhrase></PrepPhrase></NounPhrase></ActionPhrase><STOP>.</STOP></Sentence></Document>");
 		Element heading = sectionCreator.findAndDetachHiddenHeadingContent(taggedDoc);
 		assertNotNull(heading);
-		assertEquals(2, heading.getChildElements().size());
+		assertEquals(4, heading.getChildElements().size());
 		assertEquals(0, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
 	}
 	
@@ -136,13 +135,14 @@ public class ExperimentalSectionsCreatorTest {
 		assertEquals(4, heading.getChildElements().size());
 		assertEquals(0, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
 	}
-	
-	@Ignore
-	@Test//chemical tagger should be fixed instead
-	public void hasHiddenHeading10CounterExample() throws ValidityException, ParsingException, IOException {
+
+	@Test
+	public void hasHiddenHeading10() throws ValidityException, ParsingException, IOException {
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><MOLECULE></MOLECULE></NounPhrase><STOP>;</STOP></Sentence><Sentence><NounPhrase><NN-CHEMENTITY>compound</NN-CHEMENTITY></NounPhrase><PrepPhrase><IN-WITH>with</IN-WITH><NounPhrase><MOLECULE></MOLECULE></NounPhrase></PrepPhrase></Sentence></Document>");
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><ActionPhrase type=\"Cool\"><NounPhrase><PROCEDURE><NN-METHOD>Step</NN-METHOD><CD-ALPHANUM>8F</CD-ALPHANUM></PROCEDURE></NounPhrase><COLON>:</COLON><PrepPhrase><TO>To</TO><NounPhrase><DT>a</DT><NN-CHEMENTITY>solution</NN-CHEMENTITY><PrepPhrase><IN-OF>of</IN-OF><NounPhrase></NounPhrase></PrepPhrase></NounPhrase></PrepPhrase><VerbPhrase><VB-COOL>cooled</VB-COOL></VerbPhrase></ActionPhrase><STOP>.</STOP></Sentence></Document>");
 		Element heading = sectionCreator.findAndDetachHiddenHeadingContent(taggedDoc);
-		assertNull(heading);
+		assertNotNull(heading);
+		assertEquals(2, heading.getChildElements().size());
+		assertEquals(2, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
 	}
 }

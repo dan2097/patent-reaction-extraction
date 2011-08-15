@@ -17,6 +17,7 @@ import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
+import nu.xom.Node;
 import nu.xom.Nodes;
 
 public class ExperimentalSectionsCreator {
@@ -77,57 +78,70 @@ public class ExperimentalSectionsCreator {
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
-		addHeadingContentToStep(text, taggedDoc.getRootElement(), headingEl);
-	}
-	
-	private void addHeadingContentToStep(String text, Element taggedDocRootEl, Element headingEl) {
 		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
-		List<Element> procedureNames = extractProcedureNames(taggedDocRootEl);
+		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (namesFoundByOpsin.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
 		}
-		boolean isPotentialSubHeading = isPotentialSubHeading(headingEl, taggedDocRootEl);
+		boolean isPotentialSubHeading = isPotentialSubHeading(headingEl, taggedDoc.getRootElement());
 		if (procedureNames.size()==1){
-			Element procedure = procedureNames.get(0);
-			if (currentSection.getProcedureElement()==null){
-				currentSection.setProcedureElement(procedure);
-			}
-			else if (isPotentialSubHeading){
-				if (currentSection.getCurrentStepProcedureElement()!=null){
-					if (currentSection.currentStepHasParagraphs()){
-						currentSection.moveToNextStep();
-					}
-					else{
-						LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
-					}
-				}
-				currentSection.setCurrentStepProcedure(procedure);
-			}
-			else{
-				addCurrentSectionIfNonEmptyAndReset();
-				currentSection.setProcedureElement(procedure);
-			}
+			addProcedure(procedureNames.get(0), isPotentialSubHeading);
 		}
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
 			String name = namesFoundByOpsin.get(0);
-			if (currentSection.currentStepHasParagraphs()){
-				addCurrentSectionIfNonEmptyAndReset();
-			}
+			ChemicalNameAliasPair nameAliasPair = new ChemicalNameAliasPair(name, alias);
+			addNameAliasPair(nameAliasPair);
+		}
+	}
+
+	/**
+	 * Adds a procedure to an appropriate place in the current section or step
+	 * @param procedure
+	 * @param isPotentialSubHeading
+	 */
+	private void addProcedure(Element procedure, boolean isPotentialSubHeading) {
+		if (currentSection.getProcedureElement()==null){
+			currentSection.setProcedureElement(procedure);
+		}
+		else if (isPotentialSubHeading){
 			if (currentSection.getCurrentStepProcedureElement()!=null){
-				if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
-					LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
+				if (currentSection.currentStepHasParagraphs()){
+					currentSection.moveToNextStep();
 				}
-				currentSection.setCurrentStepTargetChemicalNamePair(new ChemicalNameAliasPair(name, alias));
-			}
-			else{
-				if (currentSection.getTargetChemicalNamePair()!=null){
-					LOG.trace(currentSection.getTargetChemicalNamePair() + " was discarded!");
+				else{
+					LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
 				}
-				currentSection.setTargetChemicalNamePair(new ChemicalNameAliasPair(name, alias));
 			}
+			currentSection.setCurrentStepProcedure(procedure);
+		}
+		else{
+			addCurrentSectionIfNonEmptyAndReset();
+			currentSection.setProcedureElement(procedure);
+		}
+	}
+
+	/**
+	 * Adds a ChemicalNameAliasPair to an appropriate place in the current section or step
+	 * @param nameAliasPair
+	 */
+	private void addNameAliasPair(ChemicalNameAliasPair nameAliasPair) {
+		if (currentSection.currentStepHasParagraphs()){
+			addCurrentSectionIfNonEmptyAndReset();
+		}
+		if (currentSection.getCurrentStepProcedureElement()!=null){
+			if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
+				LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
+			}
+			currentSection.setCurrentStepTargetChemicalNamePair(nameAliasPair);
+		}
+		else{
+			if (currentSection.getTargetChemicalNamePair()!=null){
+				LOG.trace(currentSection.getTargetChemicalNamePair() + " was discarded!");
+			}
+			currentSection.setTargetChemicalNamePair(nameAliasPair);
 		}
 	}
 
@@ -179,8 +193,7 @@ public class ExperimentalSectionsCreator {
 		//Sometimes headings are present at the start of paragraphs...
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
 		if (hiddenHeadingEl !=null){
-			String headingText = Utils.getElementText(hiddenHeadingEl);
-			addHeadingContentToStep(headingText, hiddenHeadingEl, paraEl);
+			processInlineHeading(hiddenHeadingEl, paraEl, text);
 		}
 
 		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null 
@@ -197,6 +210,51 @@ public class ExperimentalSectionsCreator {
 	}
 
 	/**
+	 * Similar in function to processHeading except hiddenHeadingEl has already been tagged by chemical tagger
+	 * There is a possibility of the heading being a false positive e.g. "LCMS:" so a new section is not started if
+	 * this method fails to do anything
+	 * @param hiddenHeadingEl
+	 * @param text 
+	 * @param paraEl 
+	 */
+	private void processInlineHeading(Element hiddenHeadingEl, Element paraEl, String text) {
+		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
+		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(headingText);
+		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
+		boolean isPotentialSubHeading = isPotentialSubHeading(paraEl, hiddenHeadingEl);
+		if (procedureNames.size()==1){
+			addProcedure(procedureNames.get(0), isPotentialSubHeading);
+		}
+		if (namesFoundByOpsin.size()==1){
+			String alias = TitleTextAliasExtractor.findAlias(headingText);
+			String name = namesFoundByOpsin.get(0);
+			ChemicalNameAliasPair nameAliasPair = new ChemicalNameAliasPair(name, alias);
+			addNameAliasPair(nameAliasPair);
+		}
+	}
+
+	/**
+	 * Find the text corresponding to chemical tagger's input.
+	 * This is non trivial as chemical tagger does not employ a pure white space tokenizer
+	 * @param hiddenHeadingEl
+	 * @param text
+	 * @return
+	 */
+	private String findTextCorrespondingToChemicallyTaggedText(Element taggedTextEl, String text) {
+		String extractedText = Utils.getElementText(taggedTextEl);
+		char[] extractedCharArray = extractedText.toCharArray();
+		char[] inputCharArray = text.replaceAll("sulph", "sulf").toCharArray();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, j=0; i < inputCharArray.length && j < extractedCharArray.length; i++, j++) {
+			if (inputCharArray[i] == ' '){
+				j--;
+			}
+			sb.append(inputCharArray[i]);
+		}
+		return sb.toString().trim();
+	}
+
+	/**
 	 * Looks for known patterns that are indicative of headings
 	 * Detaches the heading element/s and returns them attached to a new heading element
 	 * @param taggedDoc
@@ -206,26 +264,25 @@ public class ExperimentalSectionsCreator {
 		Element firstSentence = taggedDoc.getRootElement().getFirstChildElement(SENTENCE_Container);
 		Element heading = null;
 		if (firstSentence != null){
-			Elements children = firstSentence.getChildElements();
-			if (children.size() >=2){
-				Element firstPhrase =children.get(0);
-				if ((firstPhrase.getLocalName().equals(ACTIONPHRASE_Container) && actionPhraseContainsRecognisedHeadingForm(firstPhrase))
-						|| (firstPhrase.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstPhrase))){
-					Element secondPhrase = children.get(1);
+			List<Element> elementsToConsider = expandActionPhrases(firstSentence.getChildElements());
+			if (elementsToConsider.size() >=2){
+				Element firstPhrase =elementsToConsider.get(0);
+				if (firstPhrase.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstPhrase)){
+					Element secondPhrase = elementsToConsider.get(1);
 					if (isPeriodOrSemiColonOrColon(secondPhrase)){
 						heading = new Element(XMLTags.HEADING);
-						firstPhrase.detach();
-						secondPhrase.detach();
+						detachElementAndEmptyActionPhraseParents(firstPhrase);
+						detachElementAndEmptyActionPhraseParents(secondPhrase);
 						heading.appendChild(firstPhrase);
 						heading.appendChild(secondPhrase);
-						if(children.size() >=4){
-							Element thirdPhrase =children.get(2);
-							Element fourthPhrase =children.get(3);
+						if(elementsToConsider.size() >=4){
+							Element thirdPhrase =elementsToConsider.get(2);
+							Element fourthPhrase =elementsToConsider.get(3);
 							if (thirdPhrase.getLocalName().equals(NOUN_PHRASE_Container) 
 									&& nounphraseContainsRecognisedHeadingForm(thirdPhrase)
 									&& isPeriodOrSemiColonOrColon(fourthPhrase)){
-								thirdPhrase.detach();
-								fourthPhrase.detach();
+								detachElementAndEmptyActionPhraseParents(thirdPhrase);
+								detachElementAndEmptyActionPhraseParents(fourthPhrase);
 								heading.appendChild(thirdPhrase);
 								heading.appendChild(fourthPhrase);
 							}
@@ -237,27 +294,36 @@ public class ExperimentalSectionsCreator {
 		return heading;
 	}
 
+	private void detachElementAndEmptyActionPhraseParents(Element element) {
+		Element parent = (Element) element.getParent();
+		element.detach();
+		while (parent.getLocalName().equals(ACTIONPHRASE_Container) && parent.getChildElements().size()==0){
+			Node newParent = parent.getParent();
+			parent.detach();
+			if (!(newParent instanceof Element)){
+				break;
+			}
+			parent = (Element) newParent;
+		}
+	}
+
 	/**
-	 * Does the actionPhrase contain a recognised heading form
-	 * @param actionPhrase
+	 * Returns the list of children with action phrases recursively replaced by their children
+	 * @param children
 	 * @return
 	 */
-	private boolean actionPhraseContainsRecognisedHeadingForm(Element actionPhrase) {
-		Elements children = actionPhrase.getChildElements();
-		if (children.size()==1){
-			return children.get(0).getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(children.get(0));
-		}
-		else if (children.size()==3){
-			Element firstChild = children.get(0);
-			Element secondChild = children.get(1);
-			Element thirdChild = children.get(2);
-			if ((firstChild.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstChild))
-				&& isPeriodOrSemiColonOrColon(secondChild)
-				&& (thirdChild.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(thirdChild))){
-				return true;
+	private List<Element> expandActionPhrases(Elements children) {
+		List<Element> elements = new ArrayList<Element>();
+		for (int i = 0; i < children.size(); i++) {
+			Element child = children.get(i);
+			if (child.getLocalName().equals(ACTIONPHRASE_Container)){
+				elements.addAll(expandActionPhrases(child.getChildElements()));
+			}
+			else{
+				elements.add(child);
 			}
 		}
-		return false;
+		return elements;
 	}
 
 	/**
