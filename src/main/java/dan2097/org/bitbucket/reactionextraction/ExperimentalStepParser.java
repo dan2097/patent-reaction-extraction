@@ -136,7 +136,6 @@ public class ExperimentalStepParser {
 			ChemicalSenseApplication chemicalSenseApplication = new ChemicalSenseApplication(reaction);
 			chemicalSenseApplication.mergeProductsByInChI();
 			chemicalSenseApplication.reassignMisCategorisedReagents();
-			chemicalSenseApplication.removeProductsThatAreWorkupSolvents();
 		}
 		return reactions;
 	}
@@ -162,7 +161,7 @@ public class ExperimentalStepParser {
 				continue;
 			}
 			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getEquivalents() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
-			if (foundProductWithQuantity && !hasQuantity){
+			if ((foundProductWithQuantity && !hasQuantity) || isKnownSolvent(chem)){
 				continue;//skip erroneous characterisation chemicals
 			}
 			if (hasQuantity){
@@ -177,6 +176,13 @@ public class ExperimentalStepParser {
 		return products;
 	}
 	
+	boolean isKnownSolvent(Chemical chem) {
+		if (chem.getInchi() !=null && AprioriKnowledge.getInstance().isKnownSolventInChI(chem.getInchi())){
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Returns those for which the corresponding molecule has a percent yield
 	 * @param reagents
@@ -216,7 +222,7 @@ public class ExperimentalStepParser {
 		for (int i = 0; i < synthesizePhraseMolecules.size(); i++) {
 			Element synthesizedMolecule= (Element) synthesizePhraseMolecules.get(i);
 			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-			if (chem.getType().equals(ChemicalType.falsePositive)){
+			if (chem.getType().equals(ChemicalType.falsePositive) || isKnownSolvent(chem)){
 				continue;
 			}
 			products.add(synthesizedMolecule);
