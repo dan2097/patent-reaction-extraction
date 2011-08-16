@@ -179,4 +179,17 @@ public class ChemicalSenseApplication {
 			classifyReactantsThatAreAlsoSolventsAsSolvent(newSolventInChIs);
 		}
 	}
+
+	/**
+	 * Removes products that have inchis matching those of solvents
+	 */
+	void removeProductsThatAreWorkupSolvents() {
+		List<Chemical> products =reaction.getProducts();
+		for (int i = products.size() -1; i >=0; i--) {
+			Chemical product =products.get(i);
+			if (product.getInchi() !=null && AprioriKnowledge.getInstance().isKnownSolventInChI(product.getInchi())){
+				reaction.removeProduct(product);
+			}
+		}
+	}
 }

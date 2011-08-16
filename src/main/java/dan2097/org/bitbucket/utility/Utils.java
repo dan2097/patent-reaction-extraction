@@ -38,6 +38,7 @@ import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
+import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionsCreator;

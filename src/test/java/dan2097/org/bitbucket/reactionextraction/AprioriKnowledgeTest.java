@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import dan2097.org.bitbucket.utility.InchiNormaliser;
+import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
 
 public class AprioriKnowledgeTest {
 

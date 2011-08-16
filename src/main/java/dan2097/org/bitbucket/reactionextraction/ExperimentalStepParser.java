@@ -136,6 +136,7 @@ public class ExperimentalStepParser {
 			ChemicalSenseApplication chemicalSenseApplication = new ChemicalSenseApplication(reaction);
 			chemicalSenseApplication.mergeProductsByInChI();
 			chemicalSenseApplication.reassignMisCategorisedReagents();
+			chemicalSenseApplication.removeProductsThatAreWorkupSolvents();
 		}
 		return reactions;
 	}
