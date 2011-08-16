@@ -2,6 +2,7 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import org.apache.log4j.Logger;
 
+import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
 public class ReactionMapper {
@@ -22,6 +23,11 @@ public class ReactionMapper {
 		if (reaction.countProducts()==0 || reaction.countReactants()==0){
 			return false;
 		}
+		for (IndigoObject m: reaction.iterateMolecules()){
+			for (IndigoObject b: m.iterateBonds()){
+				reaction.setReactingCenter(b, Indigo.RC_UNCHANGED | Indigo.RC_ORDER_CHANGED);
+			}
+		}
 		try{
 			reaction.automap("discard");
 		}
@@ -29,6 +35,13 @@ public class ReactionMapper {
 			e.printStackTrace();
 			LOG.debug("Indigo reaction mapping failed", e);
 			return false;
+		}
+		finally {
+			for (IndigoObject m: reaction.iterateMolecules()){
+				for (IndigoObject b: m.iterateBonds()){
+					reaction.setReactingCenter(b, Indigo.RC_UNCHANGED);
+				}
+			}
 		}
 		return true;
 	}
