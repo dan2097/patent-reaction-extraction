@@ -193,4 +193,20 @@ public class ChemicalSenseApplicationTest {
 		new ChemicalSenseApplication(reaction).correctReactantsThatAreSolvents();
 		assertEquals(ChemicalRole.reactant, reactant.getRole());
 	}
+	
+	@Test
+	public void deleteWorkupSolventMiscategorisedAsProduct(){
+		Reaction reaction = new Reaction();
+		Chemical falseProduct = new Chemical("diethylether");
+		falseProduct.setRole(ChemicalRole.product);
+		falseProduct.setInchi("InChI=1/C4H10O/c1-3-5-4-2/h3-4H2,1-2H3");
+		reaction.addProduct(falseProduct);
+		Chemical trueProduct = new Chemical("cholesterol");
+		trueProduct.setRole(ChemicalRole.product);
+		reaction.addProduct(trueProduct);
+		assertEquals(2, reaction.getProducts().size());
+		new ChemicalSenseApplication(reaction).removeProductsThatAreWorkupSolvents();
+		assertEquals(1, reaction.getProducts().size());
+		assertEquals(trueProduct, reaction.getProducts().get(0));
+	}
 }

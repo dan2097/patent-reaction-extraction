@@ -1,4 +1,4 @@
-package dan2097.org.bitbucket.utility;
+package dan2097.org.bitbucket.inchiTools;
 
 import java.util.ArrayList;
 import java.util.List;

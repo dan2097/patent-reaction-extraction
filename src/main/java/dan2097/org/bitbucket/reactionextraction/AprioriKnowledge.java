@@ -3,7 +3,7 @@ package dan2097.org.bitbucket.reactionextraction;
 import java.util.HashSet;
 import java.util.Set;
 
-import dan2097.org.bitbucket.utility.InchiNormaliser;
+import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
 import dan2097.org.bitbucket.utility.Utils;
 
 public class AprioriKnowledge {
