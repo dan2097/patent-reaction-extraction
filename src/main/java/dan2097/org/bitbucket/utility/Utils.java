@@ -33,11 +33,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
+import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
+import dan2097.org.bitbucket.inchiTools.InchiMerger;
 import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
@@ -50,6 +52,8 @@ public class Utils {
 	private static Builder xomBuilder;
 	private final static Pattern matchTab = Pattern.compile("\\t");
 	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
+	private final static Pattern matchDot = Pattern.compile("\\.");
+	private final static Pattern matchForwardSlash = Pattern.compile("/");
 	
 	static {
 		XMLReader xmlReader;
@@ -108,6 +112,45 @@ public class Utils {
 	}
 	
 	/**
+	 * Uses OSCAR4's dictionaries/OPSIN to convert a name to SMILES
+	 * The space concatenated form of the nameComponents will first be tried
+	 * followed by attempting to resolve all the individual components
+	 * @param nameComponents
+	 * @return
+	 */
+	public static String resolveNameToSmiles(List<String> nameComponents) {
+		String completeSmiles = resolveNameToSmiles(StringTools.stringListToString(nameComponents, " "));
+		if (completeSmiles ==null){
+			if (nameComponents.size()>1){
+				StringBuilder smilesSB = new StringBuilder();
+				for (String nameComponent : nameComponents) {
+					String partialSmiles = resolveNameToSmiles(nameComponent);
+					if (partialSmiles ==null){
+						return null;
+					}
+					if (smilesSB.length() >0){
+						smilesSB.append('.');
+					}
+					smilesSB.append(partialSmiles);
+				}
+				return smilesSB.toString();
+			}
+			else{
+				String nameComponent = nameComponents.get(0);
+				String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
+				if (slashSeperatedStrs.length >1){
+					return resolveNameToSmiles(StringTools.arrayToList(slashSeperatedStrs));
+				}
+				String[] dotSeperatedStrs = matchDot.split(nameComponent);
+				if (dotSeperatedStrs.length >1){
+					return resolveNameToSmiles(StringTools.arrayToList(dotSeperatedStrs));
+				}
+			}
+		}
+		return completeSmiles;
+	}
+	
+	/**
 	 * Uses OSCAR4's dictionaries/OPSIN to convert a name to a normalised InChI
 	 * @param name
 	 * @return
@@ -118,6 +161,43 @@ public class Utils {
 			return InchiNormaliser.normaliseInChI(inchis.iterator().next());
 		}
 		return null;
+	}
+	
+	/**
+	 * Uses OSCAR4's dictionaries/OPSIN to convert a name to a normalised InChI
+	 * The space concatenated form of the nameComponents will first be tried
+	 * followed by attempting to resolve all the individual components
+	 * @param nameComponents
+	 * @return
+	 */
+	public static String resolveNameToInchi(List<String> nameComponents) {
+		String completeInChI = resolveNameToInchi(StringTools.stringListToString(nameComponents, " "));
+		if (completeInChI ==null){
+			if (nameComponents.size()>1){
+				List<String> partialInchis = new ArrayList<String>();
+				for (String nameComponent : nameComponents) {
+					String partialInChI = resolveNameToInchi(nameComponent);
+					if (partialInChI ==null){
+						return null;
+					}
+					partialInchis.add(partialInChI);
+				}
+				InchiMerger merger = new InchiMerger(partialInchis);
+				return merger.generateMergedNormalisedInchi();
+			}
+			else{
+				String nameComponent = nameComponents.get(0);
+				String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
+				if (slashSeperatedStrs.length >1){
+					return resolveNameToInchi(StringTools.arrayToList(slashSeperatedStrs));
+				}
+				String[] dotSeperatedStrs = matchDot.split(nameComponent);
+				if (dotSeperatedStrs.length >1){
+					return resolveNameToInchi(StringTools.arrayToList(dotSeperatedStrs));
+				}
+			}
+		}
+		return completeInChI;
 	}
 	
 	public static List<String> getSystematicChemicalNamesFromText(String text) {
