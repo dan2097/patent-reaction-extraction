@@ -24,6 +24,7 @@ public class Chemical{
 	private Double pH;
 	private Double percentYield;
 	private Double stoichiometry;
+	private String state;
 	private ChemicalRole role = null;
 	private ChemicalType type = null;
 	private String xpathUsedToIdentify = null;
@@ -237,6 +238,19 @@ public class Chemical{
 	void setStoichiometry(Double stoichiometry) {
 		this.stoichiometry = stoichiometry;
 	}
+	
+	/**
+	 * Gets the state claimed for this substance in the text
+	 * e.g. liquid, gas, crystal, foam etc.
+	 * @return
+	 */
+	public String getState() {
+		return state;
+	}
+
+	void setState(String state) {
+		this.state = state;
+	}
 
 	/**
 	 * Gets the type assigned to a chemical or null
@@ -392,6 +406,11 @@ public class Chemical{
 			Element typeEl = new Element("type");
 			typeEl.appendChild(type.toString());
 			reactant.appendChild(typeEl);
+		}
+		if (state != null){
+			Element stateEl = new Element("state");
+			stateEl.appendChild(state);
+			reactant.appendChild(stateEl);
 		}
 		return reactant;
 	}
