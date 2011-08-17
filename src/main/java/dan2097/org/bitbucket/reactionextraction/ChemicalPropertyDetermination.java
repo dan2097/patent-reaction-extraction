@@ -32,6 +32,7 @@ public class ChemicalPropertyDetermination {
 			determinepH(chemical, quantityElement);
 			determineYield(chemical, quantityElement);
 		}
+		determineState(chemical, molecule);
 	}
 
 	private static void determineVolume(Chemical chemical, Element quantityElement) {
@@ -173,6 +174,16 @@ public class ChemicalPropertyDetermination {
 					LOG.debug("Yield was not a numeric percentage");
 				}
 			}
+		}
+	}
+
+	private static void determineState(Chemical chemical, Element moleculeEl) {
+		List<Element> stateEls = XOMTools.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.NN_STATE);
+		if (stateEls.size()>1){
+			LOG.debug("More than 1 state given for same chemical");
+		}
+		else if (stateEls.size()>0){
+			chemical.setState(stateEls.get(0).getValue());
 		}
 	}
 }
