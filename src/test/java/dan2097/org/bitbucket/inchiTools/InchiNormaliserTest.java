@@ -1,4 +1,4 @@
-package inchiTools;
+package dan2097.org.bitbucket.inchiTools;
 
 import org.junit.Test;
 
