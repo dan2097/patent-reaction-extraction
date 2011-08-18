@@ -162,9 +162,16 @@ public class ExperimentalSectionsCreator {
 				return true;
 			}
 		}
-		for (Element method : XOMTools.getDescendantElementsWithTagName(taggedDocRoot, NN_METHOD)) {
-			if (method.getValue().equalsIgnoreCase("step")){
+		List<Element> procedures = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, PROCEDURE_Container);
+		if (procedures.size()==1){
+			List<Element> methodAndExampleEls =  XOMTools.getDescendantElementsWithTagNames(procedures.get(0), new String[]{NN_METHOD, NN_EXAMPLE});
+			if (methodAndExampleEls.size()==0){
 				return true;
+			}
+			for (Element method : methodAndExampleEls) {
+				if (method.getValue().equalsIgnoreCase("step")){
+					return true;
+				}
 			}
 		}
 		return false;
