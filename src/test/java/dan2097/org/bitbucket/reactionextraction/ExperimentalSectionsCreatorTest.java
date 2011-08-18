@@ -13,6 +13,7 @@ import nu.xom.ValidityException;
 import org.junit.Test;
 
 import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
 
 public class ExperimentalSectionsCreatorTest {
@@ -25,6 +26,36 @@ public class ExperimentalSectionsCreatorTest {
 		Element pHeading = new Element(XMLTags.P);
 		pHeading.addAttribute(new Attribute("id", "h-5"));
 		assertEquals(true, sectionCreator.isHeading(pHeading));
+	}
+	
+	@Test
+	public void isPotentialSubHeading1() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><NN-METHOD>Step</NN-METHOD><CD>5</CD></PROCEDURE></NounPhrase></Sentence></Document>");
+		assertEquals(true, sectionCreator.isPotentialSubHeading(new Element(XMLTags.HEADING), taggedDoc.getRootElement()));
+	}
+	
+	@Test
+	public void isPotentialSubHeading2() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><NN-METHOD>Example</NN-METHOD><CD>5</CD></PROCEDURE></NounPhrase></Sentence></Document>");
+		assertEquals(false, sectionCreator.isPotentialSubHeading(new Element(XMLTags.HEADING), taggedDoc.getRootElement()));
+	}
+	
+	@Test
+	public void isPotentialSubHeading3() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><NN-METHOD>Example</NN-METHOD><CD>5</CD></PROCEDURE></NounPhrase></Sentence></Document>");
+		Element paragraph = new Element(XMLTags.P);
+		paragraph.addAttribute(new Attribute(XMLAtrs.ID, "h-3"));
+		assertEquals(true, sectionCreator.isPotentialSubHeading(paragraph, taggedDoc.getRootElement()));
+	}
+	
+	@Test
+	public void isPotentialSubHeading4() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><CD>3</CD></PROCEDURE><_-RRB->)</_-RRB-></NounPhrase></Sentence></Document>");
+		assertEquals(true, sectionCreator.isPotentialSubHeading(new Element(XMLTags.HEADING), taggedDoc.getRootElement()));
 	}
 	
 	@Test
