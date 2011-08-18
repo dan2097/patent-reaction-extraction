@@ -176,4 +176,37 @@ public class ExperimentalSectionsCreatorTest {
 		assertEquals(2, heading.getChildElements().size());
 		assertEquals(2, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
 	}
+	
+	@Test
+	public void hasHiddenHeading11() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><NN-EXAMPLE>Example</NN-EXAMPLE><CD>3</CD></PROCEDURE></NounPhrase><STOP>.</STOP></Sentence><Sentence><NounPhrase></NounPhrase><STOP></STOP></Sentence></Document>");
+		Element heading = sectionCreator.findAndDetachHiddenHeadingContent(taggedDoc);
+		assertNotNull(heading);
+		assertEquals(2, heading.getChildElements().size());
+		assertEquals(0, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
+		assertEquals(2, taggedDoc.getRootElement().getChildElements("Sentence").size());
+	}
+	
+	@Test
+	public void hasHiddenHeading12() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><CD>3</CD></PROCEDURE><_-RRB->)</_-RRB-></NounPhrase></Sentence><Sentence><ActionPhrase><NounPhrase><MOLECULE></MOLECULE></NounPhrase><VerbPhrase></VerbPhrase></ActionPhrase><STOP>.</STOP></Sentence></Document>");
+		Element heading = sectionCreator.findAndDetachHiddenHeadingContent(taggedDoc);
+		assertNotNull(heading);
+		assertEquals(1, heading.getChildElements().size());
+		assertEquals(0, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
+		assertEquals(2, taggedDoc.getRootElement().getChildElements("Sentence").size());
+	}
+
+	@Test
+	public void hasHiddenHeading13() throws ValidityException, ParsingException, IOException {
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><_-LRB->(</_-LRB-><NN-IDENTIFIER>iii</NN-IDENTIFIER><_-RRB->)</_-RRB-></PROCEDURE></NounPhrase></Sentence><Sentence><ActionPhrase><NounPhrase><MOLECULE></MOLECULE></NounPhrase><VerbPhrase></VerbPhrase></ActionPhrase><STOP>.</STOP></Sentence></Document>");
+		Element heading = sectionCreator.findAndDetachHiddenHeadingContent(taggedDoc);
+		assertNotNull(heading);
+		assertEquals(1, heading.getChildElements().size());
+		assertEquals(0, taggedDoc.getRootElement().getFirstChildElement("Sentence").getChildElements().size());
+		assertEquals(2, taggedDoc.getRootElement().getChildElements("Sentence").size());
+	}
 }

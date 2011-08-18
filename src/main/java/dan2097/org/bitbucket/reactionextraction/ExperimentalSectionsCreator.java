@@ -272,28 +272,35 @@ public class ExperimentalSectionsCreator {
 		Element heading = null;
 		if (firstSentence != null){
 			List<Element> elementsToConsider = expandActionPhrases(firstSentence.getChildElements());
-			if (elementsToConsider.size() >=2){
+			if (elementsToConsider.size() >=1){
 				Element firstPhrase =elementsToConsider.get(0);
 				if (firstPhrase.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstPhrase)){
-					Element secondPhrase = elementsToConsider.get(1);
-					if (isPeriodOrSemiColonOrColon(secondPhrase)){
-						heading = new Element(XMLTags.HEADING);
-						detachElementAndEmptyActionPhraseParents(firstPhrase);
-						detachElementAndEmptyActionPhraseParents(secondPhrase);
-						heading.appendChild(firstPhrase);
-						heading.appendChild(secondPhrase);
-						if(elementsToConsider.size() >=4){
-							Element thirdPhrase =elementsToConsider.get(2);
-							Element fourthPhrase =elementsToConsider.get(3);
-							if (thirdPhrase.getLocalName().equals(NOUN_PHRASE_Container) 
-									&& nounphraseContainsRecognisedHeadingForm(thirdPhrase)
-									&& isPeriodOrSemiColonOrColon(fourthPhrase)){
-								detachElementAndEmptyActionPhraseParents(thirdPhrase);
-								detachElementAndEmptyActionPhraseParents(fourthPhrase);
-								heading.appendChild(thirdPhrase);
-								heading.appendChild(fourthPhrase);
+					if (elementsToConsider.size()>=2){
+						Element secondPhrase = elementsToConsider.get(1);
+						if (isPeriodOrSemiColonOrColon(secondPhrase)){
+							heading = new Element(XMLTags.HEADING);
+							detachElementAndEmptySentenceAndActionPhraseParents(firstPhrase);
+							detachElementAndEmptySentenceAndActionPhraseParents(secondPhrase);
+							heading.appendChild(firstPhrase);
+							heading.appendChild(secondPhrase);
+							if(elementsToConsider.size() >=4){
+								Element thirdPhrase =elementsToConsider.get(2);
+								Element fourthPhrase =elementsToConsider.get(3);
+								if (thirdPhrase.getLocalName().equals(NOUN_PHRASE_Container) 
+										&& nounphraseContainsRecognisedHeadingForm(thirdPhrase)
+										&& isPeriodOrSemiColonOrColon(fourthPhrase)){
+									detachElementAndEmptySentenceAndActionPhraseParents(thirdPhrase);
+									detachElementAndEmptySentenceAndActionPhraseParents(fourthPhrase);
+									heading.appendChild(thirdPhrase);
+									heading.appendChild(fourthPhrase);
+								}
 							}
 						}
+					}
+					else{//a sentence which is just a heading e.g. "3)"
+						heading = new Element(XMLTags.HEADING);
+						detachElementAndEmptySentenceAndActionPhraseParents(firstPhrase);
+						heading.appendChild(firstPhrase);
 					}
 				}
 			}
@@ -301,7 +308,7 @@ public class ExperimentalSectionsCreator {
 		return heading;
 	}
 
-	private void detachElementAndEmptyActionPhraseParents(Element element) {
+	private void detachElementAndEmptySentenceAndActionPhraseParents(Element element) {
 		Element parent = (Element) element.getParent();
 		element.detach();
 		while (parent.getLocalName().equals(ACTIONPHRASE_Container) && parent.getChildElements().size()==0){
@@ -353,7 +360,10 @@ public class ExperimentalSectionsCreator {
 					&& child2Lc.equals(MOLECULE_Container)){
 				return true;
 			}
-			
+			if (child1Lc.equals(PROCEDURE_Container) && 
+					(child2Lc.equals(RRB) || child2Lc.equals(STOP) || child2Lc.equals(COLON))){
+				return true;
+			}
 			if (child1Lc.equals(NN_SYNTHESIZE) && child2Lc.equals(PREPPHRASE_Container) && isAnOfNounPhrasePrepPhrase(nounPhraseChildren.get(1))){
 				return true;
 			}
