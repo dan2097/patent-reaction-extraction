@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class PreviousReactionData {
 	
-	private class StepReactionHolder {
+	private static class StepReactionHolder {
 		private final String identifier;
 		private final List<Reaction> reactions;
 

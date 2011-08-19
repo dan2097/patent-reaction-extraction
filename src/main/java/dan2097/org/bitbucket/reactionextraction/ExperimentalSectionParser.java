@@ -141,14 +141,15 @@ public class ExperimentalSectionParser {
 	 */
 	private void attemptToResolveReferenceToProcedure(Element procedureEl, Chemical cm) {
 		SectionAndStepIdentifier sectionAndStepIdentifier = getSectionAndStepIdentifier(procedureEl);
-		Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
-		if (referencedChemical !=null){
-			cm.setSmiles(referencedChemical.getSmiles());
-			cm.setInchi(referencedChemical.getInchi());
+		if (sectionAndStepIdentifier!=null){
+			Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
+			if (referencedChemical !=null){
+				cm.setSmiles(referencedChemical.getSmiles());
+				cm.setInchi(referencedChemical.getInchi());
+				return;
+			}
 		}
-		else{
-			LOG.trace("Failed to resolve reference to procecdure: " + procedureEl.toXML() );
-		}
+		LOG.trace("Failed to resolve reference to procecdure: " + procedureEl.toXML() );
 	}
 
 	/**
