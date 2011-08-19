@@ -17,10 +17,9 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 
 public class Paragraph {
-	//private static Logger LOG = Logger.getLogger(Paragraph.class);
 	private final String untaggedString;
-	private final String taggedString;
 	private final Document taggedSentencesDocument;
+	private final String identifier;
 	private final Map<Element, PhraseType> phraseToAssignment = new LinkedHashMap<Element, PhraseType>();
 	private static final List<String> WORKUP_PHRASES = Arrays.asList("Concentrate", "Degass", "Dry", "Extract", "Filter", "Partition", "Precipitate", "Purify", "Recover", "Remove", "Wash", "Quench");
 	private static final String[] CONTAINER_ELS = new String[]{ACTIONPHRASE_Container, UNMATCHED_Container, NOUN_PHRASE_Container, VERBPHRASE_Container, ATMOSPHEREPHRASE_Container, TIMEPHRASE_Container,TEMPPHRASE_Container, PREPPHRASE_Container, ROLEPREPPHRASE_Container};
@@ -28,31 +27,22 @@ public class Paragraph {
 	/**
 	 * Creates a Paragraph from the given text
 	 * A paragraph contains the results of running chemical tagger on the input text
+	 * Preferably a unique identifier which will assist in tying the paragraphs to the original document should be given
 	 * @param paragraphText
+	 * @param identifier
 	 */
-	public Paragraph(String paragraphText) {
+	public Paragraph(String paragraphText, String identifier) {
 		untaggedString = paragraphText;
+		this.identifier = identifier;
 		if (untaggedString.equals("")){
-			taggedString ="";
 			taggedSentencesDocument =new Document(new Element("Document"));
 		}
 		else{
-			taggedString = Utils.tagString(untaggedString);
-			//LOG.trace(taggedString);
-			taggedSentencesDocument = Utils.runChemicalSentenceParsingOnTaggedString(taggedString);
+			taggedSentencesDocument = Utils.runChemicalTagger(untaggedString);
 			if (taggedSentencesDocument ==null){
 				throw new RuntimeException("Chemical tagger failed to tag a text string indicating a bug in chemical tagger");
 			}
-			//if (LOG.isTraceEnabled()){LOG.trace(taggedSentencesDocument.toXML());};
 		}
-	}
-	
-	String getTaggedString() {
-		return taggedString;
-	}
-	
-	String getUnTaggedString() {
-		return untaggedString;
 	}
 
 	/**
@@ -62,8 +52,16 @@ public class Paragraph {
 	public Document getTaggedSentencesDocument() {
 		return taggedSentencesDocument;
 	}
+	
+	/**
+	 * Gets the unique identifier for this paragraph (or null if not set)
+	 * @return
+	 */
+	public String getIdentifier() {
+		return identifier;
+	}
 
-	 Map<Element, PhraseType> getPhraseMap() {
+	Map<Element, PhraseType> getPhraseMap() {
 		return phraseToAssignment;
 	}
 

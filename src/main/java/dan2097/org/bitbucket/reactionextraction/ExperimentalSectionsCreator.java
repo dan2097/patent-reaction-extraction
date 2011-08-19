@@ -192,10 +192,8 @@ public class ExperimentalSectionsCreator {
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
 		}
-		Paragraph para = new Paragraph(text);
-		if (para.getTaggedString().equals("")){//blank paragraph
-			return;
-		}
+		String identifier = paraEl.getAttributeValue(XMLAtrs.NUM);
+		Paragraph para = new Paragraph(text, identifier);
 		
 		//Sometimes headings are present at the start of paragraphs...
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
