@@ -37,45 +37,28 @@ public class ExperimentalSectionParser {
 	public void parseForReactions(){
 		Chemical ultimateTargetCompound = null;
 		Chemical currentStepTargetCompound = null;
-		Map<String, Chemical> aliasToChemicalMap = previousReactionData.getAliasToChemicalMap();
 		if (experimentalSection.getTargetChemicalNamePair()!=null){
-			ChemicalNameAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
-			ultimateTargetCompound = Utils.createChemicalFromName(nameAliasPair.getChemicalName());
+			ChemicalAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
+			ultimateTargetCompound = nameAliasPair.getChemical();
 			if (nameAliasPair.getAlias() !=null){
-				aliasToChemicalMap.put(nameAliasPair.getAlias(), ultimateTargetCompound);
+				previousReactionData.getAliasToChemicalMap().put(nameAliasPair.getAlias(), ultimateTargetCompound);
 			}
 		}
 		List<ExperimentalStep> steps = experimentalSection.getExperimentalSteps();
 		for (int i = 0; i < steps.size(); i++) {
 			ExperimentalStep step = steps.get(i);
 			if (step.getTargetChemicalNamePair()!=null){
-				ChemicalNameAliasPair nameAliasPair = step.getTargetChemicalNamePair();
-				currentStepTargetCompound = Utils.createChemicalFromName(nameAliasPair.getChemicalName());
+				ChemicalAliasPair nameAliasPair = step.getTargetChemicalNamePair();
+				currentStepTargetCompound = nameAliasPair.getChemical();
 				if (nameAliasPair.getAlias() !=null){
-					aliasToChemicalMap.put(nameAliasPair.getAlias(), currentStepTargetCompound);
+					previousReactionData.getAliasToChemicalMap().put(nameAliasPair.getAlias(), currentStepTargetCompound);
 				}
 			}
 			else if (i == steps.size()-1){
 				//last step can be implicitly the ultimate target compound
 				currentStepTargetCompound = ultimateTargetCompound;
 			}
-			for (Paragraph paragraph : step.getParagraphs()) {
-				List<Element> moleculeEls = findAllMolecules(paragraph);
-				for (Element moleculeEl : moleculeEls) {
-					Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
-					moleculeToChemicalMap.put(moleculeEl, cm);
-					ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
-					attemptToResolveAnaphora(moleculeEl, cm);
-					aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
-				}
-				List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(paragraph);
-				for (Element unnamedMoleculeEl : unnamedMoleculeEls) {
-					Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(unnamedMoleculeEl);
-					moleculeToChemicalMap.put(unnamedMoleculeEl, cm);
-					attemptToResolveAnaphora(unnamedMoleculeEl, cm);
-					ChemicalTypeAssigner.assignTypeToChemical(unnamedMoleculeEl, cm);
-				}
-			}
+			processMoleculeToChemicalAndStringToChemicalMappings(step.getParagraphs());
 			ExperimentalStepParser stepParser = new ExperimentalStepParser(step, moleculeToChemicalMap, currentStepTargetCompound);
 			List<Reaction> reactions = stepParser.extractReactions();
 			for (Reaction reaction : reactions) {
@@ -84,6 +67,33 @@ public class ExperimentalSectionParser {
 			}
 			if (experimentalSection.getProcedureElement() !=null){
 				recordReactionsInPreviousReactionData(reactions, step);
+			}
+		}
+	}
+
+	/**
+	 * Adds molecule to to chemical mapping for all molecule and unnamed molecules
+	 * Adds string to chemical mappings as appropriate
+	 * Resolves structures using such mappings
+	 * @param paragraphs
+	 */
+	private void processMoleculeToChemicalAndStringToChemicalMappings(List<Paragraph> paragraphs) {
+		Map<String, Chemical> aliasToChemicalMap = previousReactionData.getAliasToChemicalMap();
+		for (Paragraph paragraph : paragraphs) {
+			List<Element> moleculeEls = findAllMolecules(paragraph);
+			for (Element moleculeEl : moleculeEls) {
+				Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
+				moleculeToChemicalMap.put(moleculeEl, cm);
+				ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+				attemptToResolveAnaphora(moleculeEl, cm);
+				aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+			}
+			List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(paragraph);
+			for (Element unnamedMoleculeEl : unnamedMoleculeEls) {
+				Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(unnamedMoleculeEl);
+				moleculeToChemicalMap.put(unnamedMoleculeEl, cm);
+				attemptToResolveAnaphora(unnamedMoleculeEl, cm);
+				ChemicalTypeAssigner.assignTypeToChemical(unnamedMoleculeEl, cm);
 			}
 		}
 	}

@@ -92,7 +92,7 @@ public class ExperimentalSectionsCreator {
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
 			String name = namesFoundByOpsin.get(0);
-			ChemicalNameAliasPair nameAliasPair = new ChemicalNameAliasPair(name, alias);
+			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(name), alias);
 			addNameAliasPair(nameAliasPair);
 		}
 	}
@@ -127,7 +127,7 @@ public class ExperimentalSectionsCreator {
 	 * Adds a ChemicalNameAliasPair to an appropriate place in the current section or step
 	 * @param nameAliasPair
 	 */
-	private void addNameAliasPair(ChemicalNameAliasPair nameAliasPair) {
+	private void addNameAliasPair(ChemicalAliasPair nameAliasPair) {
 		if (currentSection.currentStepHasParagraphs()){
 			addCurrentSectionIfNonEmptyAndReset();
 		}
@@ -233,7 +233,7 @@ public class ExperimentalSectionsCreator {
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(headingText);
 			String name = namesFoundByOpsin.get(0);
-			ChemicalNameAliasPair nameAliasPair = new ChemicalNameAliasPair(name, alias);
+			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(name), alias);
 			addNameAliasPair(nameAliasPair);
 		}
 	}
