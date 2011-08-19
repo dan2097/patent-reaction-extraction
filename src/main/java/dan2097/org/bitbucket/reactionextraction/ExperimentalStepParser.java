@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -62,10 +63,11 @@ public class ExperimentalStepParser {
 			paragraph.segmentIntoSections(moleculeToChemicalMap);
 			Map<Element, PhraseType> phraseMap = paragraph.getPhraseMap();
 			boolean reagentsExpectedAfterProduct = false;
-			for (Element phrase : phraseMap.keySet()) {
+			for (Entry<Element, PhraseType> entry: phraseMap.entrySet()) {
+				Element phrase = entry.getKey();
 				Reaction tempReaction = new Reaction();
 				Set<Element> reagents;
-				boolean inSynthesis = phraseMap.get(phrase).equals(PhraseType.synthesis);
+				boolean inSynthesis = entry.getValue().equals(PhraseType.synthesis);
 				if (inSynthesis){
 					reagents = findAllReagents(phrase);
 				}
