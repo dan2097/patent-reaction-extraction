@@ -99,21 +99,55 @@ public class ExperimentalSectionParser {
 	}
 
 	private void attemptToResolveAnaphora(Element molOrUnnamedEl, Chemical cm) {
-		List<Element> references = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
-		if (references.size()!=1){
-			if (references.size() >0){
-				LOG.debug("Multiple referenceToCompounds present in : " +molOrUnnamedEl.toXML());
+		if (cm.getType()!=null){
+			if (cm.getSmiles()!=null && !ChemicalType.definiteReference.equals(cm.getType())){
+				//for molecules with known smiles that do not appear to be a back reference do not attempt to resolve the structure by back reference
+				return;
 			}
-			return;
 		}
-		String identifier = getIdentifierFromReference(references.get(0));
+		List<Element> references = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+		if (references.size()==1){
+			attemptToResolveReferenceToCompound(references.get(0), cm);
+		}
+		else if (references.size() >0){
+			LOG.debug("Multiple referenceToCompounds present in : " +molOrUnnamedEl.toXML());
+		}
+		List<Element> procedures = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.PROCEDURE_Container);
+		if (procedures.size()==1){
+			attemptToResolveReferenceToProcedure(procedures.get(0), cm);
+		}
+		else if (procedures.size() >0){
+			LOG.debug("Multiple procedures present in : " +molOrUnnamedEl.toXML());
+		}
+	}
+
+	private void attemptToResolveReferenceToCompound(Element reference, Chemical cm) {
+		String identifier = getIdentifierFromReference(reference);
 		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(identifier);
 		if (referencedChemical !=null){
 			cm.setSmiles(referencedChemical.getSmiles());
 			cm.setInchi(referencedChemical.getInchi());
 		}
 		else{
-			LOG.trace("Failed to resolve anaphora: " + identifier );
+			LOG.trace("Failed to resolve reference to compound: " + identifier );
+		}
+	}
+	
+	/**
+	 * We make the assumption that a reference to a procedure means that the chemical is the
+	 * product of that procedure. Resolution is achieved using previousReactionData
+	 * @param procedure
+	 * @param cm
+	 */
+	private void attemptToResolveReferenceToProcedure(Element procedureEl, Chemical cm) {
+		SectionAndStepIdentifier sectionAndStepIdentifier = getSectionAndStepIdentifier(procedureEl);
+		Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
+		if (referencedChemical !=null){
+			cm.setSmiles(referencedChemical.getSmiles());
+			cm.setInchi(referencedChemical.getInchi());
+		}
+		else{
+			LOG.trace("Failed to resolve reference to procecdure: " + procedureEl.toXML() );
 		}
 	}
 
@@ -304,8 +338,8 @@ public class ExperimentalSectionParser {
 	}
 
 	/**
-	 * Returns value of a cd/cdalphanum/nnidentifier if this element has only one of them
-	 * else null
+	 * Gets the identifier (or cd) from a procedure expected to describe a section
+	 * null if more than 1 identifier found
 	 * @param procedureEl
 	 * @return
 	 */
@@ -316,11 +350,10 @@ public class ExperimentalSectionParser {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Returns value of a cd/cdalphanum/nnidentifier if this element has only one of them
-	 * If there are two returns the second is the first matches the sectionIdentifier
-	 * else null
+	 * Gets the identifier (or cd) from a procedure expected to describe a step in a particular secion
+	 * null if more than 2 identifiers found or the first identifier isn't the section identifier
 	 * @param procedureEl
 	 * @param sectionIdentifier
 	 * @return
@@ -332,6 +365,24 @@ public class ExperimentalSectionParser {
 		}
 		if (stepIdentifiers.size()==2 && sectionIdentifier.equals(stepIdentifiers.get(0).getValue())){
 			return stepIdentifiers.get(1).getValue();
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the identifier (or cd) from a procedure expected to describe a step
+	 * null if more than 2 identifiers found
+	 * @param procedureEl
+	 * @param sectionIdentifier
+	 * @return
+	 */
+	SectionAndStepIdentifier getSectionAndStepIdentifier(Element procedureEl) {
+		List<Element> stepIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
+		if (stepIdentifiers.size()==1){
+			return new SectionAndStepIdentifier(stepIdentifiers.get(0).getValue(), null);
+		}
+		if (stepIdentifiers.size()==2){
+			return new SectionAndStepIdentifier(stepIdentifiers.get(0).getValue(), stepIdentifiers.get(1).getValue());
 		}
 		return null;
 	}
