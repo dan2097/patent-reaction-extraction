@@ -44,6 +44,7 @@ import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionsCreator;
+import dan2097.org.bitbucket.reactionextraction.PreviousReactionData;
 import dan2097.org.bitbucket.reactionextraction.Reaction;
 import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 
@@ -350,7 +351,7 @@ public class Utils {
 		paragraph.appendChild(content);
 		orderedHeadingsAndParagraphs.add(paragraph);
 		ExperimentalSectionsCreator sectionsCreator = new ExperimentalSectionsCreator(orderedHeadingsAndParagraphs);
-		return new ExperimentalSectionParser(sectionsCreator.createSections().get(0), new HashMap<String, Chemical>());
+		return new ExperimentalSectionParser(sectionsCreator.createSections().get(0), new PreviousReactionData());
 	}
 	
 	/**

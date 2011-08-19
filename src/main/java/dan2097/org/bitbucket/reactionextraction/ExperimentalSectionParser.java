@@ -23,20 +23,21 @@ public class ExperimentalSectionParser {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionParser.class);
 	private final ExperimentalSection experimentalSection;
 	private final BiMap<Element, Chemical>  moleculeToChemicalMap = HashBiMap.create();
-	private final Map<String, Chemical> aliasToChemicalMap;
+	private final PreviousReactionData previousReactionData;
 	private final List<Reaction> sectionReactions = new ArrayList<Reaction>();
 
-	public ExperimentalSectionParser(ExperimentalSection experimentalSection, Map<String, Chemical> aliasToChemicalMap) {
-		if (experimentalSection ==null || aliasToChemicalMap==null){
+	public ExperimentalSectionParser(ExperimentalSection experimentalSection, PreviousReactionData previousReactionData) {
+		if (experimentalSection ==null || previousReactionData==null){
 			throw new IllegalArgumentException("Null input parameter");
 		}
 		this.experimentalSection = experimentalSection;
-		this.aliasToChemicalMap = aliasToChemicalMap;
+		this.previousReactionData = previousReactionData;
 	}
 
 	public void parseForReactions(){
 		Chemical ultimateTargetCompound = null;
 		Chemical currentStepTargetCompound = null;
+		Map<String, Chemical> aliasToChemicalMap = previousReactionData.getAliasToChemicalMap();
 		if (experimentalSection.getTargetChemicalNamePair()!=null){
 			ChemicalNameAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
 			ultimateTargetCompound = Utils.createChemicalFromName(nameAliasPair.getChemicalName());
@@ -81,6 +82,9 @@ public class ExperimentalSectionParser {
 				new ReactionStoichiometryDeterminer(reaction).processReactionStoichiometry();
 				sectionReactions.add(reaction);
 			}
+			if (experimentalSection.getProcedureElement() !=null){
+				recordReactionsInPreviousReactionData(reactions, step);
+			}
 		}
 	}
 
@@ -93,7 +97,7 @@ public class ExperimentalSectionParser {
 			return;
 		}
 		String identifier = getIdentifierFromReference(references.get(0));
-		Chemical referencedChemical = aliasToChemicalMap.get(identifier);
+		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(identifier);
 		if (referencedChemical !=null){
 			cm.setSmiles(referencedChemical.getSmiles());
 			cm.setInchi(referencedChemical.getInchi());
@@ -230,7 +234,7 @@ public class ExperimentalSectionParser {
 	private Chemical generateChemicalFromMoleculeElAndLocalInformation(Element moleculeEl) {
 		String name = ChemTaggerOutputNameExtraction.findMoleculeName(moleculeEl);
 		Chemical chem = Utils.createChemicalFromName(name);
-		Chemical referencedChemical = aliasToChemicalMap.get(name);
+		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(name);
 		if (referencedChemical != null){
 			chem.setSmiles(referencedChemical.getSmiles());
 			chem.setInchi(referencedChemical.getInchi());
@@ -262,4 +266,64 @@ public class ExperimentalSectionParser {
 		Document chemicalTaggerResult =paragraph.getTaggedSentencesDocument();
 		return XOMTools.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), UNNAMEDMOLECULE_Container);
 	}
+	
+	/**
+	 * Associate the given reactions with the current section and step's procedure identifiers
+	 * 
+	 * @param reactions
+	 * @param step 
+	 */
+	private void recordReactionsInPreviousReactionData(List<Reaction> reactions, ExperimentalStep step) {
+		if (experimentalSection.getProcedureElement()==null){
+			throw new RuntimeException("procedure element should not be null if this method is called");
+		}
+		String sectionIdentifier = getSectionIdentifier(experimentalSection.getProcedureElement());
+		if (sectionIdentifier ==null){
+			LOG.debug(experimentalSection.getProcedureElement().toXML() +" was not understood as section identifier");
+			return;
+		}
+		String stepIdentifier =null;
+		if (step.getProcedureEl()!=null){
+			stepIdentifier = getStepIdentifier(step.getProcedureEl(), sectionIdentifier);
+			if (stepIdentifier ==null){
+				LOG.debug(step.getProcedureEl().toXML() +" was not understood as step identifier");
+				return;
+			}
+		}
+		previousReactionData.addReactions(reactions, sectionIdentifier, stepIdentifier);
+	}
+
+	/**
+	 * Returns value of a cd/cdalphanum/nnidentifier if this element has only one of them
+	 * else null
+	 * @param procedureEl
+	 * @return
+	 */
+	String getSectionIdentifier(Element procedureEl) {
+		List<Element> sectionIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
+		if (sectionIdentifiers.size()==1){
+			return sectionIdentifiers.get(0).getValue();
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns value of a cd/cdalphanum/nnidentifier if this element has only one of them
+	 * If there are two returns the second is the first matches the sectionIdentifier
+	 * else null
+	 * @param procedureEl
+	 * @param sectionIdentifier
+	 * @return
+	 */
+	String getStepIdentifier(Element procedureEl, String sectionIdentifier) {
+		List<Element> stepIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
+		if (stepIdentifiers.size()==1){
+			return stepIdentifiers.get(0).getValue();
+		}
+		if (stepIdentifiers.size()==2 && sectionIdentifier.equals(stepIdentifiers.get(0).getValue())){
+			return stepIdentifiers.get(1).getValue();
+		}
+		return null;
+	}
+
 }

@@ -2,7 +2,6 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import static junit.framework.Assert.*;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,7 +32,7 @@ public class SynonymRecognitionTest {
 	
 	@Test
 	public void simpleSynonymTest() {
-		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new HashMap<String, Chemical>());
+		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new PreviousReactionData());
 		Element moleculeEl = stringToXom("<MOLECULE>" +
 				"<OSCARCM><OSCAR-CM>LITDIPA</OSCAR-CM></OSCARCM>" +
 				"<OSCARCM><_-LRB->(</_-LRB-><OSCAR-CM>Lithium</OSCAR-CM><OSCAR-CM>diisopropylamide</OSCAR-CM><_-RRB->)</_-RRB-></OSCARCM>" +
@@ -51,7 +50,7 @@ public class SynonymRecognitionTest {
 	
 	@Test
 	public void synonymWithQuantityTest() {
-		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new HashMap<String, Chemical>());
+		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new PreviousReactionData());
 		Element moleculeEl = stringToXom("<MOLECULE>" +
 				"<OSCARCM><OSCAR-CM>LITDIPA</OSCAR-CM></OSCARCM>" +
 				"<MIXTURE>" +
@@ -74,7 +73,7 @@ public class SynonymRecognitionTest {
 	
 	@Test
 	public void notASynonymTest() {
-		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new HashMap<String, Chemical>());
+		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new PreviousReactionData());
 		Element moleculeEl = stringToXom("<MOLECULE>" +
 				"<OSCARCM><OSCAR-CM>silver</OSCAR-CM></OSCARCM>" +
 				"<JJ>modified</JJ>" +
@@ -89,7 +88,7 @@ public class SynonymRecognitionTest {
 	
 	@Test
 	public void notASynonymTest2() {
-		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new HashMap<String, Chemical>());
+		ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new PreviousReactionData());
 		Element moleculeEl = stringToXom("<MOLECULE>" +
 				"<OSCARCM><OSCAR-CM>NMR</OSCAR-CM></OSCARCM>" +
 				"<OSCARCM><_-LRB->(</_-LRB-><OSCAR-CM>dimethyl sulfoxide</OSCAR-CM><_-RRB->)</_-RRB-></OSCARCM>" +
