@@ -2,8 +2,6 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.util.HashMap;
-
 import nu.xom.Element;
 
 import org.junit.Test;
@@ -12,7 +10,7 @@ import static org.mockito.Mockito.mock;
 
 public class ExperimentalSectionParserTest {
 
-	private ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new HashMap<String, Chemical>());
+	private ExperimentalSectionParser parser = new ExperimentalSectionParser(mock(ExperimentalSection.class), new PreviousReactionData());
 	
 	@Test
 	public void testGetIdentifierFromReferenceToCompound1(){
@@ -98,5 +96,64 @@ public class ExperimentalSectionParserTest {
 		assertEquals(null, chem.getPercentYield());
 		ExperimentalStepParser.interpretPercentAsAyield(reference, chem);
 		assertEquals(83, chem.getPercentYield(), 0.5);
+	}
+	
+	@Test
+	public void testGetSectionIdentifier1(){
+		Element procedureEl = TestUtils.stringToXom(
+				"<PROCEDURE>" +
+					"<NN-METHOD>Method</NN-METHOD>" +
+					"<CD>1</CD>" +
+				"</PROCEDURE>");
+		assertEquals("1", parser.getSectionIdentifier(procedureEl));
+	}
+	
+	@Test
+	public void testGetSectionIdentifier2(){
+		Element procedureEl = TestUtils.stringToXom(
+				"<PROCEDURE>" +
+					"<NN-EXAMPLE>Example</NN-EXAMPLE>" +
+					"<CD>3</CD>" +
+					"<COLON>:</COLON>" +
+					"<NN-METHOD>Step</NN-METHOD>" +
+					"<CD>2</CD>" +
+				"</PROCEDURE>");
+		assertEquals(null, parser.getSectionIdentifier(procedureEl));
+	}
+
+	@Test
+	public void testGetStepIdentifier1(){
+		Element procedureEl = TestUtils.stringToXom(
+				"<PROCEDURE>" +
+					"<NN-METHOD>Step</NN-METHOD>" +
+					"<CD>1</CD>" +
+				"</PROCEDURE>");
+		assertEquals("1", parser.getStepIdentifier(procedureEl, "2"));
+	}
+
+	@Test
+	public void testGetStepIdentifier2(){
+		Element procedureEl = TestUtils.stringToXom(
+				"<PROCEDURE>" +
+					"<NN-EXAMPLE>Example</NN-EXAMPLE>" +
+					"<CD>3</CD>" +
+					"<COLON>:</COLON>" +
+					"<NN-METHOD>Step</NN-METHOD>" +
+					"<CD>2</CD>" +
+				"</PROCEDURE>");
+		assertEquals(null, parser.getStepIdentifier(procedureEl, "2"));
+	}
+
+	@Test
+	public void testGetStepIdentifier3(){
+		Element procedureEl = TestUtils.stringToXom(
+				"<PROCEDURE>" +
+					"<NN-EXAMPLE>Example</NN-EXAMPLE>" +
+					"<CD>3</CD>" +
+					"<COLON>:</COLON>" +
+					"<NN-METHOD>Step</NN-METHOD>" +
+					"<CD>2</CD>" +
+				"</PROCEDURE>");
+		assertEquals("2", parser.getStepIdentifier(procedureEl, "3"));
 	}
 }

@@ -1,7 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ import nu.xom.Element;
 public class ReactionExtractor {
 
 	private final List<Element> headingsAndParagraphs;
-	private final Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
+	private final PreviousReactionData previousReactionData = new PreviousReactionData();
 	private final Map<Reaction, IndigoObject> documentReactions = new LinkedHashMap<Reaction, IndigoObject>();
 	private final Map<Reaction, IndigoObject> completeReactions = new LinkedHashMap<Reaction, IndigoObject>();
 
@@ -68,7 +67,7 @@ public class ReactionExtractor {
 		ExperimentalSectionsCreator sectionsCreator = new ExperimentalSectionsCreator(headingsAndParagraphs);
 		List<ExperimentalSection> experimentalSections = sectionsCreator.createSections();
 		for (ExperimentalSection experimentalSection : experimentalSections) {
-			ExperimentalSectionParser sectionParser = new ExperimentalSectionParser(experimentalSection, aliasToChemicalMap);
+			ExperimentalSectionParser sectionParser = new ExperimentalSectionParser(experimentalSection, previousReactionData);
 			sectionParser.parseForReactions();
 			List<Reaction> reactions  = sectionParser.getSectionReactions();
 			for (Reaction reaction : reactions) {
