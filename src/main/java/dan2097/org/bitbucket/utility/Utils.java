@@ -395,22 +395,28 @@ public class Utils {
 		if (!directory.isDirectory()){
 			throw new IllegalArgumentException("A directory was expected");
 		}
-		int i=0;
+		Map<String, Integer> identifierToCount = new HashMap<String, Integer>();//all files names must be unique with a patent!
 		Set<Entry<Reaction, IndigoObject>> entries = reactionMap.entrySet();
 		for (Entry<Reaction, IndigoObject> entry : entries) {
 			Reaction reaction = entry.getKey();
 			IndigoObject indigoReaction = entry.getValue();
-			i++;
+			String identifier = reaction.getInput().getIdentifier();//may be null for non USPTO documents
+			if (identifierToCount.get(identifier)==null){
+				identifierToCount.put(identifier, 1);
+			}
+			String paraIdent = identifier !=null ? identifier : "";
+			Integer subParaIdent = identifierToCount.get(identifier);
+			identifierToCount.put(identifier, subParaIdent +1);
 			try {
-				File f = new File(directory, "reaction" + i + ".png");
+				File f = new File(directory, "reaction" + paraIdent +"_" + subParaIdent + ".png");
 				ReactionDepicter.depictReaction(indigoReaction, f);
-					FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + i + "src.xml"));
+					FileOutputStream in = new FileOutputStream(new File(directory, "reaction" + paraIdent +"_" + subParaIdent + "src.xml"));
 				    Serializer serializer = new Serializer(in);
 					serializer.setIndent(2);
 					serializer.write(reaction.getInput().getTaggedSentencesDocument());
 					IOUtils.closeQuietly(in);
 					
-				FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + i + ".cml"));
+				FileOutputStream out = new FileOutputStream(new File(directory, "reaction" + paraIdent +"_" + subParaIdent + ".cml"));
 			    serializer = new Serializer(out);
 				serializer.setIndent(2);
 				serializer.write(new Document(reaction.toCML()));

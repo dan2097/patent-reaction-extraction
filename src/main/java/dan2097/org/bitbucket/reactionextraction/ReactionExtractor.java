@@ -82,7 +82,7 @@ public class ReactionExtractor {
 	}
 	
 	/**
-	 * Performs a few santity checks e.g. at least 2 reactants and 1 product and that the product isn't a reactant
+	 * Performs a few sanity checks e.g. at least 2 reactants and 1 product and that the product isn't a reactant
 	 * Then performs atom by atom mapping to check that all atoms in the product are accounted for
 	 * @param reaction
 	 * @param indigoReaction
