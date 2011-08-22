@@ -41,7 +41,7 @@ public class ExperimentalStepParser {
 	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
 	private static final String synthesizePhraseProduct = "self::node()/descendant-or-self::NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 	
-	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title|final) (compound|product)", Pattern.CASE_INSENSITIVE);
+	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final) (compound|product)", Pattern.CASE_INSENSITIVE);
 	private static final Indigo indigo = IndigoHolder.getInstance();
 	
 	public ExperimentalStepParser(ExperimentalStep experimentalStep, BiMap<Element, Chemical> moleculeToChemicalMap, Chemical targetCompound) {
