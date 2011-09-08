@@ -70,6 +70,10 @@ public class ExtractOrganicChemistryPatents {
 		while (fileIterator.hasNext()) {
 			processPatentArchiveFile((File) fileIterator.next());
 		}
+		File tempDirectory = new File(outputDirectory.getAbsolutePath() +"/temp");
+		if(tempDirectory.exists()){
+			FileUtils.forceDeleteOnExit(tempDirectory);
+		}
 	}
 	private void processPatentArchiveFile(File patentArchiveFile) throws IOException {
 		LOG.debug(patentArchiveFile.getAbsolutePath());
@@ -88,7 +92,6 @@ public class ExtractOrganicChemistryPatents {
 		else{
 			throw new RuntimeException("Unexpected file extension: " + patentArchiveFile.getName());
 		}
-		FileUtils.forceDeleteOnExit(tempDirectory);
 	}
 
 	/**
@@ -167,8 +170,8 @@ public class ExtractOrganicChemistryPatents {
 	
 	
 	public static void main(String[] args) throws IOException {
-		String inputDirectory  = "C:/Users/dl387/Desktop/newUSPTO/2008";
-		String outputDirectory  = "C:/Users/dl387/Desktop/newUSPTOout/2008";
+		String inputDirectory  = "C:/Users/dl387/Desktop/newUSPTO/2009";
+		String outputDirectory  = "C:/Users/dl387/Desktop/newUSPTOout/2009foo";
 		ExtractOrganicChemistryPatents eocp= new ExtractOrganicChemistryPatents(inputDirectory, outputDirectory);
 		eocp.extractOrganicPatents();
 	}
