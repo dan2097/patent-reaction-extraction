@@ -151,7 +151,8 @@ public class ChemicalSenseApplication {
 		for (int i = reactants.size()-1; i >=0; i--) {
 			Chemical reactant = reactants.get(i);
 			String inchi = reactant.getInchi();
-			if (!hasSolvent && chemicalKnowledge.isKnownSolventInChI(inchi) && reactant.getAmountValue()==null && reactant.getEquivalents()==null){
+			if (chemicalKnowledge.isKnownAlwaysSolventInChI(inchi) || 
+				(!hasSolvent && chemicalKnowledge.isKnownSolventInChI(inchi) && reactant.getAmountValue()==null && reactant.getEquivalents()==null)){
 				reactant.setRole(ChemicalRole.solvent);
 				reaction.removeReactant(reactant);
 				reaction.addSpectator(reactant);
