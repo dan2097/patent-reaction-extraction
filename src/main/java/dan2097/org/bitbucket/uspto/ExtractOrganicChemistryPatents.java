@@ -1,6 +1,7 @@
 package dan2097.org.bitbucket.uspto;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,8 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -82,16 +85,16 @@ public class ExtractOrganicChemistryPatents {
 		File archiveOutputDirectory = new File(outputDirectory.getAbsolutePath() +"/" + patentArchiveFile.getName());
 		FileUtils.forceMkdir(archiveOutputDirectory);
 		if (StringTools.endsWithCaseInsensitive(patentArchiveFile.getName(), "zip")){
-			extractCandidateZipFilesToTempDirectory(patentArchiveFile, tempDirectory);
-			processZipFiles(tempDirectory, archiveOutputDirectory);
+			extractCandidateZipFilesFromZipFile(patentArchiveFile, tempDirectory);
 		}
 		else if (StringTools.endsWithCaseInsensitive(patentArchiveFile.getName(), "tar")){
-//			extractCandidateZipFileToTempDirectory(patentArchiveFile, tempDirectory);
-//			processZipFiles(tempDirectory, archiveOutputDirectory);
+			extractCandidateZipFilesFromTarFile(patentArchiveFile, tempDirectory);
 		}
 		else{
 			throw new RuntimeException("Unexpected file extension: " + patentArchiveFile.getName());
 		}
+		processZipFiles(tempDirectory, archiveOutputDirectory);
+		FileUtils.forceDeleteOnExit(tempDirectory);
 	}
 
 	/**
@@ -100,7 +103,7 @@ public class ExtractOrganicChemistryPatents {
 	 * @param tempDirectory
 	 * @throws IOException
 	 */
-	private void extractCandidateZipFilesToTempDirectory(File patentArchiveFile, File tempDirectory) throws IOException {
+	private void extractCandidateZipFilesFromZipFile(File patentArchiveFile, File tempDirectory) throws IOException {
 		ZipFile zipFile = new ZipFile(patentArchiveFile);
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while(entries.hasMoreElements()) {
@@ -112,6 +115,26 @@ public class ExtractOrganicChemistryPatents {
 				IOUtils.copy(inputStream, fos);
 				IOUtils.closeQuietly(fos);
 			}
+		}
+	}
+	
+	/**
+	 * Extracts all zip files present within the given tar file
+	 * @param patentArchiveFile
+	 * @param tempDirectory
+	 * @throws IOException
+	 */
+	private void extractCandidateZipFilesFromTarFile(File patentArchiveFile, File tempDirectory) throws IOException {
+		TarArchiveInputStream tin = new TarArchiveInputStream(new FileInputStream(patentArchiveFile));
+		TarArchiveEntry tarEntry = tin.getNextTarEntry();
+		while(tarEntry !=null){
+			if(StringTools.endsWithCaseInsensitive(tarEntry.getName(), "zip")){
+				File f = new File(tempDirectory +"/" + FilenameUtils.getName(tarEntry.getName()));
+				FileOutputStream fos = new FileOutputStream(f);
+				IOUtils.copy(tin, fos);
+				IOUtils.closeQuietly(fos);
+			}
+			tarEntry = tin.getNextTarEntry();
 		}
 	}
 
@@ -170,8 +193,8 @@ public class ExtractOrganicChemistryPatents {
 	
 	
 	public static void main(String[] args) throws IOException {
-		String inputDirectory  = "C:/Users/dl387/Desktop/newUSPTO/2009";
-		String outputDirectory  = "C:/Users/dl387/Desktop/newUSPTOout/2009foo";
+		String inputDirectory  = "C:/Users/dl387/Desktop/newUSPTO/2010";
+		String outputDirectory  = "C:/Users/dl387/Desktop/newUSPTOout/2010";
 		ExtractOrganicChemistryPatents eocp= new ExtractOrganicChemistryPatents(inputDirectory, outputDirectory);
 		eocp.extractOrganicPatents();
 	}
