@@ -380,12 +380,44 @@ public class ExperimentalSectionParser {
 	SectionAndStepIdentifier getSectionAndStepIdentifier(Element procedureEl) {
 		List<Element> stepIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
 		if (stepIdentifiers.size()==1){
-			return new SectionAndStepIdentifier(stepIdentifiers.get(0).getValue(), null);
+			Element stepIdentifier = stepIdentifiers.get(0);
+			if (isSectionIdentifier(stepIdentifier)){
+				return new SectionAndStepIdentifier(stepIdentifier.getValue(), null);
+			}
+			else{
+				return new SectionAndStepIdentifier(null, stepIdentifier.getValue());
+			}
 		}
 		if (stepIdentifiers.size()==2){
-			return new SectionAndStepIdentifier(stepIdentifiers.get(0).getValue(), stepIdentifiers.get(1).getValue());
+			boolean firstIsSectionIdentifier = isSectionIdentifier(stepIdentifiers.get(0));
+			boolean secondIsSectionIdentifier = isSectionIdentifier(stepIdentifiers.get(1));
+			if (firstIsSectionIdentifier && !secondIsSectionIdentifier){
+				return new SectionAndStepIdentifier(stepIdentifiers.get(0).getValue(), stepIdentifiers.get(1).getValue());
+			}
+			if (!firstIsSectionIdentifier && secondIsSectionIdentifier){
+				return new SectionAndStepIdentifier(stepIdentifiers.get(1).getValue(), stepIdentifiers.get(0).getValue());
+			}
+			if (!firstIsSectionIdentifier && !secondIsSectionIdentifier){
+				return new SectionAndStepIdentifier(stepIdentifiers.get(0).getValue(), stepIdentifiers.get(1).getValue());
+			}
+			//both being section identifiers is not intentionally not interpretable
 		}
 		return null;
+	}
+	
+	/**
+	 * Is the identifier preceded by a suitable qualifier to indicate that this is a section identifier
+	 * @param stepIdentifier
+	 * @return
+	 */
+	boolean isSectionIdentifier(Element stepIdentifier){
+		Element qualifier = (Element) XOMTools.getPreviousSibling(stepIdentifier);
+		if (qualifier !=null && 
+				(qualifier.getLocalName().equals(NN_EXAMPLE) || qualifier.getLocalName().equals(NN_METHOD))
+				&& !Utils.isSynonymnOfStep(qualifier.getValue())){
+			return true;
+		}
+		return false;
 	}
 
 }

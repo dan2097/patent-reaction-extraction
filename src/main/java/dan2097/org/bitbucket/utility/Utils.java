@@ -454,4 +454,14 @@ public class Utils {
 		}
 		return strings;
 	}
+
+	/**
+	 * Is the string equal in meaning to "step"
+	 * e.g. "step", "stage"
+	 * @param str
+	 * @return
+	 */
+	public static boolean isSynonymnOfStep(String str) {
+		return str.equalsIgnoreCase("step") || str.equalsIgnoreCase("stage");
+	}
 }

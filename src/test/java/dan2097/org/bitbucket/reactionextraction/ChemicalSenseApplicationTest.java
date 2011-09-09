@@ -53,6 +53,17 @@ public class ChemicalSenseApplicationTest {
 	}
 	
 	@Test
+	public void transitionMetalNotCatalystTest() {
+		Reaction reaction = new Reaction();
+		Chemical catalyst = new Chemical("Potassium dichromate");
+		catalyst.setSmiles("[K+].[K+].[O-][Cr](=O)(=O)O[Cr]([O-])(=O)=O");
+		reaction.addReactant(catalyst);
+		catalyst.setRole(ChemicalRole.reactant);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreCatalysts();
+		assertEquals(ChemicalRole.reactant, catalyst.getRole());
+	}
+	
+	@Test
 	public void inorganicCompoundTest() {
 		Reaction reaction = new Reaction();
 		Chemical reactant = new Chemical("sodium hydroxide");

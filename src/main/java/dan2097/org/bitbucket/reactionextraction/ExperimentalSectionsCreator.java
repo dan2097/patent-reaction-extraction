@@ -169,7 +169,7 @@ public class ExperimentalSectionsCreator {
 				return true;
 			}
 			for (Element method : methodAndExampleEls) {
-				if (method.getValue().equalsIgnoreCase("step")){
+				if (Utils.isSynonymnOfStep(method.getValue())){
 					return true;
 				}
 			}
@@ -179,7 +179,7 @@ public class ExperimentalSectionsCreator {
 
 	/**
 	 * Examines paragraph for a starting procedure/chemical name heading
-	 * Then adds pargagraph to the current step
+	 * Then adds the paragraph to the current step
 	 * @param paraEl
 	 */
 	private void handleParagraph(Element paraEl) {

@@ -67,7 +67,7 @@ public class ChemicalSenseApplication {
 				List<Integer> transitionMetalInChemical = new ArrayList<Integer>();
 				for (Iterator<IndigoObject> iterator = reactantMol.iterateAtoms(); iterator.hasNext();) {
 					IndigoObject atom = iterator.next();
-					if (!atom.isRSite() && isTransitionMetal(atom.atomicNumber())){
+					if (!atom.isRSite() && isTransitionMetal(atom.atomicNumber()) && !isAllowedTransitionMetal(atom)){
 						transitionMetalInChemical.add(atom.atomicNumber());
 					}
 				}
@@ -95,6 +95,18 @@ public class ChemicalSenseApplication {
 			reaction.removeReactant(catalyst);
 			reaction.addSpectator(catalyst);
 		}
+	}
+
+	/**
+	 * A few exceptions e.g. Cr(VI) for dichromate
+	 * @param atom 
+	 * @return
+	 */
+	private boolean isAllowedTransitionMetal(IndigoObject atom) {
+		if(atom.atomicNumber() == 24 && atom.valence()==6){
+			return true;
+		}
+		return false;
 	}
 
 	/**
