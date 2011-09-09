@@ -64,4 +64,30 @@ public class ExperimentalSection {
 		experimentalSteps.add(currentStep);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("*********\n");
+		if (targetChemicalNamePair !=null){
+			sb.append("Target Chemical: " + targetChemicalNamePair.getChemical().getName() +"\talias: " + targetChemicalNamePair.getAlias()+"\n");
+		}
+		else{
+			sb.append("Target Chemical: null\n");
+		}
+		sb.append("Procedure:" + (procedureElement ==null ? "null" :procedureElement.toXML()) +"\n");
+		for (ExperimentalStep step : experimentalSteps) {
+			if (step.getTargetChemicalNamePair() !=null){
+				sb.append("Target Chemical: " +step.getTargetChemicalNamePair().getChemical().getName() +"\talias: " + step.getTargetChemicalNamePair().getAlias() +"\n");
+			}
+			else{
+				sb.append("Target Chemical: null\n");
+			}
+			sb.append("Procedure:" + (step.getProcedureEl() == null ? "null" : step.getProcedureEl().toXML()) +"\n");
+			for (Paragraph para : step.getParagraphs()) {
+				sb.append("para number: " + para.getIdentifier() +"\n");
+			}
+		}
+		sb.append("*********\n");
+		return sb.toString();
+	}
 }
