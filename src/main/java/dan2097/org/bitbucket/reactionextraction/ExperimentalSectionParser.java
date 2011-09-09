@@ -385,7 +385,11 @@ public class ExperimentalSectionParser {
 				return new SectionAndStepIdentifier(stepIdentifier.getValue(), null);
 			}
 			else{
-				return new SectionAndStepIdentifier(null, stepIdentifier.getValue());
+				String sectionIdentifier = null;
+				if (experimentalSection.getProcedureElement() !=null){
+					sectionIdentifier = getSectionIdentifier(experimentalSection.getProcedureElement());
+				}
+				return new SectionAndStepIdentifier(sectionIdentifier, stepIdentifier.getValue());
 			}
 		}
 		if (stepIdentifiers.size()==2){
