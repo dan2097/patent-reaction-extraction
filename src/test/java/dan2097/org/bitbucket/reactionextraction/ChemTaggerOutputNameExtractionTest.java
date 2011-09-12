@@ -1,6 +1,9 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import static junit.framework.Assert.assertEquals;
+
+import java.util.List;
+
 import nu.xom.Element;
 
 import org.junit.Test;
@@ -14,7 +17,9 @@ public class ChemTaggerOutputNameExtractionTest {
 				"<OSCARCM>" +
 					"<OSCAR-CM>pyridine</OSCAR-CM>" +
 				"</OSCARCM>");
-		assertEquals("pyridine", ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM));
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM);
+		assertEquals(1, nameComponents.size());
+		assertEquals("pyridine", nameComponents.get(0));
 	}
 	
 	@Test
@@ -24,7 +29,9 @@ public class ChemTaggerOutputNameExtractionTest {
 					"<OSCAR-CM>ethyl</OSCAR-CM>" +
 					"<OSCAR-CM>acetate</OSCAR-CM>" +
 				"</OSCARCM>");
-		assertEquals("ethyl acetate", ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM));
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM);
+		assertEquals(1, nameComponents.size());
+		assertEquals("ethyl acetate", nameComponents.get(0));
 	}
 	
 	@Test
@@ -36,7 +43,24 @@ public class ChemTaggerOutputNameExtractionTest {
 					"<OSCAR-CM>ethyl</OSCAR-CM>" +
 					"<OSCAR-CM>acetate</OSCAR-CM>" +
 				"</OSCARCM>");
-		assertEquals("water ethyl acetate", ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM));
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM);
+		assertEquals(2, nameComponents.size());
+		assertEquals("water", nameComponents.get(0));
+		assertEquals("ethyl acetate", nameComponents.get(1));
+	}
+
+	@Test
+	public void testNameExtractionFromOscarCMWithColonedChildren(){
+		Element oscarCM = TestUtils.stringToXom(
+				"<OSCARCM>" +
+					"<OSCAR-CM>octanol</OSCAR-CM>" +
+					"<COLON>:</COLON>" +
+					"<OSCAR-CM>water</OSCAR-CM>" +
+				"</OSCARCM>");
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM);
+		assertEquals(2, nameComponents.size());
+		assertEquals("octanol", nameComponents.get(0));
+		assertEquals("water", nameComponents.get(1));
 	}
 	
 	@Test
@@ -47,8 +71,11 @@ public class ChemTaggerOutputNameExtractionTest {
 					"<OSCAR-CM>cholesterol</OSCAR-CM>" +
 					"<_-RRB->)</_-RRB->" +
 				"</OSCARCM>");
-		assertEquals("cholesterol", ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM));
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(oscarCM);
+		assertEquals(1, nameComponents.size());
+		assertEquals("cholesterol", nameComponents.get(0));
 	}
+
 	@Test
 	public void testNameExtractionFromUnnamedMolecule1(){
 		Element unnamedMoleculeEl = TestUtils.stringToXom(

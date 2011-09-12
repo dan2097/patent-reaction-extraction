@@ -193,8 +193,8 @@ public class ExtractOrganicChemistryPatents {
 	
 	
 	public static void main(String[] args) throws IOException {
-		String inputDirectory  = "C:/Users/dl387/Desktop/newUSPTO/2010";
-		String outputDirectory  = "C:/Users/dl387/Desktop/newUSPTOout/2010";
+		String inputDirectory  = "C:/Users/dl387/Desktop/newUSPTO/2011";
+		String outputDirectory  = "C:/Users/dl387/Desktop/newUSPTOout/2011";
 		ExtractOrganicChemistryPatents eocp= new ExtractOrganicChemistryPatents(inputDirectory, outputDirectory);
 		eocp.extractOrganicPatents();
 	}

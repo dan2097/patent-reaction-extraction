@@ -7,30 +7,34 @@ import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.OSCAR_CM;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.REFERENCETOCOMPOUND_Container;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.UNNAMEDMOLECULE_Container;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import nu.xom.Element;
 import nu.xom.Elements;
 
 public class ChemTaggerOutputNameExtraction {
-
-	
 	/**
 	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE_Container/UNNAMEDMOLECULE_Container
-	 * @param molecule
+	 * In the case of a mixture e.g. octanol-water the returned list will contain multiple entries
+	 * @param moleculeOrUnnamedMolecule
 	 * @return
 	 */
-	static String findMoleculeName(Element molecule) {
-		String elName= molecule.getLocalName();
+	static List<String> findMoleculeName(Element moleculeOrUnnamedMolecule) {
+		String elName= moleculeOrUnnamedMolecule.getLocalName();
 		if (elName.equals(MOLECULE_Container)) {
-			Element oscarCM = molecule.getFirstChildElement(OSCARCM_Container);
+			Element oscarCM = moleculeOrUnnamedMolecule.getFirstChildElement(OSCARCM_Container);
 			if (oscarCM ==null){
-				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM: " + molecule.toXML());
+				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM: " + moleculeOrUnnamedMolecule.toXML());
 			}
 			return findMoleculeNameFromOscarCM(oscarCM);
 		}
 		else if (elName.equals(UNNAMEDMOLECULE_Container)) {
-			return findMoleculeNameFromUnnamedMoleculeEl(molecule);
+			String name = findMoleculeNameFromUnnamedMoleculeEl(moleculeOrUnnamedMolecule);
+			List<String> nameComponents = new ArrayList<String>();
+			nameComponents.add(name);
+			return nameComponents;
 		}
 		throw new IllegalArgumentException("Unexpected tag type:" + elName +" The following are allowed" +
 				MOLECULE_Container + ", "+ UNNAMEDMOLECULE_Container);
@@ -39,22 +43,36 @@ public class ChemTaggerOutputNameExtraction {
 	
 	/**
 	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE tag
+	 * In the case of a mixture e.g. octanol-water the returned list will contain multiple entries
 	 * @param molecule
 	 * @return
 	 */
-	static String findMoleculeNameFromOscarCM(Element oscarCM) {
+	static List<String> findMoleculeNameFromOscarCM(Element oscarCM) {
 		if (oscarCM == null){
 			throw new IllegalArgumentException("Input oscarCM was null");
 		}
-		Elements multiWordNameWords = oscarCM.getChildElements(OSCAR_CM);
+		Elements words = oscarCM.getChildElements();
+		List<String> nameComponents = new ArrayList<String>();
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < multiWordNameWords.size(); i++) {
-			builder.append(multiWordNameWords.get(i).getValue());
-			if (i < multiWordNameWords.size()-1) {
+		for (int i = 0; i < words.size(); i++) {
+			Element word = words.get(i);
+			if (word.getLocalName().equals(OSCAR_CM)){
+				builder.append(words.get(i).getValue());
 				builder.append(" ");
 			}
+			else{
+				String nameComponent = builder.toString().trim();
+				if (nameComponent.length() > 0){
+					nameComponents.add(nameComponent);
+					builder = new StringBuilder();
+				}
+			}
 		}
-		return builder.toString();	
+		String nameComponent = builder.toString().trim();
+		if (nameComponent.length() > 0){
+			nameComponents.add(nameComponent);
+		}
+		return nameComponents;
 	}
 	
 	/**
