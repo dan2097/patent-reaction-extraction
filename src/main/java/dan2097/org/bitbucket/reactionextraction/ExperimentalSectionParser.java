@@ -66,9 +66,7 @@ public class ExperimentalSectionParser {
 				new ReactionStoichiometryDeterminer(reaction).processReactionStoichiometry();
 				sectionReactions.add(reaction);
 			}
-			if (experimentalSection.getProcedureElement() !=null){
-				recordReactionsInPreviousReactionData(reactions, step);
-			}
+			recordReactionsInPreviousReactionData(reactions, step);
 		}
 	}
 
@@ -324,7 +322,7 @@ public class ExperimentalSectionParser {
 	 */
 	private void recordReactionsInPreviousReactionData(List<Reaction> reactions, ExperimentalStep step) {
 		if (experimentalSection.getProcedureElement()==null){
-			throw new RuntimeException("procedure element should not be null if this method is called");
+			throw new RuntimeException("procedure element should never be null after section creation");
 		}
 		String sectionIdentifier = getSectionIdentifier(experimentalSection.getProcedureElement());
 		if (sectionIdentifier ==null){
@@ -389,10 +387,7 @@ public class ExperimentalSectionParser {
 				return new SectionAndStepIdentifier(stepIdentifier.getValue(), null);
 			}
 			else{
-				String sectionIdentifier = null;
-				if (experimentalSection.getProcedureElement() !=null){
-					sectionIdentifier = getSectionIdentifier(experimentalSection.getProcedureElement());
-				}
+				String sectionIdentifier = getSectionIdentifier(experimentalSection.getProcedureElement());
 				return new SectionAndStepIdentifier(sectionIdentifier, stepIdentifier.getValue());
 			}
 		}

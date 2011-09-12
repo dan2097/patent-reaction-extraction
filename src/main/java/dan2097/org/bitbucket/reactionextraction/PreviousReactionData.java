@@ -18,7 +18,7 @@ public class PreviousReactionData {
 		private final List<Reaction> reactions;
 
 		/**
-		 * Describes the reactions for a certain step. Identifer can be null if this step doesn't have a label
+		 * Describes the reactions for a certain step. Identifier can be null if this step doesn't have a label
 		 * @param reactions
 		 * @param identifier
 		 */
@@ -59,10 +59,10 @@ public class PreviousReactionData {
 	 */
 	void addReactions(List<Reaction> reactions, String section, String step){
 		if (reactions ==null){
-			throw new IllegalArgumentException("Secti");
+			throw new IllegalArgumentException("Null reactions paramater");
 		}
 		if (section ==null){
-			throw new IllegalArgumentException("Null input paramaet");
+			throw new IllegalArgumentException("Null section paramater");
 		}
 		List<StepReactionHolder> stepHolders;
 		if (sectionIdentifierToSectionReactions.get(section)==null){
