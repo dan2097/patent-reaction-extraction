@@ -60,7 +60,11 @@ public class ExperimentalSectionsCreator {
 		if (name.equals(XMLTags.P)){
 			String id = headingOrParagraph.getAttributeValue(XMLAtrs.ID); 
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
-				return true;
+				String text = Utils.getElementText(headingOrParagraph);
+				Document taggedDoc = Utils.runChemicalTagger(text);
+				List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
+				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
+				return namesFoundByOpsin.size() >0 || procedureNames.size() >0;
 			}
 			else{
 				return false;
@@ -112,7 +116,7 @@ public class ExperimentalSectionsCreator {
 			currentSection.setCurrentStepProcedure(procedure);
 		}
 		else {
-			if (currentSection.getProcedureElement()!=null && !currentSection.currentStepHasParagraphs() ){
+			if (currentSection.getProcedureElement()!=null && currentSection.getExperimentalSteps().size()==1 && !currentSection.currentStepHasParagraphs() ){
 				LOG.trace(currentSection.getProcedureElement().toXML() + " was discarded!");
 			}
 			addCurrentSectionIfNonEmptyAndReset();
@@ -186,7 +190,12 @@ public class ExperimentalSectionsCreator {
 		}
 		boolean isExperimentalParagraph = paragraphClassifier.isExperimental(text);
 		if (!isExperimentalParagraph){
-			addCurrentSectionIfNonEmptyAndReset();
+			if (currentSection.getCurrentStepProcedureElement()!=null){
+				currentSection.moveToNextStep();
+			}
+			else{
+				addCurrentSectionIfNonEmptyAndReset();
+			}
 			return;
 		}
 		String identifier = paraEl.getAttributeValue(XMLAtrs.NUM);
