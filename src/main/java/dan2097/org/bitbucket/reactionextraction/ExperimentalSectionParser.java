@@ -14,6 +14,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
@@ -226,22 +227,24 @@ public class ExperimentalSectionParser {
 					return aliasToChemicalMap;
 				}
 			}
-			String name1 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(firstOscarcm);
-			String smiles1 = Utils.resolveNameToSmiles(name1);
-			String name2 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(secondOscarcm);
-			String smiles2 =Utils.resolveNameToSmiles(name2);
+			List<String> nameComponents1 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(firstOscarcm);
+			String smiles1 = Utils.resolveNameToSmiles(nameComponents1);
+			String name1 = StringTools.stringListToString(nameComponents1, " ");
+			List<String> nameComponents2 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(secondOscarcm);
+			String smiles2 =Utils.resolveNameToSmiles(nameComponents2);
+			String name2 = StringTools.stringListToString(nameComponents2, " ");
 
 			if (smiles1 !=null && smiles2 ==null){
 				Chemical cm = new Chemical(name2);
 				cm.setSmiles(smiles1);
-				cm.setInchi(Utils.resolveNameToSmiles(name1));
+				cm.setInchi(Utils.resolveNameToInchi(nameComponents1));
 				aliasToChemicalMap.put(name2, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
 			else if (smiles1 ==null && smiles2 !=null){
 				Chemical cm = new Chemical(name1);
 				cm.setSmiles(smiles2);
-				cm.setInchi(Utils.resolveNameToSmiles(name2));
+				cm.setInchi(Utils.resolveNameToInchi(nameComponents2));
 				aliasToChemicalMap.put(name1, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
@@ -277,8 +280,9 @@ public class ExperimentalSectionParser {
 	}
 
 	private Chemical generateChemicalFromMoleculeElAndLocalInformation(Element moleculeEl) {
-		String name = ChemTaggerOutputNameExtraction.findMoleculeName(moleculeEl);
-		Chemical chem = Utils.createChemicalFromName(name);
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculeEl);
+		Chemical chem = Utils.createChemicalFromName(nameComponents);
+		String name = chem.getName();
 		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(name);
 		if (referencedChemical != null){
 			chem.setSmiles(referencedChemical.getSmiles());

@@ -52,7 +52,7 @@ public class Utils {
 	
 	private static Builder xomBuilder;
 	private final static Pattern matchTab = Pattern.compile("\\t");
-	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
+	private final static Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	private final static Pattern matchDot = Pattern.compile("\\.");
 	private final static Pattern matchForwardSlash = Pattern.compile("/");
 	
@@ -333,6 +333,22 @@ public class Utils {
 		Chemical chem = new Chemical(name);
 		chem.setSmiles(resolveNameToSmiles(name));
 		chem.setInchi(resolveNameToInchi(name));
+		return chem;
+	}
+	
+	/**
+	 * Creates a chemical from a list of name components with if possible resolved smiles and InChI
+	 * Each component would be expected to be a standalone chemical entity
+	 * @param name
+	 * @return
+	 */
+	public static Chemical createChemicalFromName(List<String> nameComponents) {
+		if (nameComponents==null){
+			throw new IllegalArgumentException("Input nameComponents was null");
+		}
+		Chemical chem = new Chemical(StringTools.stringListToString(nameComponents, " "));
+		chem.setSmiles(resolveNameToSmiles(nameComponents));
+		chem.setInchi(resolveNameToInchi(nameComponents));
 		return chem;
 	}
 
