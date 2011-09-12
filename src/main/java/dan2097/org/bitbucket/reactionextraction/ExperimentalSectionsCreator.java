@@ -27,6 +27,7 @@ public class ExperimentalSectionsCreator {
 	private final List<Element> orderedHeadingsAndParagraphs;
 	private final List<ExperimentalSection> experimentalSections =new ArrayList<ExperimentalSection>();
 	private ExperimentalSection currentSection = new ExperimentalSection();
+	private int unnamedProcedureCounter =1;
 
 	public ExperimentalSectionsCreator(List<Element> orderedHeadingsAndParagraphs) {
 		this.orderedHeadingsAndParagraphs = orderedHeadingsAndParagraphs;
@@ -85,9 +86,9 @@ public class ExperimentalSectionsCreator {
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
 		}
-		boolean isPotentialSubHeading = isPotentialSubHeading(headingEl, taggedDoc.getRootElement());
+		boolean isSubHeading = isSubHeading(headingEl, taggedDoc.getRootElement());
 		if (procedureNames.size()==1){
-			addProcedure(procedureNames.get(0), isPotentialSubHeading);
+			addProcedure(procedureNames.get(0), isSubHeading);
 		}
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
@@ -100,24 +101,20 @@ public class ExperimentalSectionsCreator {
 	/**
 	 * Adds a procedure to an appropriate place in the current section or step
 	 * @param procedure
-	 * @param isPotentialSubHeading
+	 * @param isSubHeading
 	 */
-	private void addProcedure(Element procedure, boolean isPotentialSubHeading) {
-		if (currentSection.getProcedureElement()==null){
-			currentSection.setProcedureElement(procedure);
-		}
-		else if (isPotentialSubHeading){
-			if (currentSection.getCurrentStepProcedureElement()!=null){
-				if (currentSection.currentStepHasParagraphs()){
-					currentSection.moveToNextStep();
-				}
-				else{
-					LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
-				}
+	private void addProcedure(Element procedure, boolean isSubHeading) {
+		if (isSubHeading){
+			if (currentSection.getCurrentStepProcedureElement()!=null && !currentSection.currentStepHasParagraphs()){
+				LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
 			}
+			currentSection.moveToNextStep();
 			currentSection.setCurrentStepProcedure(procedure);
 		}
-		else{
+		else {
+			if (currentSection.getProcedureElement()!=null && !currentSection.currentStepHasParagraphs() ){
+				LOG.trace(currentSection.getProcedureElement().toXML() + " was discarded!");
+			}
 			addCurrentSectionIfNonEmptyAndReset();
 			currentSection.setProcedureElement(procedure);
 		}
@@ -150,12 +147,12 @@ public class ExperimentalSectionsCreator {
 	}
 	
 	/**
-	 * Could the given heading be a sub heading
+	 * Is the given heading a sub heading
 	 * @param heading
 	 * @param taggedDocRoot 
 	 * @return
 	 */
-	boolean isPotentialSubHeading(Element heading, Element taggedDocRoot) {
+	boolean isSubHeading(Element heading, Element taggedDocRoot) {
 		if (heading.getLocalName().equals(XMLTags.P)){
 			String id = heading.getAttributeValue(XMLAtrs.ID); 
 			if (id !=null && id.startsWith("h-")){
@@ -226,9 +223,9 @@ public class ExperimentalSectionsCreator {
 		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
 		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(headingText);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
-		boolean isPotentialSubHeading = isPotentialSubHeading(paraEl, hiddenHeadingEl);
+		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
 		if (procedureNames.size()==1){
-			addProcedure(procedureNames.get(0), isPotentialSubHeading);
+			addProcedure(procedureNames.get(0), isSubHeading);
 		}
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(headingText);
@@ -438,9 +435,23 @@ public class ExperimentalSectionsCreator {
 				steps.remove(lastStep);
 			}
 			if (!steps.isEmpty()){
+				if (currentSection.getProcedureElement()==null){
+					addDummyProcedureElement();
+				}
 				experimentalSections.add(currentSection);
 			}
 		}
+	}
+
+	/**
+	 * Adds a dummy identifier to simplify the implementation of looking up previous reaction data
+	 */
+	private void addDummyProcedureElement() {
+		Element procedureElement = new Element(PROCEDURE_Container);
+		Element identifier = new Element(NN_IDENTIFIER);
+		identifier.appendChild("unnamedProcedure_" + unnamedProcedureCounter++);
+		procedureElement.appendChild(identifier);
+		currentSection.setProcedureElement(procedureElement);
 	}
 
 }
