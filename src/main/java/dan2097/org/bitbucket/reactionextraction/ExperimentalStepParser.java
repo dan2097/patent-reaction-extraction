@@ -245,7 +245,7 @@ public class ExperimentalStepParser {
 				List<Element> verbs = XOMTools.getChildElementsWithTagNames(adjacentVerbPhrase, new String[]{VBD, VBP, VBZ});
 				for (Element verb  : verbs) {
 					Element synthesizeVerb = (Element) XOMTools.getNextSibling(verb);
-					if (synthesizeVerb.getLocalName().equals(VB_SYNTHESIZE) && !synthesizeVerb.getValue().toLowerCase().startsWith("react")){
+					if (synthesizeVerb !=null && synthesizeVerb.getLocalName().equals(VB_SYNTHESIZE) && !synthesizeVerb.getValue().toLowerCase().startsWith("react")){
 						return XOMTools.getDescendantElementsWithTagNames(nounPhrase, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
 					}
 				}
