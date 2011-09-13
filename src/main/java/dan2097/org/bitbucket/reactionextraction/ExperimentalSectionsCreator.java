@@ -132,16 +132,13 @@ public class ExperimentalSectionsCreator {
 		if (currentSection.currentStepHasParagraphs()){
 			addCurrentSectionIfNonEmptyAndReset();
 		}
-		if (currentSection.getCurrentStepProcedureElement()!=null){
+		if (currentSection.getCurrentStepProcedureElement()!=null || currentSection.getTargetChemicalNamePair()!=null){
 			if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
 				LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
 			}
 			currentSection.setCurrentStepTargetChemicalNamePair(nameAliasPair);
 		}
 		else{
-			if (currentSection.getTargetChemicalNamePair()!=null){
-				LOG.trace(currentSection.getTargetChemicalNamePair() + " was discarded!");
-			}
 			currentSection.setTargetChemicalNamePair(nameAliasPair);
 		}
 	}

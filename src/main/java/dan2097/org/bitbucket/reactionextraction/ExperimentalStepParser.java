@@ -380,6 +380,16 @@ public class ExperimentalStepParser {
 		for (int i = reactions.size()-1; i >=0; i--) {
 			Reaction reaction = reactions.get(i);
 			if (reaction.getReactants().size()>0){
+				boolean hasReactantWithSmiles =false;
+				for (Chemical reactant : reaction.getReactants()) {
+					if (reactant.getSmiles()!=null){
+						hasReactantWithSmiles =true;
+						break;
+					}
+				}
+				if (!hasReactantWithSmiles){
+					continue;
+				}
 				if (reaction.getProducts().size()==0){
 					reaction.addProduct(targetCompound);
 					return true;
