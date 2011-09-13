@@ -4,9 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TitleTextAliasExtractor {
-	
-	//private final static Pattern matchIdentifier = Pattern.compile("((\\d+[a-z]?)|[\\(\\{\\[](\\d+[a-z]?|.*\\d+)[\\)\\}\\]])\\s*$");
-	private final static Pattern matchAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
+	private final static Pattern matchAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*(?![\\-])", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
 	private final static Pattern matchTerminalAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*$", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
 	private final static Pattern matchStereochemicalQualification = Pattern.compile("(endo|exo|syn|anti|erythro|threo|ent|cis|trans|all-trans|\\([rsez+-](,[rsez+-])*\\)||[rsez+-](,[rsez+-])*)-?$", Pattern.CASE_INSENSITIVE);
 	private final static Pattern matchStereochemicalQualificationToIgnore = Pattern.compile("(\u00B1|\\(\u00B1\\))-?");
