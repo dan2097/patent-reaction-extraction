@@ -1,9 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.DT_THE;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.MOLECULE_Container;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.PERCENT_Container;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.UNNAMEDMOLECULE_Container;
+import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,9 +35,7 @@ public class ExperimentalStepParser {
 
 	/*A yield phrase*/
 	private static final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
-	/*A phrase (typically synthesize) containing the returned molecule near the beginning followed by something like "is/was synthesised"*/
-	private static final String synthesizePhraseProduct = "self::node()/descendant-or-self::NounPhrase[following-sibling::*[1][local-name()='VerbPhrase'][VBD|VBP|VBZ][VB-SYNTHESIZE]]/*[self::MOLECULE or self::UNNAMEDMOLECULE]";
-	
+
 	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final|aimed) (compound|product)", Pattern.CASE_INSENSITIVE);
 	private static final Indigo indigo = IndigoHolder.getInstance();
 	
@@ -171,7 +166,6 @@ public class ExperimentalStepParser {
 			}
 			products.add(synthesizedMolecule);
 			if (chem.getRole()==null){
-				chem.setXpathUsedToIdentify(yieldPhraseProduct);
 				chem.setRole(ChemicalRole.product);
 			}
 		}
@@ -196,7 +190,6 @@ public class ExperimentalStepParser {
 			Chemical chem = moleculeToChemicalMap.get(reagent);
 			if (moleculeToChemicalMap.get(reagent).getPercentYield()!=null){
 				reagentsWithYield.add(reagent);
-				chem.setXpathUsedToIdentify("//YIELD");
 				chem.setRole(ChemicalRole.product);
 			}
 		}
@@ -214,28 +207,53 @@ public class ExperimentalStepParser {
 	}
 	
 	/**
-	 * Identifies products using synthesizePhraseProduct
+	 * Identifies products which are indicated as having being synthesized/prepared
 	 * @param phrase
 	 * @return 
 	 */
 	private Set<Element> identifyProductBeforeReagents(Element phrase) {
 		Set<Element> products = new LinkedHashSet<Element>();
-		Nodes synthesizePhraseMolecules = phrase.query(synthesizePhraseProduct);
-		for (int i = 0; i < synthesizePhraseMolecules.size(); i++) {
-			Element synthesizedMolecule= (Element) synthesizePhraseMolecules.get(i);
+		List<Element> synthesizePhraseProductMolecules = identifySynthesizedProductMolecules(phrase);
+		for (Element synthesizedMolecule : synthesizePhraseProductMolecules) {
 			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
 			if (chem.getType().equals(ChemicalType.falsePositive) || isKnownSolvent(chem)){
 				continue;
 			}
 			products.add(synthesizedMolecule);
 			if (chem.getRole()==null){
-				chem.setXpathUsedToIdentify(synthesizePhraseProduct);
 				chem.setRole(ChemicalRole.product);
 			}
 		}
 		return products;
 	}
 	
+	/**
+	 * Finds molecules in a phrase that have been synthesized
+	 * e.g. Acetic anhydride (was/is) (synthesized/prepared) from methyl acetate and carbon monoxid
+	 * @param phrase
+	 * @return
+	 */
+	private List<Element> identifySynthesizedProductMolecules(Element phrase) {
+		List<Element> nounPhrases = new ArrayList<Element>();
+		if (phrase.getLocalName().equals(NOUN_PHRASE_Container)){
+			nounPhrases.add(phrase);
+		}
+		nounPhrases.addAll(XOMTools.getDescendantElementsWithTagName(phrase, NOUN_PHRASE_Container));
+		for (Element nounPhrase : nounPhrases) {
+			Element adjacentVerbPhrase = (Element) XOMTools.getNextSibling(nounPhrase);
+			if (adjacentVerbPhrase !=null && adjacentVerbPhrase.getLocalName().equals(VERBPHRASE_Container)){
+				List<Element> verbs = XOMTools.getChildElementsWithTagNames(adjacentVerbPhrase, new String[]{VBD, VBP, VBZ});
+				for (Element verb  : verbs) {
+					Element synthesizeVerb = (Element) XOMTools.getNextSibling(verb);
+					if (synthesizeVerb.getLocalName().equals(VB_SYNTHESIZE) && !synthesizeVerb.getValue().toLowerCase().startsWith("react")){
+						return XOMTools.getDescendantElementsWithTagNames(nounPhrase, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
+					}
+				}
+			}
+		}
+		return new ArrayList<Element>();
+	}
+
 	private void resolveBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
 		for (Element chemical : chemicals) {
 			Chemical chemChem = moleculeToChemicalMap.get(chemical);
