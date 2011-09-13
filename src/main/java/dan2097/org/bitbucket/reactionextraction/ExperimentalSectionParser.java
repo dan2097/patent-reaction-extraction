@@ -37,7 +37,6 @@ public class ExperimentalSectionParser {
 
 	public void parseForReactions(){
 		Chemical ultimateTargetCompound = null;
-		Chemical currentStepTargetCompound = null;
 		if (experimentalSection.getTargetChemicalNamePair()!=null){
 			ChemicalAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
 			ultimateTargetCompound = nameAliasPair.getChemical();
@@ -48,6 +47,7 @@ public class ExperimentalSectionParser {
 		List<ExperimentalStep> steps = experimentalSection.getExperimentalSteps();
 		for (int i = 0; i < steps.size(); i++) {
 			ExperimentalStep step = steps.get(i);
+			Chemical currentStepTargetCompound = null;
 			if (step.getTargetChemicalNamePair()!=null){
 				ChemicalAliasPair nameAliasPair = step.getTargetChemicalNamePair();
 				currentStepTargetCompound = nameAliasPair.getChemical();
@@ -59,8 +59,12 @@ public class ExperimentalSectionParser {
 				//last step can be implicitly the ultimate target compound
 				currentStepTargetCompound = ultimateTargetCompound;
 			}
+			Chemical titleCompound = currentStepTargetCompound;
+			if (titleCompound ==null){
+				titleCompound = ultimateTargetCompound;
+			}
 			processMoleculeToChemicalAndStringToChemicalMappings(step.getParagraphs());
-			ExperimentalStepParser stepParser = new ExperimentalStepParser(step, moleculeToChemicalMap, currentStepTargetCompound);
+			ExperimentalStepParser stepParser = new ExperimentalStepParser(step, moleculeToChemicalMap, currentStepTargetCompound, titleCompound);
 			List<Reaction> reactions = stepParser.extractReactions();
 			for (Reaction reaction : reactions) {
 				new ReactionStoichiometryDeterminer(reaction).processReactionStoichiometry();
