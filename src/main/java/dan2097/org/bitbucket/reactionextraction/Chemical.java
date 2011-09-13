@@ -27,7 +27,6 @@ public class Chemical{
 	private String state;
 	private ChemicalRole role = null;
 	private ChemicalType type = null;
-	private String xpathUsedToIdentify = null;
 
 	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
 
@@ -276,18 +275,6 @@ public class Chemical{
 
 	void setRole(ChemicalRole role) {
 		this.role = role;
-	}
-
-	/**
-	 * For debugging purposes.
-	 * @return
-	 */
-	public String getXpathUsedToIdentify() {
-		return xpathUsedToIdentify;
-	}
-
-	void setXpathUsedToIdentify(String xpathUsedToIdentify) {
-		this.xpathUsedToIdentify = xpathUsedToIdentify;
 	}
 
 	boolean hasImpreciseVolume() {
