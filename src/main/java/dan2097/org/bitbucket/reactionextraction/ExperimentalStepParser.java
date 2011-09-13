@@ -32,6 +32,9 @@ public class ExperimentalStepParser {
 	private final ExperimentalStep experimentalStep;
 	private final BiMap<Element, Chemical> moleculeToChemicalMap;
 	private final Chemical targetCompound;
+	/**Typically title and target compound will be identical but only the target compound can be implicitly added to a reaction
+	 * Due to confusion in the experimental section creator the title compound may be mentioned before the final step*/
+	private final Chemical titleCompound;
 
 	/*A yield phrase*/
 	private static final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
@@ -39,10 +42,11 @@ public class ExperimentalStepParser {
 	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final|aimed) (compound|product)", Pattern.CASE_INSENSITIVE);
 	private static final Indigo indigo = IndigoHolder.getInstance();
 	
-	public ExperimentalStepParser(ExperimentalStep experimentalStep, BiMap<Element, Chemical> moleculeToChemicalMap, Chemical targetCompound) {
+	public ExperimentalStepParser(ExperimentalStep experimentalStep, BiMap<Element, Chemical> moleculeToChemicalMap, Chemical targetCompound, Chemical titleCompound) {
 		this.experimentalStep = experimentalStep;
 		this.moleculeToChemicalMap = moleculeToChemicalMap;
 		this.targetCompound = targetCompound;
+		this.titleCompound = titleCompound;
 	}
 
 	/**
@@ -124,7 +128,7 @@ public class ExperimentalStepParser {
 		}
 		if (targetCompound !=null){
 			if (!compoundIsProductOfAReaction(reactions, targetCompound)){
-				if (!addTitleCompoundToLastReactionWithReactantsIfHasNoProduct(reactions)){
+				if (!addTargetCompoundToLastReactionWithReactantsIfHasNoProduct(reactions)){
 					LOG.trace("Failed to assign: " + targetCompound.getName() + " to a reaction!");
 				}
 			}
@@ -265,9 +269,9 @@ public class ExperimentalStepParser {
 
 	boolean attemptToResolveBackReference(Chemical chemical, List<Reaction> reactionsToConsider) {
 		if (matchProductTextualAnaphora.matcher(chemical.getName()).matches()){
-			if (targetCompound!=null){
-				chemical.setSmiles(targetCompound.getSmiles());
-				chemical.setInchi(targetCompound.getInchi());
+			if (titleCompound!=null){
+				chemical.setSmiles(titleCompound.getSmiles());
+				chemical.setInchi(titleCompound.getInchi());
 			}
 			chemical.setRole(ChemicalRole.product);
 			return true;
@@ -291,8 +295,8 @@ public class ExperimentalStepParser {
 		}
 		else if (chemical.getSmiles()!=null){
 			List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactionsToConsider);
-			if (ChemicalRole.product.equals(chemical.getRole()) && targetCompound !=null){
-				chemicalsToMatchAgainst.add(targetCompound);
+			if (ChemicalRole.product.equals(chemical.getRole()) && titleCompound !=null){
+				chemicalsToMatchAgainst.add(titleCompound);
 			}
 			String smarts = generateAromaticSmiles(chemical.getSmiles());
 			boolean success = attemptToResolveViaSmartsMatch(smarts, chemical, chemicalsToMatchAgainst);
@@ -390,11 +394,11 @@ public class ExperimentalStepParser {
 	}
 	
 	/**
-	 * Returns true or false depending on whether a suitable reaction was found to add the title compound to
+	 * Returns true or false depending on whether a suitable reaction was found to add the target compound to
 	 * @param reactions
 	 * @return
 	 */
-	private boolean addTitleCompoundToLastReactionWithReactantsIfHasNoProduct(List<Reaction> reactions) {
+	private boolean addTargetCompoundToLastReactionWithReactantsIfHasNoProduct(List<Reaction> reactions) {
 		for (int i = reactions.size()-1; i >=0; i--) {
 			Reaction reaction = reactions.get(i);
 			if (reaction.getReactants().size()>0){
