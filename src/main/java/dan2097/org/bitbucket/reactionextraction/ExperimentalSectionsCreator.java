@@ -116,8 +116,19 @@ public class ExperimentalSectionsCreator {
 			currentSection.setCurrentStepProcedure(procedure);
 		}
 		else {
-			if (currentSection.getProcedureElement()!=null && currentSection.getExperimentalSteps().size()==1 && !currentSection.currentStepHasParagraphs() ){
-				LOG.trace(currentSection.getProcedureElement().toXML() + " was discarded!");
+			if (currentSection.getExperimentalSteps().size()==1 && !currentSection.currentStepHasParagraphs()){
+				if (currentSection.getProcedureElement()!=null){
+					LOG.trace(currentSection.getProcedureElement().toXML() + " was discarded!");
+				}
+				if (currentSection.getCurrentStepProcedureElement()!=null){
+					LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
+				}
+				if (currentSection.getTargetChemicalNamePair()!=null){
+					LOG.trace(currentSection.getTargetChemicalNamePair() + " was discarded!");
+				}
+				if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
+					LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
+				}
 			}
 			addCurrentSectionIfNonEmptyAndReset();
 			currentSection.setProcedureElement(procedure);
