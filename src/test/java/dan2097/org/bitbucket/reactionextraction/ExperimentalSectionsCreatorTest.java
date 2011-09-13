@@ -25,6 +25,7 @@ public class ExperimentalSectionsCreatorTest {
 		assertEquals(false, sectionCreator.isHeading(new Element(XMLTags.P)));
 		Element pHeading = new Element(XMLTags.P);
 		pHeading.addAttribute(new Attribute("id", "h-5"));
+		pHeading.appendChild("Step 1");
 		assertEquals(true, sectionCreator.isHeading(pHeading));
 	}
 	
