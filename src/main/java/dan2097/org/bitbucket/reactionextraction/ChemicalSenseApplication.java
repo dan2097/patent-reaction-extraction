@@ -106,6 +106,9 @@ public class ChemicalSenseApplication {
 		if(atom.atomicNumber() == 24 && atom.valence()==6){
 			return true;
 		}
+		if(atom.atomicNumber() == 25 && atom.valence()>=6){
+			return true;
+		}
 		return false;
 	}
 
