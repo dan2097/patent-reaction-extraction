@@ -202,6 +202,9 @@ public class ExperimentalSectionsCreator {
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
 		if (hiddenHeadingEl !=null){
 			processInlineHeading(hiddenHeadingEl, paraEl, text);
+			if (para.getTaggedSentencesDocument().getValue().equals("")){//paragraph was just a heading
+				return;
+			}
 		}
 
 		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null 
