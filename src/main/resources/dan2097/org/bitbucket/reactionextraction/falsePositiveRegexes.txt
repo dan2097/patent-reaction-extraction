@@ -4,6 +4,7 @@
 
 #parts of NMR patterns
 (?-i)\d+H
+(?-i)13C
 .*nmr
 .*-d\d*
 d\d+-.*
