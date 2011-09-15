@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nu.xom.Builder;
@@ -55,6 +56,7 @@ public class Utils {
 	private final static Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	private final static Pattern matchDot = Pattern.compile("\\.");
 	private final static Pattern matchForwardSlash = Pattern.compile("/");
+	private final static Pattern matchChargeOrOxidationSpecifier = Pattern.compile("(\\S+)\\s+(\\((\\d[+\\-]|[+\\-]\\d|0|I|II|III|IV|VI|VII|VIII|IX)\\))", Pattern.CASE_INSENSITIVE);
 	
 	static {
 		XMLReader xmlReader;
@@ -96,11 +98,25 @@ public class Utils {
 	
 	/**
 	 * Convenience method to tag and parse a string of text
+	 * A case of erroneous white space that can not be overcome by the OPSIN tagger due to OSCAR's tokenization is also corrected
 	 * @param tagged
 	 * @return
 	 */
 	public static Document runChemicalTagger(String text) {
-		return runChemicalSentenceParsingOnTaggedString(tagString(text));
+		String correctedText = correctErroneousSpaceBeforeChargeOrOxidationNumber(text);
+		return runChemicalSentenceParsingOnTaggedString(tagString(correctedText));
+	}
+
+	public static String correctErroneousSpaceBeforeChargeOrOxidationNumber(String text) {
+		Matcher m = matchChargeOrOxidationSpecifier.matcher(text);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()){
+			if (getSystematicChemicalNamesFromText(m.group(1) + m.group(2)).size()>0){
+				m.appendReplacement(sb, m.group(1) + m.group(2));
+			}
+		}
+		m.appendTail(sb);
+		return sb.toString();
 	}
 
 	/**
