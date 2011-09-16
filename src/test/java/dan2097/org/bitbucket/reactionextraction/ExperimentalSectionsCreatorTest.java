@@ -3,6 +3,7 @@ import static junit.framework.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -57,6 +58,39 @@ public class ExperimentalSectionsCreatorTest {
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
 		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><NounPhrase><PROCEDURE><CD>3</CD></PROCEDURE><_-RRB->)</_-RRB-></NounPhrase></Sentence></Document>");
 		assertEquals(true, sectionCreator.isSubHeading(new Element(XMLTags.HEADING), taggedDoc.getRootElement()));
+	}
+	
+	@Test
+	public void extractHeadingCompoundName1(){
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("pyridine");
+		assertEquals(1, namesFound.size());
+		assertEquals("pyridine", namesFound.get(0));
+	}
+	
+	@Test
+	public void extractHeadingCompoundName2(){
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("ethanol condensation in silicon nanontubes");
+		assertEquals(2, namesFound.size());
+		assertEquals("ethanol", namesFound.get(0));
+		assertEquals("silicon", namesFound.get(1));
+	}
+	
+	@Test
+	public void extractHeadingCompoundName3(){
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("benzene compound with toluene (1:1)");
+		assertEquals(1, namesFound.size());
+		assertEquals("benzene compound with toluene (1:1)", namesFound.get(0));
+	}
+	
+	@Test
+	public void extractHeadingCompoundName4(){
+		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
+		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("Example 1: 2-methylpyridine:");
+		assertEquals(1, namesFound.size());
+		assertEquals("2-methylpyridine", namesFound.get(0));
 	}
 	
 	@Test
