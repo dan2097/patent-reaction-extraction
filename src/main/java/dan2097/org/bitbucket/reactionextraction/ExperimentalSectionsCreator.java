@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
+import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+import uk.ac.cam.ch.wwmm.opsin.OpsinResult.OPSIN_RESULT_STATUS;
 
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
@@ -62,7 +65,7 @@ public class ExperimentalSectionsCreator {
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
 				String text = Utils.getElementText(headingOrParagraph);
 				Document taggedDoc = Utils.runChemicalTagger(text);
-				List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
+				List<String> namesFoundByOpsin = findCompoundNamesInHeading(text);
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 				return namesFoundByOpsin.size() >0 || procedureNames.size() >0;
 			}
@@ -76,6 +79,29 @@ public class ExperimentalSectionsCreator {
 	}
 	
 	/**
+	 * Employs OPSIN document extractor to find names in a title
+	 * OPSIN is used to verift that these names are not part of the same name
+	 * @param text
+	 * @return
+	 */
+	List<String> findCompoundNamesInHeading(String text) {
+		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
+		if (namesFoundByOpsin.size()>1){
+			NameToStructure n2s;
+			try {
+				n2s = NameToStructure.getInstance();
+			} catch (NameToStructureException e) {
+				throw new RuntimeException(e);
+			}
+			if (n2s.parseChemicalName(text).getStatus()!=OPSIN_RESULT_STATUS.FAILURE){
+				namesFoundByOpsin.clear();
+				namesFoundByOpsin.add(text);
+			}
+		}
+		return namesFoundByOpsin;
+	}
+	
+	/**
 	 * Extracts a procedures and/or molecule from the heading and adds it to the current section
 	 * or step of the current section as a appropriate
 	 * @param headingEl
@@ -83,7 +109,7 @@ public class ExperimentalSectionsCreator {
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
-		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
+		List<String> namesFoundByOpsin = findCompoundNamesInHeading(text);
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (namesFoundByOpsin.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
@@ -241,7 +267,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void processInlineHeading(Element hiddenHeadingEl, Element paraEl, String text) {
 		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
-		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(headingText);
+		List<String> namesFoundByOpsin = findCompoundNamesInHeading(headingText);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
 		if (procedureNames.size()==1){
