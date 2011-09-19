@@ -36,6 +36,18 @@ public class NameResolutionTest {
 	}
 	
 	@Test
+	public void resolveNameListToSmiles4(){
+		List<String> nameComponents = Arrays.asList("NH3\u00B7H2O");
+		assertEquals("N.O", Utils.resolveNameToSmiles(nameComponents));
+	}
+	
+	@Test
+	public void resolveNameListToSmiles5(){
+		List<String> nameComponents = Arrays.asList("azanylazane NH3");
+		assertEquals("NN.N", Utils.resolveNameToSmiles(nameComponents));
+	}
+	
+	@Test
 	public void resolveNameToInChI(){
 		assertEquals("InChI=1/H3N/h1H3", InchiNormaliser.normaliseInChI(Utils.resolveNameToInchi("NH3")));
 		assertEquals("InChI=1/H2O/h1H2", InchiNormaliser.normaliseInChI(Utils.resolveNameToInchi("H2O")));
@@ -56,6 +68,12 @@ public class NameResolutionTest {
 	@Test
 	public void resolveNameListToInChI3(){
 		List<String> nameComponents = Arrays.asList("NH3/H2O");
+		assertEquals("InChI=1/H3N.H2O/h1H3;1H2", Utils.resolveNameToInchi(nameComponents));
+	}
+	
+	@Test
+	public void resolveNameListToInChI4(){
+		List<String> nameComponents = Arrays.asList("NH3\u00B7H2O");
 		assertEquals("InChI=1/H3N.H2O/h1H3;1H2", Utils.resolveNameToInchi(nameComponents));
 	}
 }

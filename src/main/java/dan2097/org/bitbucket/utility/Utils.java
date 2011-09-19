@@ -56,6 +56,7 @@ public class Utils {
 	private final static Pattern matchWhiteSpace = Pattern.compile("\\s+");
 	private final static Pattern matchDot = Pattern.compile("\\.");
 	private final static Pattern matchForwardSlash = Pattern.compile("/");
+	private final static Pattern matchMiddleDot = Pattern.compile("\u00B7");
 	private final static Pattern matchChargeOrOxidationSpecifier = Pattern.compile("(\\S+)\\s+(\\((\\d[+\\-]|[+\\-]\\d|0|I|II|III|IV|VI|VII|VIII|IX)\\))", Pattern.CASE_INSENSITIVE);
 	
 	static {
@@ -153,14 +154,9 @@ public class Utils {
 				return smilesSB.toString();
 			}
 			else{
-				String nameComponent = nameComponents.get(0);
-				String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
-				if (slashSeperatedStrs.length >1){
-					return resolveNameToSmiles(StringTools.arrayToList(slashSeperatedStrs));
-				}
-				String[] dotSeperatedStrs = matchDot.split(nameComponent);
-				if (dotSeperatedStrs.length >1){
-					return resolveNameToSmiles(StringTools.arrayToList(dotSeperatedStrs));
+				nameComponents = splitNameIntoComponents(nameComponents.get(0));
+				if (nameComponents.size()>1){
+					return resolveNameToSmiles(nameComponents);
 				}
 			}
 		}
@@ -203,23 +199,46 @@ public class Utils {
 				return merger.generateMergedNormalisedInchi();
 			}
 			else{
-				String nameComponent = nameComponents.get(0);
-				String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
-				if (slashSeperatedStrs.length >1){
-					return resolveNameToInchi(StringTools.arrayToList(slashSeperatedStrs));
-				}
-				String[] dotSeperatedStrs = matchDot.split(nameComponent);
-				if (dotSeperatedStrs.length >1){
-					return resolveNameToInchi(StringTools.arrayToList(dotSeperatedStrs));
+				nameComponents = splitNameIntoComponents(nameComponents.get(0));
+				if (nameComponents.size()>1){
+					return resolveNameToInchi(nameComponents);
 				}
 			}
 		}
 		return completeInChI;
 	}
 	
+	/**
+	 * Attempts to split the given name into components using suitable delimiters
+	 * e.g. slashes, dots, whitespace etc.
+	 * @param nameComponent
+	 * @return
+	 */
+	private static List<String> splitNameIntoComponents(String nameComponent) {
+		String[] middleDotSeperatedStrs = matchMiddleDot.split(nameComponent);
+		if (middleDotSeperatedStrs.length >1){
+			return StringTools.arrayToList(middleDotSeperatedStrs);
+		}
+		String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
+		if (slashSeperatedStrs.length >1){
+			return StringTools.arrayToList(slashSeperatedStrs);
+		}
+		String[] dotSeperatedStrs = matchDot.split(nameComponent);
+		if (dotSeperatedStrs.length >1){
+			return StringTools.arrayToList(dotSeperatedStrs);
+		}
+		String[] whiteSpaceSeperatedStrs = matchWhiteSpace.split(nameComponent);
+		if (whiteSpaceSeperatedStrs.length ==2){
+			return StringTools.arrayToList(whiteSpaceSeperatedStrs);
+		}
+		List<String> nameComponents = new ArrayList<String>();
+		nameComponents.add(nameComponent);
+		return nameComponents;
+	}
+
 	public static List<String> getSystematicChemicalNamesFromText(String text) {
 		try{
-			List<IdentifiedChemicalName> identifiedNames = DocumentToStructures.extractNames(text);
+			List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(text).extractNames();
 			List<String> names = new ArrayList<String>();
 			for (IdentifiedChemicalName identifiedChemicalName : identifiedNames) {
 				names.add(identifiedChemicalName.getChemicalName());
