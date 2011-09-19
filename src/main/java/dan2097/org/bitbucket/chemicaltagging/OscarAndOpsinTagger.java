@@ -58,7 +58,7 @@ public class OscarAndOpsinTagger extends OscarTagger {
 		}
 
 		String[] words = tokenList.toArray(new String[tokenList.size()]);
-		List<IdentifiedChemicalName> identifiedNames = DocumentToStructures.extractNames(words);
+		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(words).extractNames();
 		for (IdentifiedChemicalName ne : identifiedNames) {
 			for (int i = ne.getWordPositionStartIndice(); i <= ne.getWordPositionEndIndice(); i++) {
 				oscarAndOpsinList.set(i, "OSCAR-CM");
