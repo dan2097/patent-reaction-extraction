@@ -8,8 +8,8 @@ package dan2097.org.bitbucket.reactionextraction;
 public class ChemicalAliasPair {
 
 	private final Chemical chemical;
-	private final String alias;
-	
+	private String alias;
+
 	/**
 	 * A chemical and an identifier used to refer to said chemical.
 	 * The alias may be null;
@@ -27,6 +27,10 @@ public class ChemicalAliasPair {
 
 	String getAlias() {
 		return alias;
+	}
+	
+	void setAlias(String alias) {
+		this.alias = alias;
 	}
 	
 	public String toString(){
