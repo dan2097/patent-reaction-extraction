@@ -3,7 +3,7 @@
 
 
 #parts of NMR patterns
-(?-i)\d+H
+(?-i)\d+[\-]?H
 (?-i)13C
 .*nmr
 .*-d\d*
@@ -29,6 +29,7 @@ CF3CD2OD
 D2O
 Tetramethylsilane|TMS|DSS|TSP|TMSP
 dd[d]?
+ABq[a-z]?
 \d+(\.\d+)?[\(\[][a-z]
 
 #parts of MS patterns
@@ -51,6 +52,7 @@ xenon
 
 
 #Miscellany
+[a-z]
 ESI\+
 ESMS
 .*ES[\+\-].*
@@ -58,9 +60,12 @@ ESMS
 silica.*
 alumina
 Rf
-Calc
 TLC
 [mb][.]?p[.]?
 ABX
 SCX(-2)?
 FAB[\+]?
+FCC
+id
+dH
+Pa
