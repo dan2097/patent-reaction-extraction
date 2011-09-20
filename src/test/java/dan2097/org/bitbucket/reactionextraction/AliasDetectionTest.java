@@ -150,4 +150,9 @@ public class AliasDetectionTest {
 		assertNull(TitleTextAliasExtractor.findAlias("3-methylpentane"));
 	}
 	
+	@Test
+	public void aliasFromTitleText30() {
+		assertEquals("Compound 3", TitleTextAliasExtractor.findAlias("Compound 3: benzene"));
+	}
+	
 }
