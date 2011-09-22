@@ -43,8 +43,8 @@ public class ChemicalTypeAssigner {
 		if (isFalsePositive(chem, mol)){
 			chem.setType(ChemicalType.falsePositive);
 		}
-		else if (!determineTypeFromChemicalName(chemicalName, chem)){
-			determineTypeFromSurroundingText(mol, chem);
+		else if (!determineTypeFromSurroundingText(mol, chem)){
+			determineTypeFromChemicalName(chemicalName, chem);
 		}
 		
 		if (!ChemicalType.falsePositive.equals(chem.getType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
@@ -87,50 +87,53 @@ public class ChemicalTypeAssigner {
 			chem.setType(ChemicalType.chemicalClass);
 			return true;
 		}
+		else if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
+			chem.setType(ChemicalType.chemicalClass);
+			return true;
+		}
 		return false;
 	}
 
 	/**
 	 * Looks at the word before the first OSCARCM and after the MOLECULE
 	 * to determine whether the chemical type
+	 * Returns true or false depending on whether the type was set from the surrounding text
 	 * @param mol
 	 * @param chem
+	 * @return 
 	 */
-	private static void determineTypeFromSurroundingText(Element mol, Chemical chem) {
+	private static boolean determineTypeFromSurroundingText(Element mol, Chemical chem) {
 		Element nextEl = Utils.getNextElement(mol);
 		if (nextEl !=null){//examine the head noun
 			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
 				chem.setType(ChemicalType.falsePositive);
-				return;
+				return true;
 			}
 			else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
 				chem.setType(ChemicalType.fragment);
-				return;
+				return true;
 			}
 		}
 		Element previousEl = getElementBeforeFirstOSCARCM(mol);
 		if (previousEl !=null){
 			if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
 				chem.setType(ChemicalType.falsePositive);
-				return;
+				return true;
 			}
 			else if (previousEl.getLocalName().equals(DT)){
 				chem.setType(ChemicalType.chemicalClass);
-				return;
+				return true;
 			}
 			else if (previousEl.getLocalName().equals(DT_THE)){
 				chem.setType(ChemicalType.definiteReference);
-				return;
+				return true;
 			}
 		}
-		if (nextEl !=null &&  matchClassQualifier.matcher(nextEl.getValue()).matches()){
+		if (nextEl !=null && matchClassQualifier.matcher(nextEl.getValue()).matches()){
 			chem.setType(ChemicalType.chemicalClass);
-			return;
+			return true;
 		}
-		else if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chem.getName().toLowerCase())!=null){
-			chem.setType(ChemicalType.chemicalClass);
-			return;
-		}
+		return false;
 	}
 
 	private static boolean hasQualifyingIdentifier(Element mol) {

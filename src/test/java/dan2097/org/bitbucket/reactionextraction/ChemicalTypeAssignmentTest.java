@@ -363,4 +363,20 @@ public class ChemicalTypeAssignmentTest {
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.definiteReference, chem.getType());
 	}
+	
+	@Test
+	public void chemicalClassActuallyReferenceTest2(){//e.g. the amide
+		Element sentence = new Element(SENTENCE_Container);
+		sentence.appendChild(new Element(DT_THE));
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("amide");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Chemical chem = new Chemical("amide");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.definiteReference, chem.getType());
+	}
 }
