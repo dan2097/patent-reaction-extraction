@@ -95,8 +95,13 @@ public class ReactionExtractor {
 			return false;
 		}
 		ReactionMapper mapper = new ReactionMapper(indigoReaction);
-		if (!mapper.mapReaction()){
-			return false;
+		try{
+			if (!mapper.mapReaction()){
+				return false;
+			}
+		}catch (Exception e) {
+			System.out.println(reaction.toCML().toXML());
+			throw new RuntimeException(e);
 		}
 		return mapper.allProductAtomsAreMapped();
 	}

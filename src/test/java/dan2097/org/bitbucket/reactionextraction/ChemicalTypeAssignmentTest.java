@@ -176,7 +176,7 @@ public class ChemicalTypeAssignmentTest {
 	}
 	
 	@Test
-	public void typeDetectionTestPlural(){
+	public void typeDetectionTestPlural1(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
@@ -188,6 +188,36 @@ public class ChemicalTypeAssignmentTest {
 		Chemical chem = new Chemical("phenols");
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.chemicalClass, chem.getType());
+	}
+	
+	@Test
+	public void typeDetectionTestPlural2(){
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("foobars");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Chemical chem = new Chemical("foobars");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.chemicalClass, chem.getType());
+	}
+
+	@Test
+	public void testFragment(){
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("ethyl");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		Chemical chem = new Chemical("ethyl");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.fragment, chem.getType());
 	}
 	
 	@Test
@@ -313,6 +343,23 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(cmContainer);
 		moleculeEl.appendChild(new Element(REFERENCETOCOMPOUND_Container));
 		Chemical chem = new Chemical("indole");
+		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
+		assertEquals(ChemicalType.definiteReference, chem.getType());
+	}
+	
+	@Test
+	public void chemicalClassActuallyReferenceTest(){//e.g. sulfone from step 5
+		Element sentence = new Element(SENTENCE_Container);
+		Element moleculeEl = new Element(MOLECULE_Container);
+		sentence.appendChild(moleculeEl);
+		Element cm = new Element(OSCAR_CM);
+		cm.appendChild("sulfone");
+		Element cmContainer = new Element(OSCARCM_Container);
+		cmContainer.appendChild(cm);
+		moleculeEl.appendChild(cmContainer);
+		moleculeEl.appendChild(new Element(IN_FROM));
+		moleculeEl.appendChild(new Element(PROCEDURE_Container));
+		Chemical chem = new Chemical("sulfone");
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.definiteReference, chem.getType());
 	}
