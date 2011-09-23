@@ -92,7 +92,7 @@ public class ExperimentalStepParser {
 				Set<Element> chemicals = new LinkedHashSet<Element>();
 				chemicals.addAll(products);
 				chemicals.addAll(reagents);
-				resolveBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
+				resolveLocalBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
 				for (Element reagent : reagents) {
 					ChemicalRoleAssigner.assignRoleToChemical(reagent, moleculeToChemicalMap.get(reagent));
 				}
@@ -258,63 +258,52 @@ public class ExperimentalStepParser {
 		return new ArrayList<Element>();
 	}
 
-	private void resolveBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
+	private void resolveLocalBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
 		for (Element chemical : chemicals) {
 			Chemical chemChem = moleculeToChemicalMap.get(chemical);
 			if (chemChem.getType() ==ChemicalType.definiteReference){
-				attemptToResolveBackReference(chemChem, reactions);
-			}
-		}
-	}
-
-	boolean attemptToResolveBackReference(Chemical chemical, List<Reaction> reactionsToConsider) {
-		if (matchProductTextualAnaphora.matcher(chemical.getName()).matches()){
-			if (titleCompound!=null){
-				chemical.setSmiles(titleCompound.getSmiles());
-				chemical.setInchi(titleCompound.getInchi());
-			}
-			chemical.setRole(ChemicalRole.product);
-			return true;
-		}
-		if (chemical.getSmarts()!=null){
-			List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactionsToConsider);
-			boolean success = attemptToResolveViaSmartsMatch(chemical.getSmarts(), chemical, chemicalsToMatchAgainst);
-			if (success){
-				chemical.setRole(ChemicalRole.reactant);
-				return true;
-			}
-			if (FunctionalGroupDefinitions.functionalGroupToSmartsMap.containsKey(chemical.getName().toLowerCase())){
-				//The <name of compound> could also be specific
-				Element molecule = moleculeToChemicalMap.inverse().get(chemical);
-				Element previous = Utils.getPreviousElement(molecule);
-				if (previous !=null && previous.getLocalName().equals(DT_THE)){
-					chemical.setType(ChemicalType.exact);
-					return true;
+				if (chemChem.getSmiles() ==null && matchProductTextualAnaphora.matcher(chemChem.getName()).matches()){
+					if (titleCompound!=null){
+						chemChem.setSmiles(titleCompound.getSmiles());
+						chemChem.setInchi(titleCompound.getInchi());
+					}
+					chemChem.setRole(ChemicalRole.product);
+				}
+				else if (XOMTools.getDescendantElementsWithTagNames(chemical, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size()==0){
+					//back referencing will not been attempted previously
+					String smarts = chemChem.getSmarts();
+					if (smarts == null && chemChem.getSmiles()!=null){
+						smarts = generateAromaticSmiles(chemChem.getSmiles());
+					}
+					if (smarts != null){
+						List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactions);
+						if (ChemicalRole.product.equals(chemChem.getRole()) && targetCompound !=null){
+							chemicalsToMatchAgainst.add(targetCompound);
+						}
+						List<Chemical> matches = findMatchesUsingSmarts(smarts, chemicalsToMatchAgainst);
+						if (matches.size()==1){
+							Chemical referencedChem = matches.get(0);
+							chemChem.setSmiles(referencedChem.getSmiles());
+							chemChem.setInchi(referencedChem.getInchi());
+							chemChem.setRole(ChemicalRole.reactant);
+							continue;
+						}
+					}
+					//The  compound could also be specific
+					Element previous = Utils.getPreviousElement(chemical);
+					if (previous !=null && previous.getLocalName().equals(DT_THE)){
+						if (chemChem.getSmarts() !=null){
+							if (FunctionalGroupDefinitions.functionalGroupToSmartsMap.containsKey(chemChem.getName().toLowerCase())){
+								chemChem.setType(ChemicalType.exact);
+							}
+						}
+						else if (chemChem.getSmiles() !=null){
+							chemChem.setType(ChemicalType.exact);
+						}
+					}
 				}
 			}
 		}
-		else if (chemical.getSmiles()!=null){
-			List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactionsToConsider);
-			if (ChemicalRole.product.equals(chemical.getRole()) && titleCompound !=null){
-				chemicalsToMatchAgainst.add(titleCompound);
-			}
-			String smarts = generateAromaticSmiles(chemical.getSmiles());
-			boolean success = attemptToResolveViaSmartsMatch(smarts, chemical, chemicalsToMatchAgainst);
-			if (success){
-				if (!ChemicalRole.product.equals(chemical.getRole())){
-					chemical.setRole(ChemicalRole.reactant);
-				}
-				return true;
-			}
-			//The <name of compound> could also be specific
-			Element molecule = moleculeToChemicalMap.inverse().get(chemical);
-			Element previous = Utils.getPreviousElement(molecule);
-			if (previous !=null && previous.getLocalName().equals(DT_THE)){
-				chemical.setType(ChemicalType.exact);
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	/**
@@ -352,7 +341,13 @@ public class ExperimentalStepParser {
 		return chem.smiles();
 	}
 	
-	private boolean attemptToResolveViaSmartsMatch(String smarts, Chemical backReference, List<Chemical> chemicalsToMatchAgainst) {
+	/**
+	 * Matches the given smarts against the given chemicals returning those chemicals that match
+	 * @param smarts
+	 * @param chemicalsToMatchAgainst
+	 * @return
+	 */
+	private List<Chemical> findMatchesUsingSmarts(String smarts, List<Chemical> chemicalsToMatchAgainst) {
 		IndigoObject query = indigo.loadSmarts(smarts);
 		List<Chemical> chemicalMatches = new ArrayList<Chemical>();
 		for (Chemical chemical : chemicalsToMatchAgainst) {
@@ -363,13 +358,7 @@ public class ExperimentalStepParser {
 				}
 			}
 		}
-		if (chemicalMatches.size()==1){
-			Chemical anaphoraChem = chemicalMatches.get(0);
-			backReference.setSmiles(anaphoraChem.getSmiles());
-			backReference.setInchi(anaphoraChem.getInchi());
-			return true;
-		}
-		return false;
+		return chemicalMatches;
 	}
 	
 	/**
