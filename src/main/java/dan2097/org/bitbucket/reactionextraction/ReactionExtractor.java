@@ -5,15 +5,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import nu.xom.Document;
+import nu.xom.Element;
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
 import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLTags;
-
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-
-import nu.xom.Document;
-import nu.xom.Element;
 
 public class ReactionExtractor {
 
@@ -71,7 +70,7 @@ public class ReactionExtractor {
 			sectionParser.parseForReactions();
 			List<Reaction> reactions  = sectionParser.getSectionReactions();
 			for (Reaction reaction : reactions) {
-				IndigoObject indigoReaction = Utils.createIndigoReaction(reaction);
+				IndigoObject indigoReaction = Utils.convertToIndigoReaction(reaction);
 				documentReactions.put(reaction, indigoReaction);
 				if (reactionAppearsFeasible(reaction, indigoReaction)){//TODO extract functionality
 					completeReactions.put(reaction, indigoReaction);
@@ -79,7 +78,7 @@ public class ReactionExtractor {
 			}
 		}
 	}
-	
+
 	/**
 	 * Performs a few sanity checks e.g. at least 2 reactants and 1 product and that the product isn't a reactant
 	 * Then performs atom by atom mapping to check that all atoms in the product are accounted for
@@ -95,13 +94,8 @@ public class ReactionExtractor {
 			return false;
 		}
 		ReactionMapper mapper = new ReactionMapper(indigoReaction);
-		try{
-			if (!mapper.mapReaction()){
-				return false;
-			}
-		}catch (Exception e) {
-			System.out.println(reaction.toCML().toXML());
-			throw new RuntimeException(e);
+		if (!mapper.mapReaction()){
+			return false;
 		}
 		return mapper.allProductAtomsAreMapped();
 	}

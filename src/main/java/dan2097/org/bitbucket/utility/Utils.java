@@ -28,6 +28,7 @@ import nu.xom.ValidityException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.xml.sax.XMLReader;
@@ -52,6 +53,7 @@ import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 
 public class Utils {
 	
+	private static Logger LOG = Logger.getLogger(Utils.class);
 	private static Builder xomBuilder;
 	private final static Pattern matchTab = Pattern.compile("\\t");
 	private final static Pattern matchWhiteSpace = Pattern.compile("\\s+");
@@ -410,38 +412,68 @@ public class Utils {
 		ExperimentalSectionsCreator sectionsCreator = new ExperimentalSectionsCreator(orderedHeadingsAndParagraphs);
 		return new ExperimentalSectionParser(sectionsCreator.createSections().get(0), new PreviousReactionData());
 	}
-	
+
 	/**
-	 * Converts a reaction object into an indigo reaction object
+	 * Converts a reaction into an indigo reaction.
+	 * InChIs are used to collapse compounds with identical structures
 	 * @param reaction
 	 * @return
 	 */
-	public static IndigoObject createIndigoReaction(Reaction reaction) {
+	public static IndigoObject convertToIndigoReaction(Reaction reaction) {
+		List<String> products = getSmilesForUniqueStructuresUsingInChIs(reaction.getProducts());
+		List<String> reactants = getSmilesForUniqueStructuresUsingInChIs(reaction.getReactants());
+		List<String> spectators = getSmilesForUniqueStructuresUsingInChIs(reaction.getSpectators());
+		return createIndigoReaction(products, reactants, spectators);
+	}
+
+	private static List<String> getSmilesForUniqueStructuresUsingInChIs(List<Chemical> chemicals) {
+		List<String> uniqueStructureSmiles = new ArrayList<String>();
+		Set<String> seenInChIs = new HashSet<String>();
+		for (Chemical chemical : chemicals) {
+			String smiles = chemical.getSmiles();
+			if (smiles != null){
+				String inchi = chemical.getInchi();
+				if (inchi !=null){
+					if (!seenInChIs.contains(inchi)){
+						uniqueStructureSmiles.add(smiles);
+						seenInChIs.add(inchi);
+					}
+				}
+				else{
+					LOG.trace(chemical.getName() +" has no InChI");
+				}
+			}
+		}
+		return uniqueStructureSmiles;
+	}
+	
+	/**
+	 * Generates an indigo reaction from product/reactant/spectator SMILES lists
+	 * @param products
+	 * @param reactants
+	 * @param spectators
+	 * @return
+	 */
+	public static IndigoObject createIndigoReaction(List<String> products, List<String> reactants, List<String> spectators) {
 		Indigo indigo = IndigoHolder.getInstance();
 		IndigoObject rxn = indigo.createReaction();
-		for (Chemical product: reaction.getProducts()) {
-			if (product.getSmiles()!=null){
-				IndigoObject mol = indigo.loadMolecule(product.getSmiles());
-				mol.foldHydrogens();
-				mol.aromatize();
-				rxn.addProduct(mol);
-			}
+		for (String productSmiles : products) {
+			IndigoObject mol = indigo.loadMolecule(productSmiles);
+			mol.foldHydrogens();
+			mol.aromatize();
+			rxn.addProduct(mol);
 		}
-		for (Chemical reactant: reaction.getReactants()) {
-			if (reactant.getSmiles()!=null){
-				IndigoObject mol = indigo.loadMolecule(reactant.getSmiles());
-				mol.foldHydrogens();
-				mol.aromatize();
-				rxn.addReactant(mol);
-			}
+		for (String reactantSmiles : reactants) {
+			IndigoObject mol = indigo.loadMolecule(reactantSmiles);
+			mol.foldHydrogens();
+			mol.aromatize();
+			rxn.addReactant(mol);
 		}
-		for (Chemical spectator: reaction.getSpectators()) {
-			if (spectator.getSmiles()!=null){
-				IndigoObject mol = indigo.loadMolecule(spectator.getSmiles());
-				mol.foldHydrogens();
-				mol.aromatize();
-				rxn.addCatalyst(mol);
-			}
+		for (String spectatorSmiles : spectators) {
+			IndigoObject mol = indigo.loadMolecule(spectatorSmiles);
+			mol.foldHydrogens();
+			mol.aromatize();
+			rxn.addCatalyst(mol);
 		}
 		return rxn;
 	}
