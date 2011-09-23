@@ -69,6 +69,10 @@ public class ChemicalTypeAssigner {
 	 * @return 
 	 */
 	private static boolean determineTypeFromChemicalName(String chemicalName, Chemical chem) {
+		if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
+			chem.setType(ChemicalType.chemicalClass);
+			return true;
+		}
 		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(chemicalName).extractNames();
 		if (identifiedNames.size()==1 && identifiedNames.get(0).getTextValue().equals(chemicalName)){
 			switch (identifiedNames.get(0).getNameType()) {
@@ -84,10 +88,6 @@ public class ChemicalTypeAssigner {
 			}
 		}
 		else if (matchPluralEnding.matcher(chemicalName).matches()){
-			chem.setType(ChemicalType.chemicalClass);
-			return true;
-		}
-		else if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
 			chem.setType(ChemicalType.chemicalClass);
 			return true;
 		}
