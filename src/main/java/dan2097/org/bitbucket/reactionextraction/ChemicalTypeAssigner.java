@@ -69,7 +69,7 @@ public class ChemicalTypeAssigner {
 	 * @return 
 	 */
 	private static boolean determineTypeFromChemicalName(String chemicalName, Chemical chem) {
-		if (FunctionalGroupDefinitions.functionalClassToSmartsMap.get(chemicalName.toLowerCase())!=null){
+		if (FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(chemicalName) != null){
 			chem.setType(ChemicalType.chemicalClass);
 			return true;
 		}

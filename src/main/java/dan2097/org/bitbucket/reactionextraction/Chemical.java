@@ -1,5 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
@@ -8,9 +9,9 @@ import nu.xom.Element;
 public class Chemical{
 
 	private final String name;
-	private String smiles;
+	private ChemicalIdentifierPair chemicalIdentifierPair = new ChemicalIdentifierPair(null, null);
 	private String smarts;
-	private String inchi;
+	private List<String> inchiComponents;
 	private String massValue;
 	private String massUnits;
 	private String amountValue;
@@ -38,17 +39,36 @@ public class Chemical{
 	public String getName() {
 		return name;
 	}
-
+	
 	/**
-	 * A highly interoperable structural identifier. Null if structure is unavailable
+	 * Returns the chemicalIdentifierPair. This is never null but does not necessarily contain any identifiers
 	 * @return
 	 */
-	public String getSmiles() {
-		return smiles;
+	public ChemicalIdentifierPair getChemicalIdentifierPair() {
+		return chemicalIdentifierPair;
+	}
+
+	public void setChemicalIdentifierPair(ChemicalIdentifierPair chemicalIdentifierPair) {
+		if (chemicalIdentifierPair == null){
+			throw new IllegalArgumentException("chemicalIdentifierPair was null");
+		}
+		this.chemicalIdentifierPair = chemicalIdentifierPair;
 	}
 	
-	public void setSmiles(String smiles) {
-		this.smiles = smiles;
+	public String getSmiles(){
+		return chemicalIdentifierPair.getSmiles();
+	}
+	
+	public String getInchi(){
+		return chemicalIdentifierPair.getInchi();
+	}
+	
+	public boolean hasSmiles(){
+		return chemicalIdentifierPair.getSmiles() != null;
+	}
+	
+	public boolean hasInchi(){
+		return chemicalIdentifierPair.getInchi() != null;
 	}
 	
 	/**
@@ -62,17 +82,17 @@ public class Chemical{
 	public void setSmarts(String smarts) {
 		this.smarts = smarts;
 	}
-
+	
 	/**
-	 * A canonical identifier for this chemical. Null if structure is unavailable
+	 * Used internally to assist in handling delimited mixtures e.g. octanol/water
 	 * @return
 	 */
-	public String getInchi() {
-		return inchi;
+	List<String> getInchiComponents() {
+		return inchiComponents;
 	}
-	
-	public void setInchi(String inchi) {
-		this.inchi = inchi;
+
+	void setInchiComponents(List<String> inchiComponents) {
+		this.inchiComponents = inchiComponents;
 	}
 	
 	/**
@@ -369,18 +389,18 @@ public class Chemical{
 			reactant.appendChild(amount);
 		}
 		
-		if (smiles!=null){
-			Element identifier = new Element("identifier");
-			identifier.appendChild(smiles);
-			identifier.addAttribute(new Attribute("title", "SMILES"));
-			reactant.appendChild(identifier);
+		if (hasSmiles()){
+			Element smilesIdentifier = new Element("identifier");
+			smilesIdentifier.appendChild(getSmiles());
+			smilesIdentifier.addAttribute(new Attribute("title", "SMILES"));
+			reactant.appendChild(smilesIdentifier);
 		}
-		
-		if (inchi!=null){
-			Element identifier = new Element("identifier");
-			identifier.appendChild(inchi);
-			identifier.addAttribute(new Attribute("title", "InChI"));
-			reactant.appendChild(identifier);
+
+		if (hasInchi()){
+			Element inchiIdentifier = new Element("identifier");
+			inchiIdentifier.appendChild(getInchi());
+			inchiIdentifier.addAttribute(new Attribute("title", "InChI"));
+			reactant.appendChild(inchiIdentifier);
 		}
 		
 		//not CMLreact
