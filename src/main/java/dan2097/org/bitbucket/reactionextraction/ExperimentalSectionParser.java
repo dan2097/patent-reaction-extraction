@@ -132,8 +132,7 @@ public class ExperimentalSectionParser {
 				LOG.trace(identifier + " resolved to a compound with a shorter InChI! This identifier was ignored.");
 				return;
 			}
-			cm.setSmiles(referencedChemical.getSmiles());
-			cm.setInchi(referencedChemical.getInchi());
+			cm.setChemicalIdentifierPair(referencedChemical.getChemicalIdentifierPair());
 		}
 		else{
 			LOG.trace("Failed to resolve reference to compound: " + identifier );
@@ -167,8 +166,7 @@ public class ExperimentalSectionParser {
 					LOG.trace(procedureEl.toXML() + " resolved to a compound with a shorter InChI! This procedure reference was ignored.");
 					return;
 				}
-				cm.setSmiles(referencedChemical.getSmiles());
-				cm.setInchi(referencedChemical.getInchi());
+				cm.setChemicalIdentifierPair(referencedChemical.getChemicalIdentifierPair());
 				return;
 			}
 		}
@@ -258,15 +256,13 @@ public class ExperimentalSectionParser {
 
 			if (smiles1 !=null && smiles2 ==null){
 				Chemical cm = new Chemical(name2);
-				cm.setSmiles(smiles1);
-				cm.setInchi(Utils.resolveNameToInchi(nameComponents1));
+				cm.setChemicalIdentifierPair(new ChemicalIdentifierPair(smiles1, Utils.resolveNameToInchi(nameComponents1)));
 				aliasToChemicalMap.put(name2, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
 			else if (smiles1 ==null && smiles2 !=null){
 				Chemical cm = new Chemical(name1);
-				cm.setSmiles(smiles2);
-				cm.setInchi(Utils.resolveNameToInchi(nameComponents2));
+				cm.setChemicalIdentifierPair(new ChemicalIdentifierPair(smiles2, Utils.resolveNameToInchi(nameComponents2)));
 				aliasToChemicalMap.put(name1, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
@@ -307,14 +303,12 @@ public class ExperimentalSectionParser {
 		String name = chem.getName();
 		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(name);
 		if (referencedChemical != null){
-			chem.setSmiles(referencedChemical.getSmiles());
-			chem.setInchi(referencedChemical.getInchi());
+			chem.setChemicalIdentifierPair(referencedChemical.getChemicalIdentifierPair());
 		}
 		String smarts = FunctionalGroupDefinitions.getSmartsFromChemicalName(name);
 		chem.setSmarts(smarts);
-		if (smarts !=null && FunctionalGroupDefinitions.functionalClassToSmartsMap.containsKey(name)){
-			chem.setSmiles(null);
-			chem.setInchi(null);
+		if (smarts !=null && FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(name)!=null){
+			chem.setChemicalIdentifierPair(new ChemicalIdentifierPair(null, null));
 		}
 		ChemicalPropertyDetermination.determineProperties(chem, moleculeEl);
 		return chem;

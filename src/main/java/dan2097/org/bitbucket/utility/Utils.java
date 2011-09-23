@@ -45,6 +45,7 @@ import com.ggasoftware.indigo.IndigoObject;
 import dan2097.org.bitbucket.inchiTools.InchiMerger;
 import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
 import dan2097.org.bitbucket.reactionextraction.Chemical;
+import dan2097.org.bitbucket.reactionextraction.ChemicalIdentifierPair;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionParser;
 import dan2097.org.bitbucket.reactionextraction.ExperimentalSectionsCreator;
 import dan2097.org.bitbucket.reactionextraction.PreviousReactionData;
@@ -374,8 +375,7 @@ public class Utils {
 			throw new IllegalArgumentException("Input name was null");
 		}
 		Chemical chem = new Chemical(name);
-		chem.setSmiles(resolveNameToSmiles(name));
-		chem.setInchi(resolveNameToInchi(name));
+		chem.setChemicalIdentifierPair(new ChemicalIdentifierPair(resolveNameToSmiles(name), resolveNameToInchi(name)));
 		return chem;
 	}
 	
@@ -390,8 +390,7 @@ public class Utils {
 			throw new IllegalArgumentException("Input nameComponents was null");
 		}
 		Chemical chem = new Chemical(StringTools.stringListToString(nameComponents, " "));
-		chem.setSmiles(resolveNameToSmiles(nameComponents));
-		chem.setInchi(resolveNameToInchi(nameComponents));
+		chem.setChemicalIdentifierPair(new ChemicalIdentifierPair(resolveNameToSmiles(nameComponents), resolveNameToInchi(nameComponents)));
 		return chem;
 	}
 

@@ -32,7 +32,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("benzene-d6");
-		chem.setSmiles("[2H]C1=C([2H])C([2H])=C([2H])C([2H])=C1[2H]");
+		chem.setChemicalIdentifierPair(new ChemicalIdentifierPair("[2H]C1=C([2H])C([2H])=C([2H])C([2H])=C1[2H]", "InChI=1/C6H6/c1-2-4-6-5-3-1/h1-6H/i1D,2D,3D,4D,5D,6D"));
 		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
 		assertEquals(ChemicalType.falsePositive, chem.getType());
 	}

@@ -264,8 +264,7 @@ public class ExperimentalStepParser {
 			if (chemChem.getType() ==ChemicalType.definiteReference){
 				if (chemChem.getSmiles() ==null && matchProductTextualAnaphora.matcher(chemChem.getName()).matches()){
 					if (titleCompound!=null){
-						chemChem.setSmiles(titleCompound.getSmiles());
-						chemChem.setInchi(titleCompound.getInchi());
+						chemChem.setChemicalIdentifierPair(titleCompound.getChemicalIdentifierPair());
 					}
 					chemChem.setRole(ChemicalRole.product);
 				}
@@ -283,8 +282,7 @@ public class ExperimentalStepParser {
 						List<Chemical> matches = findMatchesUsingSmarts(smarts, chemicalsToMatchAgainst);
 						if (matches.size()==1){
 							Chemical referencedChem = matches.get(0);
-							chemChem.setSmiles(referencedChem.getSmiles());
-							chemChem.setInchi(referencedChem.getInchi());
+							chemChem.setChemicalIdentifierPair(referencedChem.getChemicalIdentifierPair());
 							chemChem.setRole(ChemicalRole.reactant);
 							continue;
 						}
@@ -407,8 +405,7 @@ public class ExperimentalStepParser {
 				}
 				else if (productCouldBeTheTitleCompound(reaction)){
 					Chemical product = reaction.getProducts().get(0);
-					product.setSmiles(targetCompound.getSmiles());
-					product.setInchi(targetCompound.getInchi());
+					product.setChemicalIdentifierPair(targetCompound.getChemicalIdentifierPair());
 					return true;
 				}
 				else{

@@ -100,4 +100,18 @@ public class FunctionalGroupDefinitions {
 		}
 		return null;
 	}
+	
+	/**
+	 * Retrieves the appropriate SMARTS from functionalClassToSmartsMap
+	 * Returns null if no SMARTS are available
+	 * @param name
+	 * @return
+	 */
+	public static String  getFunctionalClassSmartsFromChemicalName(String name) {
+		name = name.toLowerCase();
+		if (functionalClassToSmartsMap.get(name)!=null){
+			return functionalClassToSmartsMap.get(name);
+		}
+		return null;
+	}
 }
