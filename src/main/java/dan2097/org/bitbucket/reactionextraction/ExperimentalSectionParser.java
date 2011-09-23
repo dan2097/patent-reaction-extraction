@@ -128,6 +128,10 @@ public class ExperimentalSectionParser {
 		String identifier = getIdentifierFromReference(reference);
 		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(identifier);
 		if (referencedChemical !=null){
+			if (hasShorterInChI(referencedChemical, cm)){
+				LOG.trace(identifier + " resolved to a compound with a shorter InChI! This identifier was ignored.");
+				return;
+			}
 			cm.setSmiles(referencedChemical.getSmiles());
 			cm.setInchi(referencedChemical.getInchi());
 		}
@@ -136,6 +140,18 @@ public class ExperimentalSectionParser {
 		}
 	}
 	
+	/**
+	 * Compares the lengths of InChIs.
+	 * Returns true only if both InChIs are not null and "compound" 's InChI is shortest
+	 * @param compound
+	 * @param compoundToCompareWith
+	 * @return
+	 */
+	private boolean hasShorterInChI(Chemical compound, Chemical compoundToCompareWith) {
+		return (compound.getInchi() !=null && compoundToCompareWith.getInchi() !=null &&
+				compound.getInchi().length() < compoundToCompareWith.getInchi().length());
+	}
+
 	/**
 	 * We make the assumption that a reference to a procedure means that the chemical is the
 	 * product of that procedure. Resolution is achieved using previousReactionData
@@ -147,6 +163,10 @@ public class ExperimentalSectionParser {
 		if (sectionAndStepIdentifier!=null){
 			Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
 			if (referencedChemical !=null){
+				if (hasShorterInChI(referencedChemical, cm)){
+					LOG.trace(procedureEl.toXML() + " resolved to a compound with a shorter InChI! This procedure reference was ignored.");
+					return;
+				}
 				cm.setSmiles(referencedChemical.getSmiles());
 				cm.setInchi(referencedChemical.getInchi());
 				return;
