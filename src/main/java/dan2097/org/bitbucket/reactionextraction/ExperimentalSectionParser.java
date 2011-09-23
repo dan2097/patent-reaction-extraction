@@ -435,7 +435,7 @@ public class ExperimentalSectionParser {
 		Element qualifier = (Element) XOMTools.getPreviousSibling(stepIdentifier);
 		if (qualifier !=null && 
 				(qualifier.getLocalName().equals(NN_EXAMPLE) || qualifier.getLocalName().equals(NN_METHOD))
-				&& !Utils.isSynonymnOfStep(qualifier.getValue())){
+				&& !ReactionExtractionMethods.isSynonymnOfStep(qualifier.getValue())){
 			return true;
 		}
 		return false;

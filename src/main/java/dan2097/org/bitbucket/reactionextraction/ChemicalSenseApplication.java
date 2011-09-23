@@ -17,7 +17,6 @@ public class ChemicalSenseApplication {
 
 	private final Reaction reaction;
 	private Indigo indigo = IndigoHolder.getInstance();
-	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 	
 	ChemicalSenseApplication(Reaction reaction) {
 		this.reaction = reaction;
@@ -165,25 +164,23 @@ public class ChemicalSenseApplication {
 		Set<String> newSolventInChIs = new HashSet<String>();
 		for (int i = reactants.size()-1; i >=0; i--) {
 			Chemical reactant = reactants.get(i);
-			String inchi = reactant.getInchi();
-			if (chemicalKnowledge.isKnownAlwaysSolventInChI(inchi) || 
-				(!hasSolvent && chemicalKnowledge.isKnownSolventInChI(inchi) && reactant.getAmountValue()==null && reactant.getEquivalents()==null)){
+			if (!hasSolvent && ReactionExtractionMethods.isKnownSolvent(reactant) && reactant.getAmountValue()==null && reactant.getEquivalents()==null){
 				reactant.setRole(ChemicalRole.solvent);
 				reaction.removeReactant(reactant);
 				reaction.addSpectator(reactant);
-				newSolventInChIs.add(inchi);
+				newSolventInChIs.add(reactant.getInchi());
 				hasSolvent = true;
 			}
 		}
 		if (!hasSolvent){
 			for (int i = reactants.size()-1; i >=0; i--) {
 				Chemical reactant = reactants.get(i);
-				String inchi = reactant.getInchi();
 				if (!hasSolvent && reactant.getVolumeValue()!=null && reactant.getAmountValue()==null && reactant.getEquivalents()==null && reactant.hasImpreciseVolume()){
 					//solvents will be liquids but typically with imprecise volume and no amount given
 					reactant.setRole(ChemicalRole.solvent);
 					reaction.removeReactant(reactant);
 					reaction.addSpectator(reactant);
+					String inchi = reactant.getInchi();
 					if (inchi !=null){
 						newSolventInChIs.add(inchi);
 					}

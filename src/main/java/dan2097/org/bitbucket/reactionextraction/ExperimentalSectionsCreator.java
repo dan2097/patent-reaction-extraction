@@ -204,7 +204,7 @@ public class ExperimentalSectionsCreator {
 				return true;
 			}
 			for (Element method : methodAndExampleEls) {
-				if (Utils.isSynonymnOfStep(method.getValue())){
+				if (ReactionExtractionMethods.isSynonymnOfStep(method.getValue())){
 					return true;
 				}
 			}
