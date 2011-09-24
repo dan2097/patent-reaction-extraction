@@ -128,7 +128,11 @@ public class ExperimentalSectionParser {
 		String identifier = getIdentifierFromReference(reference);
 		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(identifier);
 		if (referencedChemical !=null){
-			if (hasShorterInChI(referencedChemical, cm)){
+			if (!referencedChemical.hasInchi()){
+				LOG.trace(identifier + " resolved to a compound with no InChI! This identifier was ignored.");
+				return;
+			}
+			else if (hasShorterInChI(referencedChemical, cm)){
 				LOG.trace(identifier + " resolved to a compound with a shorter InChI! This identifier was ignored.");
 				return;
 			}
@@ -162,7 +166,11 @@ public class ExperimentalSectionParser {
 		if (sectionAndStepIdentifier!=null){
 			Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
 			if (referencedChemical !=null){
-				if (hasShorterInChI(referencedChemical, cm)){
+				if (!referencedChemical.hasInchi()){
+					LOG.trace(procedureEl.toXML() + " resolved to a compound with no InChI! This procedure reference was ignored.");
+					return;
+				}
+				else if (hasShorterInChI(referencedChemical, cm)){
 					LOG.trace(procedureEl.toXML() + " resolved to a compound with a shorter InChI! This procedure reference was ignored.");
 					return;
 				}
