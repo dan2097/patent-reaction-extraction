@@ -29,7 +29,7 @@ public class ReactionMapper {
 			}
 		}
 		try{
-			reaction.automap("discard");
+			reaction.automap("discard ignore_charges ignore_valence");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
