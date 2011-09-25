@@ -269,14 +269,17 @@ public class ExperimentalStepParser {
 					}
 					if (smarts != null){
 						List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactions);
-						if (ChemicalRole.product.equals(chemChem.getRole()) && targetCompound !=null){
+						ChemicalRole role = chemChem.getRole();
+						if (ChemicalRole.product == role && targetCompound !=null){
 							chemicalsToMatchAgainst.add(targetCompound);
 						}
 						List<Chemical> matches = findMatchesUsingSmarts(smarts, chemicalsToMatchAgainst);
 						if (matches.size()==1){
 							Chemical referencedChem = matches.get(0);
 							chemChem.setChemicalIdentifierPair(referencedChem.getChemicalIdentifierPair());
-							chemChem.setRole(ChemicalRole.reactant);
+							if (ChemicalRole.product != role){
+								chemChem.setRole(ChemicalRole.reactant);
+							}
 							continue;
 						}
 					}
