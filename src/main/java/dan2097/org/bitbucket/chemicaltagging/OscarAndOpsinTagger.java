@@ -14,6 +14,8 @@ import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTagger;
 import uk.ac.cam.ch.wwmm.oscar.Oscar;
 import uk.ac.cam.ch.wwmm.oscar.document.NamedEntity;
 import uk.ac.cam.ch.wwmm.oscar.document.Token;
+import uk.ac.cam.ch.wwmm.oscarrecogniser.interfaces.ChemicalEntityRecogniser;
+import uk.ac.cam.ch.wwmm.oscarrecogniser.saf.StandoffResolver.ResolutionMode;
 
 /*****************************************************
  * Uses the combination of both OSCAR and OPSIN to tag chemistry
@@ -37,7 +39,8 @@ public class OscarAndOpsinTagger extends OscarTagger {
 	 * @return tagList (List<String>)
 	 ***********************************************/
 	public List<String> runTagger(List<String> tokenList, String inputSentence) {
-		List<NamedEntity> neList = oscar.recogniseNamedEntities(convertToOscarTokenSequences(tokenList, inputSentence));
+		ChemicalEntityRecogniser recogniser = oscar.getRecogniser();
+		List<NamedEntity> neList = recogniser.findNamedEntities(convertToOscarTokenSequences(tokenList, inputSentence), ResolutionMode.MARK_BLOCKED);
         List<String> ignoreOscarList = Arrays.asList("cpr", "ont");
 		List<String> oscarAndOpsinList = new ArrayList<String>();
 		String tag = "nil";
@@ -50,7 +53,7 @@ public class OscarAndOpsinTagger extends OscarTagger {
                  
 				for (Token token : tokens) {
 					String tokenSurface = token.getSurface();
-					if (!stopWords.contains(tokenSurface.toLowerCase())){
+					if (!stopWords.contains(tokenSurface.toLowerCase()) && oscarAndOpsinList.get(token.getIndex()).equals(tag)){
 						oscarAndOpsinList.set(token.getIndex(), "OSCAR-"+ne.getType().getName());
 					}
 				}
