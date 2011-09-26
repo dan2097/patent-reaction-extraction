@@ -277,9 +277,15 @@ public class ExperimentalStepParser {
 						List<Chemical> matches = findMatchesUsingSmarts(smarts, chemicalsToMatchAgainst);
 						if (matches.size()==1){
 							Chemical referencedChem = matches.get(0);
-							chemChem.setChemicalIdentifierPair(referencedChem.getChemicalIdentifierPair());
-							if (ChemicalRole.product != role){
-								chemChem.setRole(ChemicalRole.reactant);
+							if (referencedChem.getInchi()==null || !referencedChem.getInchi().equals(chemChem.getInchi())){
+								chemChem.setChemicalIdentifierPair(referencedChem.getChemicalIdentifierPair());
+								if (ChemicalRole.product != role){
+									chemChem.setRole(ChemicalRole.reactant);
+								}
+							}
+							else{
+								//If it resolves to exactly the same compound its not really a proper reference
+								chemChem.setType(ChemicalType.exact);
 							}
 							continue;
 						}
