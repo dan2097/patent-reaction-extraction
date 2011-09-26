@@ -39,7 +39,7 @@ public class ExperimentalStepParser {
 	/*A yield phrase*/
 	private static final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
 
-	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final|aimed) (compound|product)", Pattern.CASE_INSENSITIVE);
+	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final|aimed|expected|anticipated) (compound|product)", Pattern.CASE_INSENSITIVE);
 	private static final Indigo indigo = IndigoHolder.getInstance();
 	
 	public ExperimentalStepParser(ExperimentalStep experimentalStep, BiMap<Element, Chemical> moleculeToChemicalMap, Chemical targetCompound, Chemical titleCompound) {
