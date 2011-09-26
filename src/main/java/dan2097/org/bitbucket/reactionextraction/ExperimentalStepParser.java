@@ -76,8 +76,9 @@ public class ExperimentalStepParser {
 				Set<Element> products = new LinkedHashSet<Element>();
 				Set<Element> productAfterReagants = identifyYieldedProduct(phrase);
 				productAfterReagants.addAll(reagentsWithAYield(reagents));
-				if (productAfterReagants.size() >0 && currentReaction.getReactants().size()==0 && isBackReference(productAfterReagants)){
-					productAfterReagants.clear();
+				if (currentReaction.getReactants().size()==0 ){
+					//A reaction with no reagents and a backreferenced "product" probably means its the product of a previous reaction
+					removeBackReferencedCompoundFromProductListIfPresent(productAfterReagants);
 				}
 				if (productAfterReagants.size() >0 ){
 					reagentsExpectedAfterProduct = false;
@@ -193,14 +194,14 @@ public class ExperimentalStepParser {
 		return reagentsWithYield;
 	}
 
-	private boolean isBackReference(Set<Element> yieldedCompounds) {
+	private void removeBackReferencedCompoundFromProductListIfPresent(Set<Element> yieldedCompounds) {
 		if (yieldedCompounds.size()==1){
 			Chemical cm = moleculeToChemicalMap.get(yieldedCompounds.iterator().next());
 			if (cm.getType().equals(ChemicalType.definiteReference)){
-				return true;
+				cm.setRole(null);
+				yieldedCompounds.clear();
 			}
 		}
-		return false;
 	}
 	
 	/**
