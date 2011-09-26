@@ -53,10 +53,21 @@ public class ChemicalSenseApplicationTest {
 	}
 	
 	@Test
-	public void transitionMetalNotCatalystTest() {
+	public void transitionMetalNotCatalystTest1() {
 		Reaction reaction = new Reaction();
 		Chemical catalyst = new Chemical("Potassium dichromate");
 		catalyst.setChemicalIdentifierPair(new ChemicalIdentifierPair("[K+].[K+].[O-][Cr](=O)(=O)O[Cr]([O-])(=O)=O", "InChI=1/2Cr.2K.7O/q;;2*+1;;;;;;2*-1"));
+		reaction.addReactant(catalyst);
+		catalyst.setRole(ChemicalRole.reactant);
+		new ChemicalSenseApplication(reaction).correctReactantsThatAreCatalysts();
+		assertEquals(ChemicalRole.reactant, catalyst.getRole());
+	}
+	
+	@Test
+	public void transitionMetalNotCatalystTest2() {
+		Reaction reaction = new Reaction();
+		Chemical catalyst = new Chemical("Copper(I) cyanide");
+		catalyst.setChemicalIdentifierPair(new ChemicalIdentifierPair("[Cu]C#N", "InChI=1/CN.Cu/c1-2;"));
 		reaction.addReactant(catalyst);
 		catalyst.setRole(ChemicalRole.reactant);
 		new ChemicalSenseApplication(reaction).correctReactantsThatAreCatalysts();

@@ -66,7 +66,7 @@ public class ChemicalSenseApplication {
 				List<Integer> transitionMetalInChemical = new ArrayList<Integer>();
 				for (Iterator<IndigoObject> iterator = reactantMol.iterateAtoms(); iterator.hasNext();) {
 					IndigoObject atom = iterator.next();
-					if (!atom.isRSite() && isTransitionMetal(atom.atomicNumber()) && !isAllowedTransitionMetal(atom)){
+					if (!atom.isRSite() && isTransitionMetal(atom.atomicNumber()) && isAllowedTransitionMetal(atom)){
 						transitionMetalInChemical.add(atom.atomicNumber());
 					}
 				}
@@ -103,10 +103,22 @@ public class ChemicalSenseApplication {
 	 */
 	private boolean isAllowedTransitionMetal(IndigoObject atom) {
 		if(atom.atomicNumber() == 24 && atom.valence()==6){
-			return true;
+			return false;
 		}
 		if(atom.atomicNumber() == 25 && atom.valence()>=6){
-			return true;
+			return false;
+		}
+		if(atom.atomicNumber() == 29 && hasBondToCarbon(atom)){//organocuprates are often reactants
+			return false;
+		}
+		return true;
+	}
+
+	private boolean hasBondToCarbon(IndigoObject atom) {
+		for (IndigoObject neighbour : atom.iterateNeighbors()) {
+			if (neighbour.atomicNumber()==6){
+				return true;
+			}
 		}
 		return false;
 	}
