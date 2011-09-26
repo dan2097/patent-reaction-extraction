@@ -166,6 +166,12 @@ public class ExperimentalSectionParser {
 		if (sectionAndStepIdentifier!=null){
 			Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
 			if (referencedChemical !=null){
+				if (cm.getInchi() !=null && !cm.getInchi().equals(referencedChemical.getInchi()) && sectionAndStepIdentifier.getStepIdentifier()==null){
+					List<String> productInChIs = ReactionExtractionMethods.getProductInchis(previousReactionData.getReactions(sectionAndStepIdentifier.getSectionIdentifier()));
+					if (productInChIs.contains(cm.getInchi())){
+						return;//is a reference to a product of a sub step
+					}
+				}
 				if (!referencedChemical.hasInchi()){
 					LOG.trace(procedureEl.toXML() + " resolved to a compound with no InChI! This procedure reference was ignored.");
 					return;

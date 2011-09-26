@@ -1,5 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dan2097.org.bitbucket.inchiTools.InchiDemerger;
@@ -32,6 +33,23 @@ public class ReactionExtractionMethods {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Given a list of reactions returns the InChIs for all products that has an InChI
+	 * @param reactions
+	 * @return
+	 */
+	public static List<String> getProductInchis(List<Reaction> reactions) {
+		List<String> productInchis = new ArrayList<String>();
+		for (Reaction reaction : reactions) {
+			for (Chemical product : reaction.getProducts()) {
+				if (product.hasInchi()){
+					productInchis.add(product.getInchi());
+				}
+			}
+		}
+		return productInchis;
 	}
 
 }
