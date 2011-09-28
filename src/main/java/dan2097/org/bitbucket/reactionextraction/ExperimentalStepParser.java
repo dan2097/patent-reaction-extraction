@@ -59,8 +59,7 @@ public class ExperimentalStepParser {
 		List<Paragraph> paragraphs = experimentalStep.getParagraphs();
 		for (Paragraph paragraph : paragraphs) {
 			Reaction currentReaction = new Reaction();
-			paragraph.segmentIntoSections(moleculeToChemicalMap);
-			Map<Element, PhraseType> phraseMap = paragraph.getPhraseMap();
+			Map<Element, PhraseType> phraseMap = paragraph.generatePhraseToTypeMapping(moleculeToChemicalMap);
 			boolean reagentsExpectedAfterProduct = false;
 			for (Entry<Element, PhraseType> entry: phraseMap.entrySet()) {
 				Element phrase = entry.getKey();
@@ -74,16 +73,16 @@ public class ExperimentalStepParser {
 					reagents = Collections.emptySet();
 				}
 				Set<Element> products = new LinkedHashSet<Element>();
-				Set<Element> productAfterReagants = identifyYieldedProduct(phrase);
-				productAfterReagants.addAll(reagentsWithAYield(reagents));
+				Set<Element> productAfterReagents = identifyYieldedProduct(phrase);
+				productAfterReagents.addAll(reagentsWithAYield(reagents));
 				if (currentReaction.getReactants().size()==0 ){
 					//A reaction with no reagents and a backreferenced "product" probably means its the product of a previous reaction
-					removeBackReferencedCompoundFromProductListIfPresent(productAfterReagants);
+					removeBackReferencedCompoundFromProductListIfPresent(productAfterReagents);
 				}
-				if (productAfterReagants.size() >0 ){
+				if (productAfterReagents.size() >0 ){
 					reagentsExpectedAfterProduct = false;
 				}
-				products.addAll(productAfterReagants);
+				products.addAll(productAfterReagents);
 				Set<Element> productBeforeReagents = identifyProductBeforeReagents(phrase);
 				if (productBeforeReagents.size() >0 ){
 					reagentsExpectedAfterProduct = true;
