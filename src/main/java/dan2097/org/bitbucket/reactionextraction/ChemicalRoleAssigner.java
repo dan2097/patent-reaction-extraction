@@ -21,17 +21,20 @@ public class ChemicalRoleAssigner {
 		else if (chemical.getRole() !=null){//role already has been explicitly assigned
 			return;
 		}
-		else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-			chemical.setRole(ChemicalRole.solvent);
-		}
-		else if (assignAsSolventDueToInKeyword(chemicalEl, chemical) ){
-			chemical.setRole(ChemicalRole.solvent);
-		}
 		else if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
 		else if (ChemicalTaggerAtrs.CATALYST_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 			chemical.setRole(ChemicalRole.catalyst);
+		}
+		else if (chemical.hasAmountOrEquivalentsOrYield()){
+			chemical.setRole(ChemicalRole.reactant);
+		}
+		else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
+			chemical.setRole(ChemicalRole.solvent);
+		}
+		else if (assignAsSolventDueToInKeyword(chemicalEl, chemical) ){
+			chemical.setRole(ChemicalRole.solvent);
 		}
 		else {
 			chemical.setRole(ChemicalRole.reactant);
@@ -45,10 +48,15 @@ public class ChemicalRoleAssigner {
 		if (precededByIn(chemicalEl)){
 			return true;
 		}
-		if (precededByInChemicalAnd(chemicalEl)){
+		if (followedByStop(chemicalEl) && precededByInChemicalAnd(chemicalEl)){
 			return true;
 		}
 		return false;
+	}
+
+	private static boolean followedByStop(Element chemicalEl) {
+		Element next = Utils.getNextElement(chemicalEl);
+		return (next != null && next.getLocalName().equals(ChemicalTaggerTags.STOP));
 	}
 
 	private static boolean precededByInChemicalAnd(Element chemicalEl) {

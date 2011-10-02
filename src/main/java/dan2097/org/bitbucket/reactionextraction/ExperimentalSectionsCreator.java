@@ -66,8 +66,8 @@ public class ExperimentalSectionsCreator {
 			String id = headingOrParagraph.getAttributeValue(XMLAtrs.ID); 
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
 				String text = Utils.getElementText(headingOrParagraph);
-				Document taggedDoc = Utils.runChemicalTagger(text);
 				List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(text);
+				Document taggedDoc = Utils.runChemicalTagger(text);
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 				return namesFoundByOpsin.size() >0 || procedureNames.size() >0;
 			}
@@ -113,8 +113,9 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
-		Document taggedDoc = Utils.runChemicalTagger(text);
 		List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(text);
+		
+		Document taggedDoc = Utils.runChemicalTagger(text);
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (namesFoundByOpsin.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
