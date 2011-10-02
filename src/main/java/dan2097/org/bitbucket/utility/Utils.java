@@ -245,14 +245,9 @@ public class Utils {
 		return nameComponents;
 	}
 
-	public static List<String> getSystematicChemicalNamesFromText(String text) {
+	public static List<IdentifiedChemicalName> getSystematicChemicalNamesFromText(String text) {
 		try{
-			List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(text).extractNames();
-			List<String> names = new ArrayList<String>();
-			for (IdentifiedChemicalName identifiedChemicalName : identifiedNames) {
-				names.add(identifiedChemicalName.getChemicalName());
-			}
-			return names;
+			return new DocumentToStructures(text).extractNames();
 		}
 		catch (Exception e) {
 			return Collections.emptyList();

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
+import org.bitbucket.dan2097.structureExtractor.NameType;
 
 import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
 import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
@@ -65,7 +67,7 @@ public class ExperimentalSectionsCreator {
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
 				String text = Utils.getElementText(headingOrParagraph);
 				Document taggedDoc = Utils.runChemicalTagger(text);
-				List<String> namesFoundByOpsin = findCompoundNamesInHeading(text);
+				List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(text);
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 				return namesFoundByOpsin.size() >0 || procedureNames.size() >0;
 			}
@@ -80,25 +82,28 @@ public class ExperimentalSectionsCreator {
 	
 	/**
 	 * Employs OPSIN document extractor to find names in a title
-	 * OPSIN is used to verift that these names are not part of the same name
+	 * If multiple names are found OPSIN is used to verify that these names are not part of the same name
 	 * @param text
 	 * @return
 	 */
-	List<String> findCompoundNamesInHeading(String text) {
-		List<String> namesFoundByOpsin = Utils.getSystematicChemicalNamesFromText(text);
-		if (namesFoundByOpsin.size()>1){
+	List<IdentifiedChemicalName> findCompoundNamesInHeading(String text) {
+		List<IdentifiedChemicalName> namesFoundByDocumentExtractor = Utils.getSystematicChemicalNamesFromText(text);
+		if (namesFoundByDocumentExtractor.size()>1){
 			NameToStructure n2s;
 			try {
 				n2s = NameToStructure.getInstance();
 			} catch (NameToStructureException e) {
 				throw new RuntimeException(e);
 			}
+			IdentifiedChemicalName firstWord = namesFoundByDocumentExtractor.get(0);
+			IdentifiedChemicalName lastWord = namesFoundByDocumentExtractor.get(namesFoundByDocumentExtractor.size() - 1);
+			String nameToTest = text.substring(firstWord.getStart(), lastWord.getEnd());
 			if (n2s.parseChemicalName(text).getStatus()!=OPSIN_RESULT_STATUS.FAILURE){
-				namesFoundByOpsin.clear();
-				namesFoundByOpsin.add(text);
+				namesFoundByDocumentExtractor.clear();
+				namesFoundByDocumentExtractor.add(new IdentifiedChemicalName(firstWord.getWordPositionStartIndice(), lastWord.getWordPositionEndIndice(), firstWord.getStart(), lastWord.getEnd(), nameToTest, nameToTest, NameType.complete));
 			}
 		}
-		return namesFoundByOpsin;
+		return namesFoundByDocumentExtractor;
 	}
 	
 	/**
@@ -109,7 +114,7 @@ public class ExperimentalSectionsCreator {
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
-		List<String> namesFoundByOpsin = findCompoundNamesInHeading(text);
+		List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(text);
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (namesFoundByOpsin.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
@@ -122,7 +127,7 @@ public class ExperimentalSectionsCreator {
 		}
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
-			String name = namesFoundByOpsin.get(0);
+			String name = namesFoundByOpsin.get(0).getTextValue();
 			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(name), alias);
 			addNameAliasPair(nameAliasPair);
 		}
@@ -267,7 +272,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void processInlineHeading(Element hiddenHeadingEl, Element paraEl, String text) {
 		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
-		List<String> namesFoundByOpsin = findCompoundNamesInHeading(headingText);
+		List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(headingText);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
 		if (procedureNames.size()==1){
@@ -275,7 +280,7 @@ public class ExperimentalSectionsCreator {
 		}
 		if (namesFoundByOpsin.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(headingText);
-			String name = namesFoundByOpsin.get(0);
+			String name = namesFoundByOpsin.get(0).getTextValue();
 			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(name), alias);
 			addNameAliasPair(nameAliasPair);
 		}
