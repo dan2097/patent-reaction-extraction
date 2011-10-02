@@ -69,16 +69,84 @@ public class ReactionExtractor {
 		List<ExperimentalSection> experimentalSections = sectionsCreator.createSections();
 		for (ExperimentalSection experimentalSection : experimentalSections) {
 			ExperimentalSectionParser sectionParser = new ExperimentalSectionParser(experimentalSection, previousReactionData);
-			sectionParser.parseForReactions();
-			List<Reaction> reactions  = sectionParser.getSectionReactions();
+			List<Reaction> reactions  = sectionParser.parseForReactions();
 			for (Reaction reaction : reactions) {
 				IndigoObject indigoReaction = Utils.convertToIndigoReaction(reaction);
+				if (reactionIsSane(reaction, indigoReaction)){
+					if (reactionIsMappable(indigoReaction)){
+						completeReactions.put(reaction, indigoReaction);
+					}
+					else {
+						IndigoObject modifiedReaction = attemptToProduceMappableReactionByRoleReclassification(reaction);
+						if (modifiedReaction!=null){
+							indigoReaction = modifiedReaction;
+							completeReactions.put(reaction, indigoReaction);
+						}
+					}
+				}
 				documentReactions.put(reaction, indigoReaction);
-				if (reactionAppearsFeasible(reaction, indigoReaction)){//TODO extract functionality
-					completeReactions.put(reaction, indigoReaction);
+			}
+		}
+	}
+
+	/**
+	 * Attempts to reclassify a solvent as a reactant to fully map the reaction
+	 * The output is an indigo reaction of the modified reaction
+	 * NOTE if this function is successful the input Reaction will have been modified
+	 * @param reaction
+	 * @return
+	 */
+	private IndigoObject attemptToProduceMappableReactionByRoleReclassification(Reaction reaction) {
+		Set<String> seenInChIs = new HashSet<String>();
+		List<Chemical> spectators = reaction.getSpectators();
+		for (int i = 0; i < spectators.size(); i++) {
+			Chemical spectator = spectators.get(i);
+			if (spectator.hasInchi() && spectator.getRole().equals(ChemicalRole.solvent) &&
+					!seenInChIs.contains(spectator.getInchi())){
+				String inchi = spectator.getInchi();
+				seenInChIs.add(inchi);
+				List<Chemical> solventsToRecategorise = new ArrayList<Chemical>();
+				for (Chemical solventToRecategorise : spectators) {
+					if (inchi.equals(solventToRecategorise.getInchi())){
+						solventsToRecategorise.add(solventToRecategorise);
+					}
+				}
+
+				Reaction newReaction = new Reaction();
+				for (Chemical product : reaction.getProducts()) {
+					newReaction.addProduct(product);
+				}
+				for (Chemical spec : reaction.getSpectators()) {
+					if (!solventsToRecategorise.contains(spec)){
+						newReaction.addSpectator(spec);
+					}
+				}
+				for (Chemical reactant : reaction.getReactants()) {
+					newReaction.addReactant(reactant);
+				}
+				for (Chemical solventToRecategorise : solventsToRecategorise) {
+					newReaction.addReactant(solventToRecategorise);
+				}
+				IndigoObject indigoReaction = Utils.convertToIndigoReaction(newReaction);
+				if (reactionIsMappable(indigoReaction)){
+					for (Chemical solventToRecategorise : solventsToRecategorise) {
+						solventToRecategorise.setRole(ChemicalRole.reactant);
+						reaction.removeSpectator(solventToRecategorise);
+						reaction.addReactant(solventToRecategorise);
+					}
+					return indigoReaction;
 				}
 			}
 		}
+		return null;
+	}
+
+	private boolean reactionIsMappable(IndigoObject indigoReaction) {
+		ReactionMapper mapper = new ReactionMapper(indigoReaction);
+		if (!mapper.mapReaction()){
+			return false;
+		}
+		return mapper.allProductAtomsAreMapped();
 	}
 
 	/**
@@ -86,14 +154,12 @@ public class ReactionExtractor {
 	 * A least 1 product
 	 * There are at least two reactants or 1 reactant and at least two solvents
 	 * The product/s are not all reactants
-	 * 
-	 * Then performs atom by atom mapping to check that all atoms in the product are accounted for
 	 * @param reaction
 	 * @param indigoReaction
 	 * @return
 	 */
-	private boolean reactionAppearsFeasible(Reaction reaction, IndigoObject indigoReaction) {
-		if ( indigoReaction.countProducts() < 1){
+	private boolean reactionIsSane(Reaction reaction, IndigoObject indigoReaction) {
+		if (indigoReaction.countProducts() ==0){
 			return false;
 		}
 		if (indigoReaction.countReactants() ==0 || indigoReaction.countReactants() ==1 && indigoReaction.countCatalysts() < 2){
@@ -102,12 +168,7 @@ public class ReactionExtractor {
 		if (reactantsContainProducts(reaction)){
 			return false;
 		}
-
-		ReactionMapper mapper = new ReactionMapper(indigoReaction);
-		if (!mapper.mapReaction()){
-			return false;
-		}
-		return mapper.allProductAtomsAreMapped();
+		return true;
 	}
 
 	/**

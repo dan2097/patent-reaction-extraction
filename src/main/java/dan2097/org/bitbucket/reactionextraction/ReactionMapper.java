@@ -32,8 +32,7 @@ public class ReactionMapper {
 			reaction.automap("discard ignore_charges ignore_valence");
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			LOG.debug("Indigo reaction mapping failed", e);
+			LOG.error("Indigo reaction mapping failed", e);
 			return false;
 		}
 		finally {

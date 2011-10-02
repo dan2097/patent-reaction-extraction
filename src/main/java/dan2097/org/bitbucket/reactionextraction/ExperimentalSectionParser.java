@@ -25,7 +25,6 @@ public class ExperimentalSectionParser {
 	private final ExperimentalSection experimentalSection;
 	private final BiMap<Element, Chemical>  moleculeToChemicalMap = HashBiMap.create();
 	private final PreviousReactionData previousReactionData;
-	private final List<Reaction> sectionReactions = new ArrayList<Reaction>();
 
 	public ExperimentalSectionParser(ExperimentalSection experimentalSection, PreviousReactionData previousReactionData) {
 		if (experimentalSection ==null || previousReactionData==null){
@@ -35,7 +34,12 @@ public class ExperimentalSectionParser {
 		this.previousReactionData = previousReactionData;
 	}
 
-	public void parseForReactions(){
+	/**
+	 * Finds all the reactions in this sections
+	 * @return
+	 */
+	public List<Reaction> parseForReactions(){
+		List<Reaction> sectionReactions = new ArrayList<Reaction>();
 		Chemical ultimateTargetCompound = null;
 		if (experimentalSection.getTargetChemicalNamePair()!=null){
 			ChemicalAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
@@ -72,6 +76,7 @@ public class ExperimentalSectionParser {
 			}
 			recordReactionsInPreviousReactionData(reactions, step);
 		}
+		return sectionReactions;
 	}
 
 	/**
@@ -202,14 +207,6 @@ public class ExperimentalSectionParser {
 			sb.append(identifierEl.getValue());
 		}
 		return sb.toString();
-	}
-
-	/**
-	 * Retrieves the reactions found by this experimental section parser
-	 * @return
-	 */
-	public List<Reaction> getSectionReactions() {
-		return sectionReactions;
 	}
 
 	/**
