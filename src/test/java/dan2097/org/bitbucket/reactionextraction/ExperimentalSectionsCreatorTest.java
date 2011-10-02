@@ -11,6 +11,7 @@ import nu.xom.Element;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
+import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.junit.Test;
 
 import dan2097.org.bitbucket.utility.Utils;
@@ -63,34 +64,34 @@ public class ExperimentalSectionsCreatorTest {
 	@Test
 	public void extractHeadingCompoundName1(){
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("pyridine");
+		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("pyridine");
 		assertEquals(1, namesFound.size());
-		assertEquals("pyridine", namesFound.get(0));
+		assertEquals("pyridine", namesFound.get(0).getTextValue());
 	}
 	
 	@Test
 	public void extractHeadingCompoundName2(){
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("ethanol condensation in silicon nanontubes");
+		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("ethanol condensation in silicon nanontubes");
 		assertEquals(2, namesFound.size());
-		assertEquals("ethanol", namesFound.get(0));
-		assertEquals("silicon", namesFound.get(1));
+		assertEquals("ethanol", namesFound.get(0).getTextValue());
+		assertEquals("silicon", namesFound.get(1).getTextValue());
 	}
 	
 	@Test
 	public void extractHeadingCompoundName3(){
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("benzene compound with toluene (1:1)");
+		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("Benzene compound with toluene");
 		assertEquals(1, namesFound.size());
-		assertEquals("benzene compound with toluene (1:1)", namesFound.get(0));
+		assertEquals("Benzene compound with toluene", namesFound.get(0).getTextValue());
 	}
 	
 	@Test
 	public void extractHeadingCompoundName4(){
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<String> namesFound = sectionCreator.findCompoundNamesInHeading("Example 1: 2-methylpyridine:");
+		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("Example 1: 2-methylpyridine:");
 		assertEquals(1, namesFound.size());
-		assertEquals("2-methylpyridine", namesFound.get(0));
+		assertEquals("2-methylpyridine", namesFound.get(0).getTextValue());
 	}
 	
 	@Test
