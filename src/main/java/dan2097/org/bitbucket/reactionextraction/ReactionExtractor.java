@@ -1,9 +1,11 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -80,19 +82,27 @@ public class ReactionExtractor {
 	}
 
 	/**
-	 * Performs a few sanity checks e.g. at least 2 reactants and 1 product and that the product isn't a reactant
+	 * Performs a few sanity checks:
+	 * A least 1 product
+	 * There are at least two reactants or 1 reactant and at least two solvents
+	 * The product/s are not all reactants
+	 * 
 	 * Then performs atom by atom mapping to check that all atoms in the product are accounted for
 	 * @param reaction
 	 * @param indigoReaction
 	 * @return
 	 */
-	private boolean reactionAppearsFeasible(Reaction reaction,IndigoObject indigoReaction) {
-		if (reactantsContainsProduct(reaction)){
+	private boolean reactionAppearsFeasible(Reaction reaction, IndigoObject indigoReaction) {
+		if ( indigoReaction.countProducts() < 1){
 			return false;
 		}
-		if (indigoReaction.countReactants() < 2 || indigoReaction.countProducts() < 1 ){
+		if (indigoReaction.countReactants() ==0 || indigoReaction.countReactants() ==1 && indigoReaction.countCatalysts() < 2){
 			return false;
 		}
+		if (reactantsContainProducts(reaction)){
+			return false;
+		}
+
 		ReactionMapper mapper = new ReactionMapper(indigoReaction);
 		if (!mapper.mapReaction()){
 			return false;
@@ -101,24 +111,25 @@ public class ReactionExtractor {
 	}
 
 	/**
-	 * Uses InChIs to check whether any of the products are also reactants 
+	 * Uses InChIs to check whether all of the products are also reactants 
 	 * @param reaction
 	 * @return
 	 */
-	private boolean reactantsContainsProduct(Reaction reaction) {
+	private boolean reactantsContainProducts(Reaction reaction) {
 		List<Chemical> products =reaction.getProducts();
-		List<String> productInChIs = new ArrayList<String>();
+		Set<String> productInChIs = new HashSet<String>();
 		for (Chemical product : products) {
 			if (product.getInchi() != null){
 				productInChIs.add(product.getInchi());
 			}
 		}
-		for (Chemical reactant : reaction.getReactants()) {
-			if (productInChIs.contains(reactant.getInchi())){
-				return true;
-			}
+		if (productInChIs.isEmpty()){
+			return false;
 		}
-		return false;
+		for (Chemical reactant : reaction.getReactants()) {
+			productInChIs.remove(reactant.getInchi());
+		}
+		return productInChIs.isEmpty();
 	}
 
 	private static List<Element> getHeadingsAndParagraphsFromUSPTOPatent(Document usptoPatentDoc) {

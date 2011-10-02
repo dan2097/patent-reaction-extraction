@@ -76,6 +76,7 @@ public class ChemicalRoleAssignmentTest {
 		sentence.appendChild(prepphrase);
 		sentence.appendChild(and);
 		sentence.appendChild(nounphrase);
+		sentence.appendChild(new Element(STOP));
 		
 		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl2, chemical2);
 		assertEquals(ChemicalRole.solvent, chemical2.getRole());

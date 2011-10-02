@@ -115,7 +115,7 @@ public class Paragraph {
 		Nodes molecules = phrase.query(".//*[self::MOLECULE or self::UNNAMEDMOLECULE]");
 		for (int j = 0; j < molecules.size(); j++) {
 			Chemical chem = moleculeToChemicalMap.get(molecules.get(j));
-			if (chem.getAmountValue()!=null || chem.getEquivalents()!=null || chem.getPercentYield()!=null){
+			if (chem.hasAmountOrEquivalentsOrYield()){
 				return true;
 			}
 		}

@@ -312,6 +312,10 @@ public class Chemical{
 		}
 		return false;
 	}
+	
+	boolean hasAmountOrEquivalentsOrYield() {
+		return (amountValue != null || equivalents != null || percentYield != null);
+	}
 
 	/**
 	 * Returns true if the chemical has been associated with any quantities or a yield e.g. amount, volume, weight etc.
