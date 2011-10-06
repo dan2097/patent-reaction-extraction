@@ -62,39 +62,6 @@ public class ExperimentalSectionsCreatorTest {
 	}
 	
 	@Test
-	public void extractHeadingCompoundName1(){
-		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("pyridine");
-		assertEquals(1, namesFound.size());
-		assertEquals("pyridine", namesFound.get(0).getTextValue());
-	}
-	
-	@Test
-	public void extractHeadingCompoundName2(){
-		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("ethanol condensation in silicon nanontubes");
-		assertEquals(2, namesFound.size());
-		assertEquals("ethanol", namesFound.get(0).getTextValue());
-		assertEquals("silicon", namesFound.get(1).getTextValue());
-	}
-	
-	@Test
-	public void extractHeadingCompoundName3(){
-		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("Benzene compound with toluene");
-		assertEquals(1, namesFound.size());
-		assertEquals("Benzene compound with toluene", namesFound.get(0).getTextValue());
-	}
-	
-	@Test
-	public void extractHeadingCompoundName4(){
-		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
-		List<IdentifiedChemicalName> namesFound = sectionCreator.findCompoundNamesInHeading("Example 1: 2-methylpyridine:");
-		assertEquals(1, namesFound.size());
-		assertEquals("2-methylpyridine", namesFound.get(0).getTextValue());
-	}
-	
-	@Test
 	public void isSelfStandingParagraphTest1() throws ValidityException, ParsingException, IOException {
 		ExperimentalSectionsCreator sectionCreator = new ExperimentalSectionsCreator(new ArrayList<Element>());
 		Document taggedDoc = Utils.buildXmlFromString("<Document><Sentence><ActionPhrase type=\"Yield\"><NounPhrase><DT-THE>The</DT-THE><NN-CHEMENTITY>reaction</NN-CHEMENTITY></NounPhrase><VerbPhrase><VB-YIELD>afforded</VB-YIELD></VerbPhrase><NounPhrase><MOLECULE><OSCARCM><OSCAR-CM>1-(4-methoxybenzyl)piperidin-4-ol</OSCAR-CM></OSCARCM></MOLECULE></NounPhrase></ActionPhrase><STOP>.</STOP></Sentence></Document>");

@@ -4,13 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
-import org.bitbucket.dan2097.structureExtractor.NameType;
 
-import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
-import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-import uk.ac.cam.ch.wwmm.opsin.OpsinResult.OPSIN_RESULT_STATUS;
 
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
@@ -66,10 +61,10 @@ public class ExperimentalSectionsCreator {
 			String id = headingOrParagraph.getAttributeValue(XMLAtrs.ID); 
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
 				String text = Utils.getElementText(headingOrParagraph);
-				List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(text);
 				Document taggedDoc = Utils.runChemicalTagger(text);
+				List<Element> moleculesFound = extractMoleculeEls(taggedDoc.getRootElement());
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
-				return namesFoundByOpsin.size() >0 || procedureNames.size() >0;
+				return moleculesFound.size() >0 || procedureNames.size() >0;
 			}
 			else{
 				return false;
@@ -79,31 +74,44 @@ public class ExperimentalSectionsCreator {
 			throw new IllegalArgumentException("Unexpected element local name: " + name);
 		}
 	}
-	
+
 	/**
 	 * Employs OPSIN document extractor to find names in a title
 	 * If multiple names are found OPSIN is used to verify that these names are not part of the same name
-	 * @param text
+	 * @param hiddenHeadingEl
 	 * @return
 	 */
-	List<IdentifiedChemicalName> findCompoundNamesInHeading(String text) {
-		List<IdentifiedChemicalName> namesFoundByDocumentExtractor = Utils.getSystematicChemicalNamesFromText(text);
-		if (namesFoundByDocumentExtractor.size()>1){
-			NameToStructure n2s;
-			try {
-				n2s = NameToStructure.getInstance();
-			} catch (NameToStructureException e) {
-				throw new RuntimeException(e);
-			}
-			IdentifiedChemicalName firstWord = namesFoundByDocumentExtractor.get(0);
-			IdentifiedChemicalName lastWord = namesFoundByDocumentExtractor.get(namesFoundByDocumentExtractor.size() - 1);
-			String nameToTest = text.substring(firstWord.getStart(), lastWord.getEnd());
-			if (n2s.parseChemicalName(text).getStatus()!=OPSIN_RESULT_STATUS.FAILURE){
-				namesFoundByDocumentExtractor.clear();
-				namesFoundByDocumentExtractor.add(new IdentifiedChemicalName(firstWord.getWordPositionStartIndice(), lastWord.getWordPositionEndIndice(), firstWord.getStart(), lastWord.getEnd(), nameToTest, nameToTest, NameType.complete));
-			}
+	List<Element> extractMoleculeEls(Element taggedDocRoot) {
+		List<Element> moleculesFound = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, MOLECULE_Container);
+		if (moleculesFound.size()>1){
+			
+			//TODO consider reimplementing this functionality if performance is still okay
+//			Element startingEl =moleculesFound.get(0);
+//			Elements children;
+//			while ((children = startingEl.getChildElements()).size()!=0){
+//				startingEl = children.get(0);
+//			}
+//			Element lastMolecule = moleculesFound.get(moleculesFound.size() - 1);
+//			StringBuilder nameToTest = new StringBuilder();
+//			do{
+//				Element nextEl = Utils.getNextElement(startingEl);
+//			}
+//			while (){
+//			NameToStructure n2s;
+//			try {
+//				n2s = NameToStructure.getInstance();
+//			} catch (NameToStructureException e) {
+//				throw new RuntimeException(e);
+//			}
+//			IdentifiedChemicalName firstWord = moleculesFound.get(0);
+//			IdentifiedChemicalName lastWord = moleculesFound.get(moleculesFound.size() - 1);
+//			String nameToTest = hiddenHeadingEl.substring(firstWord.getStart(), lastWord.getEnd());
+//			if (n2s.parseChemicalName(hiddenHeadingEl).getStatus()!=OPSIN_RESULT_STATUS.FAILURE){
+//				moleculesFound.clear();
+//				moleculesFound.add(new IdentifiedChemicalName(firstWord.getWordPositionStartIndice(), lastWord.getWordPositionEndIndice(), firstWord.getStart(), lastWord.getEnd(), nameToTest, nameToTest, NameType.complete));
+//			}
 		}
-		return namesFoundByDocumentExtractor;
+		return moleculesFound;
 	}
 	
 	/**
@@ -113,11 +121,10 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
-		List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(text);
-		
 		Document taggedDoc = Utils.runChemicalTagger(text);
+		List<Element> moleculesFound = extractMoleculeEls(taggedDoc.getRootElement());
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
-		if (namesFoundByOpsin.size()!=1 && procedureNames.size()!=1){
+		if (moleculesFound.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
@@ -126,10 +133,10 @@ public class ExperimentalSectionsCreator {
 		if (procedureNames.size()==1){
 			addProcedure(procedureNames.get(0), isSubHeading);
 		}
-		if (namesFoundByOpsin.size()==1){
+		if (moleculesFound.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
-			String name = namesFoundByOpsin.get(0).getTextValue();
-			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(name), alias);
+			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(0));
+			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(nameComponents), alias);
 			addNameAliasPair(nameAliasPair);
 		}
 	}
@@ -273,16 +280,16 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void processInlineHeading(Element hiddenHeadingEl, Element paraEl, String text) {
 		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
-		List<IdentifiedChemicalName> namesFoundByOpsin = findCompoundNamesInHeading(headingText);
+		List<Element> moleculesFound = extractMoleculeEls(hiddenHeadingEl);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
 		if (procedureNames.size()==1){
 			addProcedure(procedureNames.get(0), isSubHeading);
 		}
-		if (namesFoundByOpsin.size()==1){
+		if (moleculesFound.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(headingText);
-			String name = namesFoundByOpsin.get(0).getTextValue();
-			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(name), alias);
+			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(0));
+			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(nameComponents), alias);
 			addNameAliasPair(nameAliasPair);
 		}
 	}
@@ -295,6 +302,7 @@ public class ExperimentalSectionsCreator {
 	 * @return
 	 */
 	private String findTextCorrespondingToChemicallyTaggedText(Element taggedTextEl, String text) {
+		//TODO do this properly
 		String extractedText = Utils.getElementText(taggedTextEl);
 		char[] extractedCharArray = extractedText.toCharArray();
 		char[] inputCharArray = text.replaceAll("sulph", "sulf").toCharArray();
