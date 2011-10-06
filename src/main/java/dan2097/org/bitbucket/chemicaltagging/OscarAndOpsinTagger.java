@@ -14,6 +14,7 @@ import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTagger;
 import uk.ac.cam.ch.wwmm.oscar.Oscar;
 import uk.ac.cam.ch.wwmm.oscar.document.NamedEntity;
 import uk.ac.cam.ch.wwmm.oscar.document.Token;
+import uk.ac.cam.ch.wwmm.oscar.document.TokenSequence;
 import uk.ac.cam.ch.wwmm.oscarrecogniser.interfaces.ChemicalEntityRecogniser;
 import uk.ac.cam.ch.wwmm.oscarrecogniser.saf.StandoffResolver.ResolutionMode;
 
@@ -33,14 +34,14 @@ public class OscarAndOpsinTagger extends OscarTagger {
 	}
 	
 	/***********************************************
-	 * Runs OSCAR over a list of tokens.
-	 * 
-	 * @param tokenList (List<String>)
+	 * Runs OSCAR and the OPSIN document extractor over a list of tokens and returns a list of tags
+	 * @param tokenList (List<Token>)
 	 * @return tagList (List<String>)
 	 ***********************************************/
-	public List<String> runTagger(List<String> tokenList, String inputSentence) {
+	public List<String> runTagger(List<Token> tokenList, String inputSentence) {
 		ChemicalEntityRecogniser recogniser = oscar.getRecogniser();
-		List<NamedEntity> neList = recogniser.findNamedEntities(convertToOscarTokenSequences(tokenList, inputSentence), ResolutionMode.MARK_BLOCKED);
+		List<TokenSequence> tokenSequences = Arrays.asList(generateOscarTokenSequence(tokenList, inputSentence));
+		List<NamedEntity> neList = recogniser.findNamedEntities(tokenSequences, ResolutionMode.MARK_BLOCKED);
         List<String> ignoreOscarList = Arrays.asList("cpr", "ont");
 		List<String> oscarAndOpsinList = new ArrayList<String>();
 		String tag = "nil";
@@ -59,7 +60,11 @@ public class OscarAndOpsinTagger extends OscarTagger {
 				}
 			}
 		}
-		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(tokenList).extractNames();
+		List<String> wordList = new ArrayList<String>();//TODO do this better using inputSentence
+		for (Token token : tokenList) {
+			wordList.add(token.getSurface());
+		}
+		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(wordList).extractNames();
 		for (IdentifiedChemicalName ne : identifiedNames) {
 			for (int i = ne.getWordPositionStartIndice(); i <= ne.getWordPositionEndIndice(); i++) {
 				oscarAndOpsinList.set(i, "OSCAR-CM");

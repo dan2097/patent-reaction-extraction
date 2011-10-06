@@ -32,7 +32,7 @@ public class OscarReliantFunctionality {
 			taggersOrderedInDescendingPriority.add(new RegexTagger());
 			taggersOrderedInDescendingPriority.add(new OscarAndOpsinTagger(oscar));
 			taggersOrderedInDescendingPriority.add(OpenNLPTagger.getInstance());
-			posTagger = new ChemistryPOSTagger(new OscarTokeniser(oscar), taggersOrderedInDescendingPriority);
+			posTagger = new ChemistryPOSTagger(new OscarTokeniser(), taggersOrderedInDescendingPriority);
 		}
 		 
 		private static class SingletonHolder {
