@@ -12,7 +12,8 @@ import uk.ac.cam.ch.wwmm.oscar.Oscar;
 import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
 import uk.ac.cam.ch.wwmm.oscarMEMM.MEMMRecogniser;
-import dan2097.org.bitbucket.chemicaltagging.OscarAndOpsinTagger;
+import dan2097.org.bitbucket.chemicaltagging.CustomisedOscarTagger;
+import dan2097.org.bitbucket.chemicaltagging.OpsinTagger;
 
 public class OscarReliantFunctionality {
 		private ChemNameDictRegistry chemNameRegistry;
@@ -29,8 +30,9 @@ public class OscarReliantFunctionality {
 			recogniser.setOntPseudoConfidence(0);
 			oscar.setRecogniser(recogniser);
 			List<Tagger> taggersOrderedInDescendingPriority = new ArrayList<Tagger>();
+			taggersOrderedInDescendingPriority.add(new OpsinTagger());
 			taggersOrderedInDescendingPriority.add(new RegexTagger());
-			taggersOrderedInDescendingPriority.add(new OscarAndOpsinTagger(oscar));
+			taggersOrderedInDescendingPriority.add(new CustomisedOscarTagger(oscar));
 			taggersOrderedInDescendingPriority.add(OpenNLPTagger.getInstance());
 			posTagger = new ChemistryPOSTagger(new OscarTokeniser(), taggersOrderedInDescendingPriority);
 		}
