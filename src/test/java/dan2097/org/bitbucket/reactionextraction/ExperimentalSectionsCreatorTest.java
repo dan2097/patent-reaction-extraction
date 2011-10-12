@@ -3,7 +3,6 @@ import static junit.framework.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -11,7 +10,6 @@ import nu.xom.Element;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
-import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 import org.junit.Test;
 
 import dan2097.org.bitbucket.utility.Utils;
