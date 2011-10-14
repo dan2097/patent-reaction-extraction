@@ -34,20 +34,19 @@ public class CustomisedOscarTagger extends OscarTagger {
 		ChemicalEntityRecogniser recogniser = oscar.getRecogniser();
 		TokenSequence tokenSequence = generateOscarTokenSequence(tokenList, inputSentence);
 		List<NamedEntity> neList = recogniser.findNamedEntities(Arrays.asList(tokenSequence), ResolutionMode.MARK_BLOCKED);
-        List<String> ignoreOscarList = Arrays.asList("cpr", "ont");
+        List<String> ignoreOscarList = Arrays.asList("CPR", "ONT");
 		List<String> tagList = new ArrayList<String>();
-		String tag = "nil";
+		String nilTag = "nil";
 		for (int i = 0; i < tokenList.size(); i++) {
-			tagList.add(tag);
+			tagList.add(nilTag);
 		}
 		for (NamedEntity ne : neList) {
-			if (!ignoreOscarList.contains(ne.getType().getName().toLowerCase())) {
+			String neTypeName = ne.getType().getName();
+			if (!ignoreOscarList.contains(neTypeName) && !neIsStopWord(ne)) {
 				List<Token> tokens = ne.getTokens();
-                 
 				for (Token token : tokens) {
-					String tokenSurface = token.getSurface();
-					if (!stopWords.contains(tokenSurface.toLowerCase()) && tagList.get(token.getIndex()).equals(tag)){
-						tagList.set(token.getIndex(), "OSCAR-"+ne.getType().getName());
+					if (tagList.get(token.getIndex()).equals(nilTag)){
+						tagList.set(token.getIndex(), "OSCAR-"+ neTypeName);
 					}
 				}
 			}
@@ -55,4 +54,7 @@ public class CustomisedOscarTagger extends OscarTagger {
 		return tagList;
 	}
 
+	private boolean neIsStopWord(NamedEntity ne) {
+		return ne.getType().getName().equals("CM") && stopWords.contains(ne.getSurface().toLowerCase());
+	}
 }
