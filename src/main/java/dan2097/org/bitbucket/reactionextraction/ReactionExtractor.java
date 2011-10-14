@@ -152,7 +152,7 @@ public class ReactionExtractor {
 	/**
 	 * Performs a few sanity checks:
 	 * A least 1 product
-	 * There are at least two reactants or 1 reactant and at least two solvents
+	 * There are at least two reagents
 	 * The product/s are not all reactants
 	 * @param reaction
 	 * @param indigoReaction
@@ -162,21 +162,21 @@ public class ReactionExtractor {
 		if (indigoReaction.countProducts() ==0){
 			return false;
 		}
-		if (indigoReaction.countReactants() ==0 || indigoReaction.countReactants() ==1 && indigoReaction.countCatalysts() < 2){
+		if (indigoReaction.countReactants() + indigoReaction.countCatalysts() < 2){
 			return false;
 		}
-		if (reactantsContainProducts(reaction)){
+		if (reagentsContainProducts(reaction)){
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * Uses InChIs to check whether all of the products are also reactants 
+	 * Uses InChIs to check whether all of the products are also reagents 
 	 * @param reaction
 	 * @return
 	 */
-	private boolean reactantsContainProducts(Reaction reaction) {
+	private boolean reagentsContainProducts(Reaction reaction) {
 		List<Chemical> products =reaction.getProducts();
 		Set<String> productInChIs = new HashSet<String>();
 		for (Chemical product : products) {
@@ -189,6 +189,9 @@ public class ReactionExtractor {
 		}
 		for (Chemical reactant : reaction.getReactants()) {
 			productInChIs.remove(reactant.getInchi());
+		}
+		for (Chemical spectator : reaction.getSpectators()) {
+			productInChIs.remove(spectator.getInchi());
 		}
 		return productInChIs.isEmpty();
 	}
