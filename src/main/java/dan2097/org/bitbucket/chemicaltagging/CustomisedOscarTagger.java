@@ -42,9 +42,12 @@ public class CustomisedOscarTagger extends OscarTagger {
 		}
 		for (NamedEntity ne : neList) {
 			String neTypeName = ne.getType().getName();
-			if (!ignoreOscarList.contains(neTypeName) && !neIsStopWord(ne)) {
+			if (!ignoreOscarList.contains(neTypeName)) {
 				List<Token> tokens = ne.getTokens();
 				for (Token token : tokens) {
+					if (stopWords.contains(token.getSurface().toLowerCase()) && ne.getType().getName().equals("CM")){
+						continue;
+					}
 					if (tagList.get(token.getIndex()).equals(nilTag)){
 						tagList.set(token.getIndex(), "OSCAR-"+ neTypeName);
 					}
@@ -52,9 +55,5 @@ public class CustomisedOscarTagger extends OscarTagger {
 			}
 		}
 		return tagList;
-	}
-
-	private boolean neIsStopWord(NamedEntity ne) {
-		return ne.getType().getName().equals("CM") && stopWords.contains(ne.getSurface().toLowerCase());
 	}
 }
