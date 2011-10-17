@@ -13,9 +13,6 @@ public class ChemicalTaggerTags {
 	
 	/** OSCAR enzyme*/
 	public static final String OSCAR_ASE = "OSCAR-ASE";
-	
-	/** OSCAR ontology term e.g. anything present in ChEBI*/
-	public static final String OSCAR_ONT = "OSCAR-ONT";
 
 	/** Unicode trademark*/
 	public static final String TM_UNICODE = "TM-UNICODE";
@@ -377,8 +374,6 @@ public class ChemicalTaggerTags {
 	
 	/**Holds among other things amount nodes*/
 	public static final String QUANTITY_Container = "QUANTITY";
-
-	public static final String OSCARONT_Container = "OSCARONT";
 	
 	/**Contains a procedure e.g. "example 1"*/
 	public static final String PROCEDURE_Container = "PROCEDURE";
