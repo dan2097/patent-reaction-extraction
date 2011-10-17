@@ -26,7 +26,7 @@ public class CustomisedOscarTagger extends OscarTagger {
 	
 	/***********************************************
 	 * Runs OSCAR over a list of tokens and returns a list of tags
-	 * Differs from chemcial tagger's implementation due to inclusion of overlapping entities and exclusion of ont terms and stop words
+	 * Differs from chemcial tagger's implementation due to inclusion of overlapping entities and use of stop words
 	 * @param tokenList (List<Token>)
 	 * @return tagList (List<String>)
 	 ***********************************************/
