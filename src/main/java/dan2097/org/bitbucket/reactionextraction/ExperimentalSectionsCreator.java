@@ -62,7 +62,8 @@ public class ExperimentalSectionsCreator {
 			if (id !=null && id.startsWith("h-") && !headingOrParagraph.getValue().contains("\n")){
 				String text = Utils.getElementText(headingOrParagraph);
 				Document taggedDoc = Utils.runChemicalTagger(text);
-				List<Element> moleculesFound = extractMoleculeEls(taggedDoc.getRootElement());
+				boolean isNonChemicalHeading = isAllCapitalLetters(text);
+				List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractMoleculeEls(taggedDoc.getRootElement());
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 				return moleculesFound.size() >0 || procedureNames.size() >0;
 			}
@@ -122,7 +123,8 @@ public class ExperimentalSectionsCreator {
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
-		List<Element> moleculesFound = extractMoleculeEls(taggedDoc.getRootElement());
+		boolean isNonChemicalHeading = isAllCapitalLetters(text);
+		List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractMoleculeEls(taggedDoc.getRootElement());
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (moleculesFound.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
@@ -139,6 +141,15 @@ public class ExperimentalSectionsCreator {
 			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(nameComponents), alias);
 			addNameAliasPair(nameAliasPair);
 		}
+	}
+
+	private boolean isAllCapitalLetters(String text) {
+		for (char charac : text.toCharArray()) {
+			if (!Character.isWhitespace(charac) && !Character.isUpperCase(charac)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
