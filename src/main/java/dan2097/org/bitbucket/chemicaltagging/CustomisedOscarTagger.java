@@ -48,6 +48,9 @@ public class CustomisedOscarTagger extends OscarTagger {
 					if (stopWords.contains(token.getSurface().toLowerCase()) && ne.getType().getName().equals("CM")){
 						continue;
 					}
+					if (token.getSurface().length()<=1){
+						continue;
+					}
 					if (tagList.get(token.getIndex()).equals(nilTag)){
 						tagList.set(token.getIndex(), "OSCAR-"+ neTypeName);
 					}
