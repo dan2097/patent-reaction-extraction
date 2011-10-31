@@ -5,15 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import nu.xom.Builder;
@@ -61,8 +59,6 @@ public class Utils {
 	private final static Pattern matchDot = Pattern.compile("\\.");
 	private final static Pattern matchForwardSlash = Pattern.compile("/");
 	private final static Pattern matchMiddleDot = Pattern.compile("\u00B7");
-	private final static Pattern matchChargeOrOxidationSpecifier = Pattern.compile("(\\S+)\\s+(\\((\\d[+\\-]|[+\\-]\\d|0|I|II|III|IV|VI|VII|VIII|IX)\\))", Pattern.CASE_INSENSITIVE);
-	private final static List<String> elements = Arrays.asList("hydrogen", "lithium", "sodium", "natrium", "potassium", "kalium", "rubidium", "caesium", "cesium", "francium", "beryllium", "magnesium", "calcium", "strontium", "barium", "radium", "aluminium", "aluminum", "gallium", "indium", "thallium", "tin", "stannum", "lead", "plumbum", "bismuth", "polonium", "scandium", "titanium", "vanadium", "chromium", "manganese", "iron", "cobalt", "nickel", "copper", "zinc", "yttrium", "zirconium", "niobium", "molybdenum", "technetium", "ruthenium", "rhodium", "palladium", "silver", "cadmium", "lanthanum", "cerium", "praseodymium", "neodymium", "promethium", "samarium", "europium", "gadolinium", "terbium", "dysprosium", "holmium", "erbium", "thulium", "ytterbium", "lutetium", "hafnium", "tantalum", "tungsten", "wolfram", "rhenium", "osmium", "iridium", "platinum", "gold", "mercury", "hydrargyrum", "actinium", "thorium", "protactinium", "uranium", "neptunium", "plutonium", "americium", "curium", "berkelium", "californium", "einsteinium", "fermium", "mendelevium", "nobelium", "lawrencium", "rutherfordium", "boron", "carbon", "silicon", "germanium", "nitrogen", "phosphorus", "arsenic", "antimony", "stibium", "oxygen", "sulfur", "selenium", "tellurium", "polonium", "fluorine", "chlorine", "bromine", "iodine", "astatine", "helium", "neon", "argon", "krypton", "xenon", "radon");
 	
 	static {
 		XMLReader xmlReader;
@@ -104,29 +100,11 @@ public class Utils {
 	
 	/**
 	 * Convenience method to tag and parse a string of text
-	 * A case of erroneous white space that can not be overcome by the OPSIN tagger due to OSCAR's tokenization is also corrected
 	 * @param tagged
 	 * @return
 	 */
 	public static Document runChemicalTagger(String text) {
-		String correctedText = correctErroneousSpaceBeforeChargeOrOxidationNumber(text);
-		return runChemicalSentenceParsingOnTaggedString(tagString(correctedText));
-	}
-
-	public static String correctErroneousSpaceBeforeChargeOrOxidationNumber(String text) {
-		Matcher m = matchChargeOrOxidationSpecifier.matcher(text);
-		StringBuffer sb = new StringBuffer();
-		while (m.find()){
-			for (String chemicalElement : elements) {
-				if (StringTools.endsWithCaseInsensitive(m.group(1), chemicalElement)){
-					m.appendReplacement(sb, m.group(1) + m.group(2));
-					break;
-				}
-			}
-
-		}
-		m.appendTail(sb);
-		return sb.toString();
+		return runChemicalSentenceParsingOnTaggedString(tagString(text));
 	}
 
 	/**
