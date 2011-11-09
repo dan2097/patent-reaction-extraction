@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
@@ -40,8 +41,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	public List<ExperimentalSection> createSections() {
 		for (Element element : orderedHeadingsAndParagraphs) {
-			boolean isHeading = isHeading(element);
-			if (isHeading){
+			if (isHeading(element)){
 				handleHeading(element);
 			}
 			else{
@@ -63,7 +63,7 @@ public class ExperimentalSectionsCreator {
 				String text = Utils.getElementText(headingOrParagraph);
 				Document taggedDoc = Utils.runChemicalTagger(text);
 				boolean isNonChemicalHeading = isAllCapitalLetters(text);
-				List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractMoleculeEls(taggedDoc.getRootElement());
+				List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractNonFalsePositiveMoleculeEls(taggedDoc.getRootElement());
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 				return moleculesFound.size() >0 || procedureNames.size() >0;
 			}
@@ -77,14 +77,21 @@ public class ExperimentalSectionsCreator {
 	}
 
 	/**
-	 * Employs OPSIN document extractor to find names in a title
-	 * If multiple names are found OPSIN is used to verify that these names are not part of the same name
-	 * @param hiddenHeadingEl
+	 * Returns the molecules elements within the given element that do not match a false Positive Pattern
+	 * @param taggedDocRoot
 	 * @return
 	 */
-	List<Element> extractMoleculeEls(Element taggedDocRoot) {
+	List<Element> extractNonFalsePositiveMoleculeEls(Element taggedDocRoot) {
 		List<Element> moleculesFound = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, MOLECULE_Container);
+		for (int i = moleculesFound.size() -1; i >= 0; i--) {
+			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(i));
+			String chemicalName = StringTools.stringListToString(nameComponents, " ");
+			if (ChemicalTypeAssigner.isFalsePositive(chemicalName, moleculesFound.get(i))){
+				moleculesFound.remove(i);
+			}
+		}
 		if (moleculesFound.size()>1){
+			
 			
 			//TODO consider reimplementing this functionality if performance is still okay
 //			Element startingEl =moleculesFound.get(0);
@@ -124,7 +131,7 @@ public class ExperimentalSectionsCreator {
 		String text = Utils.getElementText(headingEl);
 		Document taggedDoc = Utils.runChemicalTagger(text);
 		boolean isNonChemicalHeading = isAllCapitalLetters(text);
-		List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractMoleculeEls(taggedDoc.getRootElement());
+		List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractNonFalsePositiveMoleculeEls(taggedDoc.getRootElement());
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (moleculesFound.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
@@ -291,7 +298,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void processInlineHeading(Element hiddenHeadingEl, Element paraEl, String text) {
 		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
-		List<Element> moleculesFound = extractMoleculeEls(hiddenHeadingEl);
+		List<Element> moleculesFound = extractNonFalsePositiveMoleculeEls(hiddenHeadingEl);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
 		if (procedureNames.size()==1){
