@@ -40,7 +40,7 @@ public class ChemicalTypeAssigner {
 	 */
 	static void assignTypeToChemical(Element mol, Chemical chem) {
 		String chemicalName = chem.getName();
-		if (isFalsePositive(chem, mol)){
+		if (isFalsePositive(chemicalName, mol)){
 			chem.setType(ChemicalType.falsePositive);
 		}
 		else if (!determineTypeFromSurroundingText(mol, chem)){
@@ -151,8 +151,7 @@ public class ChemicalTypeAssigner {
 				Utils.getSystematicChemicalNamesFromText(chem.getName()).size()==0);
 	}
 
-	private static boolean isFalsePositive(Chemical chem, Element mol) {
-		String chemicalName = chem.getName();
+	static boolean isFalsePositive(String chemicalName, Element mol) {
 		if (ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
 			return true;
 		}
