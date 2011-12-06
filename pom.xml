@@ -1,26 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>uk.ac.cam.ch.wwmm</groupId>
-    <artifactId>wwmm-parent</artifactId>
-    <version>3</version>
-  </parent>
+	<parent>
+		<groupId>uk.ac.cam.ch.wwmm</groupId>
+		<artifactId>wwmm-parent</artifactId>
+		<version>4</version>
+	</parent>
 	<groupId>dan2097.org.bitbucket</groupId>
 	<artifactId>reactionExtraction</artifactId>
 	<version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Patent Reaction Extraction</name>
+  <description>Tool for extracting chemical reactions from chemical text especially patents</description>
+  <url>http://bitbucket.org/dan2097/patent-reaction-extraction</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License, version 3</name>
+      <url>http://www.opensource.org/licenses/GPL-3.0</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://bitbucket.org/dan2097/patent-reaction-extraction/</url>
+    <connection>
+      scm:hg:http://bitbucket.org/dan2097/patent-reaction-extraction
+    </connection>
+    <developerConnection>
+      scm:hg:http://bitbucket.org/dan2097/patent-reaction-extraction
+    </developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <name>Daniel Lowe</name>
+      <email>dl387@cam.ac.uk</email>
+      <url>http://bitbucket.org/dan2097</url>
+      <organization>University of Cambridge</organization>
+      <organizationUrl>http://www.cam.ac.uk</organizationUrl>
+      <roles>
+         <role>Lead Programmer</role>
+      </roles>
+    </developer>
+  </developers>
 	<repositories>
-	  <repository>
-	    <id>ucc-repo</id>
-	    <url>https://maven.ch.cam.ac.uk/m2repo</url>
-	  </repository>
+		<repository>
+			<id>ucc-repo</id>
+			<url>https://maven.ch.cam.ac.uk/m2repo</url>
+		</repository>
 	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.0.1</version>
-		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch</groupId>
 			<artifactId>chemicalTagger</artifactId>
@@ -29,7 +55,7 @@
 		<dependency>
 			<groupId>uk.ac.cam.ch.opsin</groupId>
 			<artifactId>opsin-document-extractor</artifactId>
-			<version>0.3-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
@@ -38,18 +64,18 @@
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
-	  		<artifactId>oscar4-opsin</artifactId>
+				<artifactId>oscar4-opsin</artifactId>
 			<version>4.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf</groupId>
 			<artifactId>Classifier4J</artifactId>
 			<version>0.6</version>
-	    </dependency>
-	    <dependency><!-- required for Classifier4J -->
-		    <groupId>commons-logging</groupId>
-		    <artifactId>commons-logging</artifactId>
-		    <version>1.1.1</version>
+		</dependency>
+		<dependency><!-- required for Classifier4J -->
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
@@ -72,9 +98,14 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-compress</artifactId>
-		    <version>1.2</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -94,28 +125,4 @@
 			<version>1.2.16</version>
 		</dependency>
 	</dependencies>
-	<properties>
-		<restlet.version>2.0.3</restlet.version>
-	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>
-							jar-with-dependencies
-						</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>
-								rxdemo.RxDemoApplication
-							</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
