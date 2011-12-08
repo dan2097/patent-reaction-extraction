@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>uk.ac.cam.ch.opsin</groupId>
 			<artifactId>opsin-document-extractor</artifactId>
-			<version>1.0</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
