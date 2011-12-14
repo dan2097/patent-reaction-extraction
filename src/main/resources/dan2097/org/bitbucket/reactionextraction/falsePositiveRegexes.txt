@@ -29,6 +29,9 @@ CF3CD2OD
 D2O
 Tetramethylsilane|TMS|DSS|TSP|TMSP
 dd[d]?
+sb
+bd
+bs
 ABq[a-z]?
 \d+(\.\d+)?[\(\[][a-z]
 
