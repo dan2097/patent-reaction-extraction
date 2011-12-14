@@ -1,5 +1,6 @@
 #Words that may not appear in a chemical name. Please use lower case
 #If OSCAR identifies such a word as chemical it is treated as if OSCAR had not identified the word as chemical
+alkaline
 aqueous
 hydrogenate
 hydrogenated
