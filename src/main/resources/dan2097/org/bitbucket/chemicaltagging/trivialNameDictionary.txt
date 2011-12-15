@@ -9,6 +9,7 @@ adkins catalyst
 adkins' catalyst
 albright-goldman reagent
 albright-goldman's reagent
+aliquat 336
 andresen's acid
 andresen acid
 appel's salt
@@ -226,6 +227,9 @@ lewisite
 lindar's catalyst
 lindars catalyst
 lindar catalyst
+lindlar's catalyst
+lindlars catalyst
+lindlar catalyst
 lombardo reagent
 lombardo's reagent
 luche reagent
@@ -306,6 +310,8 @@ olofson reagent
 olofson's reagent
 oppolzer's auxiliary
 oppolzer auxiliary
+otera's catalyst
+otera catalyst
 payne's reagent
 payne reagent
 pearlman's catalyst
@@ -382,6 +388,8 @@ staab reagent
 staab's reagent
 stang reagent
 stang's reagent
+starks' catalyst
+starks catalyst
 staudinger's ketene
 staudinger ketene
 stiles reagent
@@ -400,6 +408,7 @@ tobias' acid
 tobias acid
 oxy-tobias' acid
 oxy-tobias acid
+pyrotol catalyst
 tollen's reagent
 tollens reagent
 tollens' reagent
@@ -459,6 +468,18 @@ ziegler-natta catalyst
 ziegler-natta's catalyst
 zincke aldehyde
 zincke's aldehyde
+palladium on activated carbon
+palladium on carbon
+palladium on activated charcoal
+palladium on charcoal
+palladium / carbon
+pd / c
+platinum on activated carbon
+platinum on carbon
+platinum on activated charcoal
+platinum on charcoal
+platinum / carbon
+pt / c
 rose bengal
 chiraphos
 josiphos

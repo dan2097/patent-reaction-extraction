@@ -24,6 +24,9 @@ public class ChemicalRoleAssigner {
 		else if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
+		else if (isKnownTrivialCatalyst(chemical.getName())){
+			chemical.setRole(ChemicalRole.catalyst);
+		}
 		else if (ChemicalTaggerAtrs.CATALYST_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
@@ -39,6 +42,17 @@ public class ChemicalRoleAssigner {
 		else {
 			chemical.setRole(ChemicalRole.reactant);
 		}
+	}
+
+	private static boolean isKnownTrivialCatalyst(String name) {
+		String lcName = name.toLowerCase();
+		if (lcName.contains("catalyst")){
+			return true;
+		}
+		if (chemicalKnowledge.getCatalystNames().contains(lcName)){
+			return true;
+		}
+		return false;
 	}
 
 	private static boolean assignAsSolventDueToInKeyword(Element chemicalEl, Chemical chemical) {

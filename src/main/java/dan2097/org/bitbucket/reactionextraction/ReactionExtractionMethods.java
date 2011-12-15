@@ -52,4 +52,14 @@ public class ReactionExtractionMethods {
 		return productInchis;
 	}
 
+	/**
+	 * Does the given chemical correspond to a name with no connection table e.g. raney nickel or brine
+	 * @param chem
+	 * @return
+	 */
+	public static boolean isKnownTrivialNameWithNoCT(Chemical chem) {
+		String lcName = chem.getName().toLowerCase();
+		return chemicalKnowledge.getCatalystNames().contains(lcName) || lcName.contains("catalyst");
+	}
+
 }

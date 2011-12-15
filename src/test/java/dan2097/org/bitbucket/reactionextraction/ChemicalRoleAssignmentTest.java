@@ -20,6 +20,30 @@ public class ChemicalRoleAssignmentTest {
 		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
 		assertEquals(ChemicalRole.solvent, chemical.getRole());
 	}
+
+	@Test
+	public void assignedAsCatalystFromName1(){
+		Element chemicalEl = new Element(MOLECULE_Container);
+		Chemical chemical = new Chemical("Crabtree catalyst");//uses the word catalyst
+		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
+		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+	}
+	
+	@Test
+	public void assignedAsCatalystFromName2(){
+		Element chemicalEl = new Element(MOLECULE_Container);
+		Chemical chemical = new Chemical("Raney Nickel");//lookup
+		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
+		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+	}
+	
+	@Test
+	public void assignedAsCatalystFromName3(){
+		Element chemicalEl = new Element(MOLECULE_Container);
+		Chemical chemical = new Chemical("Pd / C");//lookup
+		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
+		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+	}
 	
 	@Test
 	public void assignedAsCatalystFromChemicalTaggerTest(){

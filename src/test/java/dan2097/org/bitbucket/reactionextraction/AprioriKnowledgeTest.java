@@ -32,8 +32,8 @@ public class AprioriKnowledgeTest {
 	}
 	
 	@Test
-	public void catalystFileContentTest() throws IOException {
-		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_CATALYSTS_LOCATION);
+	public void catalystInChIsFileContentTest() throws IOException {
+		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_CATALYSTSINCHIS_LOCATION);
 		assertNotNull(is);
 		Set<String> catalystInChIs = new HashSet<String>();
 		List<String> lines = IOUtils.readLines(is);
@@ -44,6 +44,22 @@ public class AprioriKnowledgeTest {
 			String catalystInChI = InchiNormaliser.normaliseInChI(line.split("\\t")[0]);
 			assertFalse(catalystInChI + " appears multiple times", catalystInChIs.contains(catalystInChI));
 			catalystInChIs.add(catalystInChI);
+		}
+	}
+
+	@Test
+	public void catalystNamesFileContentTest() throws IOException {
+		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_CATALYSTSNAMES_LOCATION);
+		assertNotNull(is);
+		Set<String> catalystNames = new HashSet<String>();
+		List<String> lines = IOUtils.readLines(is);
+		for (String line : lines) {
+			if (line.startsWith("#") || line.equals("")){
+				continue;
+			}
+			assertEquals("Catalyst name should be lower case: " + line, true, line.toLowerCase().equals(line));
+			assertFalse(line + " appears multiple times", catalystNames.contains(line));
+			catalystNames.add(line);
 		}
 	}
 }

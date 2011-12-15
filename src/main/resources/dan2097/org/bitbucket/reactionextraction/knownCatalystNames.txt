@@ -1,0 +1,15 @@
+#will be string matched against lower cased names so please lower case here
+aliquat 336
+palladium on carbon
+palladium on activated charcoal
+palladium on charcoal
+palladium / carbon
+palladium on activated carbon
+pd / c
+platinum on carbon
+platinum on activated charcoal
+platinum on charcoal
+platinum / carbon
+platinum on activated carbon
+pt / c
+raney nickel

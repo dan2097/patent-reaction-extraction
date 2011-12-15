@@ -10,10 +10,13 @@ public class AprioriKnowledge {
 
 	static String KNOWN_SOLVENTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventInChIs.txt";
 	static String ALWAYS_SOLVENTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/alwaysSolventInChIs.txt";
-	static String KNOWN_CATALYSTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
+	static String KNOWN_CATALYSTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
+	static String KNOWN_CATALYSTSNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystNames.txt";
+
 	private final Set<String> solventInChIs = new HashSet<String>();
 	private final Set<String> alwaysSolventInChIs = new HashSet<String>();
 	private final Set<String> catalystInChIs = new HashSet<String>();
+	private final Set<String> catalystNames;
 	
 	private AprioriKnowledge() {
 		Set<String> solventInchis = Utils.fileToStringSet(KNOWN_SOLVENTS_LOCATION);
@@ -24,10 +27,11 @@ public class AprioriKnowledge {
 		for (String inchi : alwaysSolventInchis) {
 			alwaysSolventInChIs.add(InchiNormaliser.normaliseInChI(inchi));
 		}
-		Set<String> catalystInchis = Utils.fileToStringSet(KNOWN_CATALYSTS_LOCATION);
+		Set<String> catalystInchis = Utils.fileToStringSet(KNOWN_CATALYSTSINCHIS_LOCATION);
 		for (String inchi : catalystInchis) {
 			catalystInChIs.add(InchiNormaliser.normaliseInChI(inchi));
 		}
+		catalystNames = Utils.fileToStringSet(KNOWN_CATALYSTSNAMES_LOCATION);
 	}
 	 
 	private static class SingletonHolder { 
@@ -87,5 +91,14 @@ public class AprioriKnowledge {
 	 */
 	public boolean isKnownCatalystInChI(String inchi) {
 		return catalystInChIs.contains(inchi);
+	}
+
+	
+	/**
+	 * Returns the set of catalyst names which do not have associated InChIs
+	 * @return
+	 */
+	public Set<String> getCatalystNames() {
+		return catalystNames;
 	}
 }

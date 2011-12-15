@@ -148,6 +148,7 @@ public class ChemicalTypeAssigner {
 		return (chem.getSmiles() == null &&
 				chem.getInchi() == null &&
 				XOMTools.getDescendantElementsWithTagName(mol, QUANTITY_Container).size()==0 &&
+				!ReactionExtractionMethods.isKnownTrivialNameWithNoCT(chem) &&
 				Utils.getSystematicChemicalNamesFromText(chem.getName()).size()==0);
 	}
 
