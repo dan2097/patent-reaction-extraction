@@ -14,6 +14,7 @@ public class OpsinTagger implements Tagger {
 	/***********************************************
 	 * Runs the OPSIN document extractor over the given inputSentence and returns a list of tags
 	 * @param tokenList (List<Token>)
+	 * @param inputSentence (String)
 	 * @return tagList (List<String>)
 	 ***********************************************/
 	public List<String> runTagger(List<Token> tokenList, String inputSentence) {
