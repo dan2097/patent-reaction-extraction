@@ -1,0 +1,6 @@
+#These are the names of substances without corresponding InChIs that should always be classified as solvents
+brine
+petrol
+petroleum
+petroleum ether
+hexanes

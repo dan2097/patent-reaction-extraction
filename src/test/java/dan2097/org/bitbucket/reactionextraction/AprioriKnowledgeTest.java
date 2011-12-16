@@ -17,7 +17,7 @@ public class AprioriKnowledgeTest {
 
 	@Test
 	public void solventsFileContentTest() throws IOException {
-		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_SOLVENTS_LOCATION);
+		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_SOLVENTSINCHIS_LOCATION);
 		assertNotNull(is);
 		Set<String> solventInChIs = new HashSet<String>();
 		List<String> lines = IOUtils.readLines(is);
@@ -28,6 +28,22 @@ public class AprioriKnowledgeTest {
 			String solventInChI = InchiNormaliser.normaliseInChI(line.split("\\t")[0]);
 			assertFalse(solventInChI + " appears multiple times", solventInChIs.contains(solventInChI));
 			solventInChIs.add(solventInChI);
+		}
+	}
+	
+	@Test
+	public void solventsNamesFileContentTest() throws IOException {
+		InputStream is = AprioriKnowledge.class.getResourceAsStream(AprioriKnowledge.KNOWN_SOLVENTNAMES_LOCATION);
+		assertNotNull(is);
+		Set<String> solventNames = new HashSet<String>();
+		List<String> lines = IOUtils.readLines(is);
+		for (String line : lines) {
+			if (line.startsWith("#") || line.equals("")){
+				continue;
+			}
+			assertEquals("Solvent name should be lower case: " + line, true, line.toLowerCase().equals(line));
+			assertFalse(line + " appears multiple times", solventNames.contains(line));
+			solventNames.add(line);
 		}
 	}
 	

@@ -59,7 +59,7 @@ public class ReactionExtractionMethods {
 	 */
 	public static boolean isKnownTrivialNameWithNoCT(Chemical chem) {
 		String lcName = chem.getName().toLowerCase();
-		return chemicalKnowledge.getCatalystNames().contains(lcName) || lcName.contains("catalyst");
+		return chemicalKnowledge.getCatalystNames().contains(lcName) || lcName.contains("catalyst") || chemicalKnowledge.getSolventNames().contains(lcName);
 	}
 
 }

@@ -15,6 +15,7 @@ public class ChemicalRoleAssigner {
 	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 
 	static void assignRoleToChemical(Element chemicalEl, Chemical chemical) {
+		String lcName = chemical.getName().toLowerCase(); 
 		if (chemical.getType()== ChemicalType.falsePositive){
 			LOG.trace(chemical.getName() +" is believed to be a false positive and has been ignored");
 		}
@@ -24,7 +25,7 @@ public class ChemicalRoleAssigner {
 		else if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
-		else if (isKnownTrivialCatalyst(chemical.getName())){
+		else if (isKnownTrivialCatalyst(lcName)){
 			chemical.setRole(ChemicalRole.catalyst);
 		}
 		else if (ChemicalTaggerAtrs.CATALYST_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
@@ -39,13 +40,15 @@ public class ChemicalRoleAssigner {
 		else if (assignAsSolventDueToInKeyword(chemicalEl, chemical) ){
 			chemical.setRole(ChemicalRole.solvent);
 		}
+		else if (chemicalKnowledge.getSolventNames().contains(lcName)){
+			chemical.setRole(ChemicalRole.solvent);
+		}
 		else {
 			chemical.setRole(ChemicalRole.reactant);
 		}
 	}
 
-	private static boolean isKnownTrivialCatalyst(String name) {
-		String lcName = name.toLowerCase();
+	private static boolean isKnownTrivialCatalyst(String lcName) {
 		if (lcName.contains("catalyst")){
 			return true;
 		}
