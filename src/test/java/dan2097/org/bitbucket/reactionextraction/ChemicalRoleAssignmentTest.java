@@ -105,4 +105,12 @@ public class ChemicalRoleAssignmentTest {
 		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl2, chemical2);
 		assertEquals(ChemicalRole.solvent, chemical2.getRole());
 	}
+	
+	@Test
+	public void assignedAsSovlentFromName(){
+		Element chemicalEl = new Element(MOLECULE_Container);
+		Chemical chemical = new Chemical("brine");
+		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
+		assertEquals(ChemicalRole.solvent, chemical.getRole());
+	}
 }

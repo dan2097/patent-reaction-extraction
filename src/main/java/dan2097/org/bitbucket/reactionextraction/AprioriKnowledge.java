@@ -8,25 +8,22 @@ import dan2097.org.bitbucket.utility.Utils;
 
 public class AprioriKnowledge {
 
-	static String KNOWN_SOLVENTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventInChIs.txt";
-	static String ALWAYS_SOLVENTS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/alwaysSolventInChIs.txt";
+	static String KNOWN_SOLVENTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventInChIs.txt";
+	static String KNOWN_SOLVENTNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventNames.txt";
 	static String KNOWN_CATALYSTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
 	static String KNOWN_CATALYSTSNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystNames.txt";
 
 	private final Set<String> solventInChIs = new HashSet<String>();
-	private final Set<String> alwaysSolventInChIs = new HashSet<String>();
+	private final Set<String> solventNames;
 	private final Set<String> catalystInChIs = new HashSet<String>();
 	private final Set<String> catalystNames;
 	
 	private AprioriKnowledge() {
-		Set<String> solventInchis = Utils.fileToStringSet(KNOWN_SOLVENTS_LOCATION);
+		Set<String> solventInchis = Utils.fileToStringSet(KNOWN_SOLVENTSINCHIS_LOCATION);
 		for (String inchi : solventInchis) {
 			solventInChIs.add(InchiNormaliser.normaliseInChI(inchi));
 		}
-		Set<String> alwaysSolventInchis = Utils.fileToStringSet(ALWAYS_SOLVENTS_LOCATION);
-		for (String inchi : alwaysSolventInchis) {
-			alwaysSolventInChIs.add(InchiNormaliser.normaliseInChI(inchi));
-		}
+		solventNames = Utils.fileToStringSet(KNOWN_SOLVENTNAMES_LOCATION);
 		Set<String> catalystInchis = Utils.fileToStringSet(KNOWN_CATALYSTSINCHIS_LOCATION);
 		for (String inchi : catalystInchis) {
 			catalystInChIs.add(InchiNormaliser.normaliseInChI(inchi));
@@ -60,20 +57,11 @@ public class AprioriKnowledge {
 	}
 	
 	/**
-	 * Returns the set of solvent InChIs that should always be classified as solvents
+	 * Returns the set of solvent names which do not have associated InChIs
 	 * @return
 	 */
-	public Set<String> getAlwaysSolventInChIs() {
-		return alwaysSolventInChIs;
-	}
-
-	/**
-	 * Convenience method for checking whether alwaysSolventInChIs contains the given InChI
-	 * @param inchi
-	 * @return
-	 */
-	public boolean isKnownAlwaysSolventInChI(String inchi) {
-		return alwaysSolventInChIs.contains(inchi);
+	public Set<String> getSolventNames() {
+		return solventNames;
 	}
 	
 	/**
