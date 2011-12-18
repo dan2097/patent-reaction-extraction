@@ -7,7 +7,9 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 public class Chemical{
-
+	private static String CML_NAMESPACE = "http://www.xml-cml.org/schema";
+	private static String DL_NAMESPACE = "http://bitbucket.org/dan2097";
+	
 	private final String name;
 	private ChemicalIdentifierPair chemicalIdentifierPair = new ChemicalIdentifierPair(null, null);
 	private String smarts;
@@ -27,7 +29,7 @@ public class Chemical{
 	private Double stoichiometry;
 	private String state;
 	private ChemicalRole role = null;
-	private ChemicalType type = null;
+	private ChemicalType entityType = null;
 
 	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
 
@@ -276,12 +278,12 @@ public class Chemical{
 	 * A type indicates whether the name describes an exact compound, fragment, class etc.
 	 * @return
 	 */
-	public ChemicalType getType() {
-		return type;
+	public ChemicalType getEntityType() {
+		return entityType;
 	}
 
-	void setType(ChemicalType type) {
-		this.type = type;
+	void setEntityType(ChemicalType entityType) {
+		this.entityType = entityType;
 	}
 	
 	/**
@@ -327,44 +329,48 @@ public class Chemical{
 	}
 
 	public Element toCML(String id){
-		Element reactant = new Element("reactant");
-		Element molecule = new Element("molecule");
+		Element reactant = new Element("reactant", CML_NAMESPACE);
+		Element molecule = new Element("molecule", CML_NAMESPACE);
 		reactant.appendChild(molecule);
-		Element nameEl = new Element("name");
+		Element nameEl = new Element("name", CML_NAMESPACE);
 		nameEl.appendChild(name);
 		nameEl.addAttribute(new Attribute("dictRef","nameDict:unknown"));
 		molecule.appendChild(nameEl);
 		molecule.addAttribute(new Attribute("id", id));
 		
+		if (role != null){
+			reactant.addAttribute(new Attribute("role", role.toString()));
+		}
+		
 		if (amountValue!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(amountValue));
 			if (amountUnits!=null){
-				amount.addAttribute(new Attribute("units", amountUnits));
+				amount.addAttribute(new Attribute("units", "unit:" + amountUnits));
 			}
 			reactant.appendChild(amount);
 		}
 		if (molarityValue!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(molarityValue));
 			if (molarityUnits!=null){
-				amount.addAttribute(new Attribute("units", molarityUnits));
+				amount.addAttribute(new Attribute("units", "unit:" + molarityUnits));
 			}
 			reactant.appendChild(amount);
 		}
 		if (volumeValue!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(volumeValue));
 			if (volumeUnits!=null){
-				amount.addAttribute(new Attribute("units", volumeUnits));
+				amount.addAttribute(new Attribute("units", "unit:" + volumeUnits));
 			}
 			reactant.appendChild(amount);
 		}
 		if (massValue!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(massValue));
 			if (massUnits!=null){
-				amount.addAttribute(new Attribute("units", massUnits));
+				amount.addAttribute(new Attribute("units", "unit:" + massUnits));
 			}
 			reactant.appendChild(amount);
 		}
@@ -373,53 +379,51 @@ public class Chemical{
 		}
 
 		if (equivalents!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(equivalents));
-			amount.addAttribute(new Attribute("units", equivalentsUnits));
+			amount.addAttribute(new Attribute("units", "unit:" + equivalentsUnits));
 			reactant.appendChild(amount);
 		}
 		
 		if (pH!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(pH));
-			amount.addAttribute(new Attribute("units", "pH"));
+			amount.addAttribute(new Attribute("units", "unit:" + "pH"));
 			reactant.appendChild(amount);
 		}
 		
 		if (percentYield!=null){
-			Element amount = new Element("amount");
+			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(percentYield));
-			amount.addAttribute(new Attribute("units", "percent yield"));
+			amount.addAttribute(new Attribute("units", "unit:" + "percent yield"));
 			reactant.appendChild(amount);
 		}
 		
 		if (hasSmiles()){
-			Element smilesIdentifier = new Element("identifier");
-			smilesIdentifier.appendChild(getSmiles());
-			smilesIdentifier.addAttribute(new Attribute("title", "SMILES"));
+			Element smilesIdentifier = new Element("identifier", CML_NAMESPACE);
+			smilesIdentifier.addAttribute(new Attribute("dictRef", "cml:smiles"));
+			smilesIdentifier.addAttribute(new Attribute("value", getSmiles()));
 			reactant.appendChild(smilesIdentifier);
 		}
 
 		if (hasInchi()){
-			Element inchiIdentifier = new Element("identifier");
-			inchiIdentifier.appendChild(getInchi());
-			inchiIdentifier.addAttribute(new Attribute("title", "InChI"));
+			Element inchiIdentifier = new Element("identifier", CML_NAMESPACE);
+			inchiIdentifier.addAttribute(new Attribute("dictRef", "cml:inchi"));
+			inchiIdentifier.addAttribute(new Attribute("value", getInchi()));
 			reactant.appendChild(inchiIdentifier);
 		}
 		
 		//not CMLreact
-		if (role != null){
-			Element roleEl = new Element("role");
-			roleEl.appendChild(role.toString());
-			reactant.appendChild(roleEl);
-		}
-		if (type != null){
-			Element typeEl = new Element("type");
-			typeEl.appendChild(type.toString());
+		if (entityType != null){
+			Element typeEl = new Element("entityType", DL_NAMESPACE);
+			typeEl.setNamespacePrefix("dl");
+			typeEl.appendChild(entityType.toString());
 			reactant.appendChild(typeEl);
+
 		}
 		if (state != null){
-			Element stateEl = new Element("state");
+			Element stateEl = new Element("state", DL_NAMESPACE);
+			stateEl.setNamespacePrefix("dl");
 			stateEl.appendChild(state);
 			reactant.appendChild(stateEl);
 		}

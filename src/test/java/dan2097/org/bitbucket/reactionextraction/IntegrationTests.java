@@ -32,7 +32,7 @@ public class IntegrationTests{
 		assertEquals(null, product.getMolarity());
 		assertEquals("6-(4-chloropyrid-2-yl)-2-pyrid-2-yl-pyrimidin-4-ol", product.getName());
 		assertEquals(ChemicalRole.product, product.getRole());
-		assertEquals(ChemicalType.exact, product.getType());
+		assertEquals(ChemicalType.exact, product.getEntityType());
 		assertEquals(null, product.getVolumeUnits());
 		assertEquals(null, product.getVolumeValue());
 
@@ -46,7 +46,7 @@ public class IntegrationTests{
 		assertEquals(null, reactant1.getMolarity());
 		assertEquals("3-(4-chloropyrid-2-yl)-3-oxopropionic acid ethyl ester", reactant1.getName());
 		assertEquals(ChemicalRole.reactant, reactant1.getRole());
-		assertEquals(ChemicalType.exact, reactant1.getType());
+		assertEquals(ChemicalType.exact, reactant1.getEntityType());
 		assertEquals(null, reactant1.getVolumeUnits());
 		assertEquals(null, reactant1.getVolumeValue());
 		
@@ -59,7 +59,7 @@ public class IntegrationTests{
 		assertEquals(null, reactant2.getMolarity());
 		assertEquals("2-amidinopyridine hydrochloride", reactant2.getName());
 		assertEquals(ChemicalRole.reactant, reactant2.getRole());
-		assertEquals(ChemicalType.exact, reactant2.getType());
+		assertEquals(ChemicalType.exact, reactant2.getEntityType());
 		assertEquals(null, reactant2.getVolumeUnits());
 		assertEquals(null, reactant2.getVolumeValue());
 		
@@ -72,7 +72,7 @@ public class IntegrationTests{
 		assertEquals("4", reactant3.getMolarity());
 		assertEquals("sodium hydroxide", reactant3.getName());
 		assertEquals(ChemicalRole.reactant, reactant3.getRole());
-		assertEquals(ChemicalType.exact, reactant3.getType());
+		assertEquals(ChemicalType.exact, reactant3.getEntityType());
 		assertEquals("ml", reactant3.getVolumeUnits());
 		assertEquals("14.44", reactant3.getVolumeValue());
 		
@@ -86,7 +86,7 @@ public class IntegrationTests{
 		assertEquals(null, spectator.getMolarity());
 		assertEquals("ethanol", spectator.getName());
 		assertEquals(ChemicalRole.solvent, spectator.getRole());
-		assertEquals(ChemicalType.exact, spectator.getType());
+		assertEquals(ChemicalType.exact, spectator.getEntityType());
 		assertEquals("ml", spectator.getVolumeUnits());
 		assertEquals("400", spectator.getVolumeValue());
 	}
@@ -110,7 +110,7 @@ public class IntegrationTests{
 		assertEquals(null, product.getMolarity());
 		assertEquals("title compound", product.getName());
 		assertEquals(ChemicalRole.product, product.getRole());
-		assertEquals(ChemicalType.definiteReference, product.getType());
+		assertEquals(ChemicalType.definiteReference, product.getEntityType());
 		assertEquals(null, product.getVolumeUnits());
 		assertEquals(null, product.getVolumeValue());
 		assertEquals(89d, product.getPercentYield(), 0.1d);
@@ -125,7 +125,7 @@ public class IntegrationTests{
 		assertEquals(null, reactant1.getMolarity());
 		assertEquals("3-(trifluoromethyl)benzhydrol", reactant1.getName());
 		assertEquals(ChemicalRole.reactant, reactant1.getRole());
-		assertEquals(ChemicalType.exact, reactant1.getType());
+		assertEquals(ChemicalType.exact, reactant1.getEntityType());
 		assertEquals("mL", reactant1.getVolumeUnits());
 		assertEquals("5", reactant1.getVolumeValue());
 		
@@ -138,7 +138,7 @@ public class IntegrationTests{
 		assertEquals(null, reactant2.getMolarity());
 		assertEquals("thionyl chloride", reactant2.getName());
 		assertEquals(ChemicalRole.reactant, reactant2.getRole());
-		assertEquals(ChemicalType.exact, reactant2.getType());
+		assertEquals(ChemicalType.exact, reactant2.getEntityType());
 		assertEquals("mL", reactant2.getVolumeUnits());
 		assertEquals("3", reactant2.getVolumeValue());
 		
@@ -152,7 +152,7 @@ public class IntegrationTests{
 		assertEquals(null, spectator.getMolarity());
 		assertEquals("CH2Cl2", spectator.getName());
 		assertEquals(ChemicalRole.solvent, spectator.getRole());
-		assertEquals(ChemicalType.exact, spectator.getType());
+		assertEquals(ChemicalType.exact, spectator.getEntityType());
 		assertEquals("mL", spectator.getVolumeUnits());
 		assertEquals("10", spectator.getVolumeValue());
 	}

@@ -6,6 +6,8 @@ import java.util.List;
 import nu.xom.Element;
 
 public class Reaction {
+	private static String CML_NAMESPACE = "http://www.xml-cml.org/schema";
+	private static String DL_NAMESPACE = "http://bitbucket.org/dan2097";
 
 	private List<Chemical> reactants =new ArrayList<Chemical>();
 	private List<Chemical> products =new ArrayList<Chemical>();
@@ -60,8 +62,13 @@ public class Reaction {
 	}
 
 	public Element toCML() {
-		Element reaction = new Element("reaction");
-		Element productList = new Element("productList");
+		Element reaction = new Element("reaction", CML_NAMESPACE);
+		reaction.addNamespaceDeclaration("cmlDict", "http://www.xml-cml.org/dictionary/cml/");
+		reaction.addNamespaceDeclaration("nameDict", "http://www.xml-cml.org/dictionary/cml/name/");
+		reaction.addNamespaceDeclaration("unit", "http://www.xml-cml.org/unit/");
+		reaction.addNamespaceDeclaration("cml", "http://www.xml-cml.org/schema");
+		reaction.addNamespaceDeclaration("dl", DL_NAMESPACE);
+		Element productList = new Element("productList", CML_NAMESPACE);
 		reaction.appendChild(productList);
 		int i=0;
 		for (Chemical product : products) {
@@ -70,13 +77,13 @@ public class Reaction {
 			productList.appendChild(productCml);
 		}
 
-		Element reactantlist = new Element("reactantlist");
-		reaction.appendChild(reactantlist);
+		Element reactantList = new Element("reactantList", CML_NAMESPACE);
+		reaction.appendChild(reactantList);
 		for (Chemical reactant : reactants) {
-			reactantlist.appendChild(reactant.toCML("m" +i++));
+			reactantList.appendChild(reactant.toCML("m" +i++));
 		}
 		
-		Element spectatorList = new Element("spectatorList");
+		Element spectatorList = new Element("spectatorList", CML_NAMESPACE);
 		reaction.appendChild(spectatorList);
 		for (Chemical spectator : spectators) {
 			Element solventCml =spectator.toCML("m" +i++);
