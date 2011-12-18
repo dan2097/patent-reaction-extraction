@@ -109,7 +109,7 @@ public class ExperimentalStepParser {
 							|| ChemicalRole.catalyst.equals(chemChem.getRole())){
 						tempReaction.addSpectator(chemChem);
 					}
-					else if (!ChemicalType.falsePositive.equals(chemChem.getType())){
+					else if (!ChemicalType.falsePositive.equals(chemChem.getEntityType())){
 						LOG.debug("Role not assigned to: " +chemChem.getName());
 					}
 				}
@@ -158,7 +158,7 @@ public class ExperimentalStepParser {
 		for (int i = 0; i < yieldPhraseMolecules.size(); i++) {
 			Element synthesizedMolecule= (Element) yieldPhraseMolecules.get(i);
 			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-			if (chem.getType().equals(ChemicalType.falsePositive)){
+			if (chem.getEntityType().equals(ChemicalType.falsePositive)){
 				continue;
 			}
 			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getEquivalents() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
@@ -196,7 +196,7 @@ public class ExperimentalStepParser {
 	private void removeBackReferencedCompoundFromProductListIfPresent(Set<Element> yieldedCompounds) {
 		if (yieldedCompounds.size()==1){
 			Chemical cm = moleculeToChemicalMap.get(yieldedCompounds.iterator().next());
-			if (cm.getType().equals(ChemicalType.definiteReference)){
+			if (cm.getEntityType().equals(ChemicalType.definiteReference)){
 				cm.setRole(null);
 				yieldedCompounds.clear();
 			}
@@ -213,7 +213,7 @@ public class ExperimentalStepParser {
 		List<Element> synthesizePhraseProductMolecules = identifySynthesizedProductMolecules(phrase);
 		for (Element synthesizedMolecule : synthesizePhraseProductMolecules) {
 			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-			if (chem.getType().equals(ChemicalType.falsePositive) || ReactionExtractionMethods.isKnownSolvent(chem)){
+			if (chem.getEntityType().equals(ChemicalType.falsePositive) || ReactionExtractionMethods.isKnownSolvent(chem)){
 				continue;
 			}
 			products.add(synthesizedMolecule);
@@ -254,7 +254,7 @@ public class ExperimentalStepParser {
 	private void resolveLocalBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
 		for (Element chemical : chemicals) {
 			Chemical chemChem = moleculeToChemicalMap.get(chemical);
-			if (chemChem.getType() ==ChemicalType.definiteReference){
+			if (chemChem.getEntityType() ==ChemicalType.definiteReference){
 				if (chemChem.getSmiles() ==null && matchProductTextualAnaphora.matcher(chemChem.getName()).matches()){
 					if (titleCompound!=null){
 						chemChem.setChemicalIdentifierPair(titleCompound.getChemicalIdentifierPair());
@@ -284,7 +284,7 @@ public class ExperimentalStepParser {
 							}
 							else{
 								//If it resolves to exactly the same compound its not really a proper reference
-								chemChem.setType(ChemicalType.exact);
+								chemChem.setEntityType(ChemicalType.exact);
 							}
 							continue;
 						}
@@ -294,11 +294,11 @@ public class ExperimentalStepParser {
 					if (previous !=null && previous.getLocalName().equals(DT_THE)){
 						if (chemChem.getSmarts() !=null){
 							if (FunctionalGroupDefinitions.functionalGroupToSmartsMap.containsKey(chemChem.getName().toLowerCase())){
-								chemChem.setType(ChemicalType.exact);
+								chemChem.setEntityType(ChemicalType.exact);
 							}
 						}
 						else if (chemChem.getSmiles() !=null){
-							chemChem.setType(ChemicalType.exact);
+							chemChem.setEntityType(ChemicalType.exact);
 						}
 					}
 				}
@@ -430,7 +430,7 @@ public class ExperimentalStepParser {
 					}
 				}
 			}
-			else if (product.getType().equals(ChemicalType.chemicalClass)){
+			else if (product.getEntityType().equals(ChemicalType.chemicalClass)){
 				return true;
 			}
 		}

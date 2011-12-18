@@ -94,7 +94,7 @@ public class ExperimentalSectionParser {
 				moleculeToChemicalMap.put(moleculeEl, cm);
 				ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
 				attemptToResolveAnaphora(moleculeEl, cm);
-				aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getType()));
+				aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getEntityType()));
 			}
 			List<Element> unnamedMoleculeEls = findAllUnnamedMolecules(paragraph);
 			for (Element unnamedMoleculeEl : unnamedMoleculeEls) {
@@ -107,8 +107,8 @@ public class ExperimentalSectionParser {
 	}
 
 	private void attemptToResolveAnaphora(Element molOrUnnamedEl, Chemical cm) {
-		if (cm.getType()!=null){
-			if (cm.getSmiles()!=null && !ChemicalType.definiteReference.equals(cm.getType())){
+		if (cm.getEntityType()!=null){
+			if (cm.getSmiles()!=null && !ChemicalType.definiteReference.equals(cm.getEntityType())){
 				//for molecules with known smiles that do not appear to be a back reference do not attempt to resolve the structure by back reference
 				return;
 			}

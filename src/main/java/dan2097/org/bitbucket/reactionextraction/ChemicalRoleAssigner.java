@@ -16,7 +16,7 @@ public class ChemicalRoleAssigner {
 
 	static void assignRoleToChemical(Element chemicalEl, Chemical chemical) {
 		String lcName = chemical.getName().toLowerCase(); 
-		if (chemical.getType()== ChemicalType.falsePositive){
+		if (chemical.getEntityType()== ChemicalType.falsePositive){
 			LOG.trace(chemical.getName() +" is believed to be a false positive and has been ignored");
 		}
 		else if (chemical.getRole() !=null){//role already has been explicitly assigned
