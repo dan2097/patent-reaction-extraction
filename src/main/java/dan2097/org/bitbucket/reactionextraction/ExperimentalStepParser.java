@@ -5,6 +5,7 @@ import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,12 +24,18 @@ import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;
 
+import nu.xom.Document;
 import nu.xom.Element;
+import nu.xom.Elements;
 import nu.xom.Nodes;
 
 public class ExperimentalStepParser {
 	private static Logger LOG = Logger.getLogger(ExperimentalStepParser.class);
 	
+	private static Pattern matchFirstChemicalToBeReplacedBefore = Pattern.compile("((replac|substitut)[e]?ing( of)?|(substitution|replacement) of)( the)?$", Pattern.CASE_INSENSITIVE);
+	private static Pattern matchFirstChemicalToBeReplacedInbetween = Pattern.compile("for|with|by", Pattern.CASE_INSENSITIVE);
+	private static Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((to )?take the place of|in place of|((is|was) (used|employed) )?instead of|(replac|substitut)[e]?ing)( the)?", Pattern.CASE_INSENSITIVE);
+
 	private final ExperimentalStep experimentalStep;
 	private final BiMap<Element, Chemical> moleculeToChemicalMap;
 	private final Chemical targetCompound;
@@ -58,6 +65,7 @@ public class ExperimentalStepParser {
 		List<Reaction> reactions = new ArrayList<Reaction>();
 		List<Paragraph> paragraphs = experimentalStep.getParagraphs();
 		for (Paragraph paragraph : paragraphs) {
+			markReplacedChemicalsAsFalsePositives(paragraph.getTaggedSentencesDocument());
 			Reaction currentReaction = new Reaction();
 			Map<Element, PhraseType> phraseMap = paragraph.generatePhraseToTypeMapping(moleculeToChemicalMap);
 			boolean reagentsExpectedAfterProduct = false;
@@ -141,6 +149,50 @@ public class ExperimentalStepParser {
 		return reactions;
 	}
 	
+	void markReplacedChemicalsAsFalsePositives(Document taggedParagraph) {
+		List<Element> moleculesToIgnore = new ArrayList<Element>();
+		LinkedList<Element> stack = new LinkedList<Element>();
+		stack.add(taggedParagraph.getRootElement());
+		StringBuilder sb = new StringBuilder();
+		Element tempMoleculeThatWasReplaced = null;
+		boolean seenMolecule = false;
+		while (stack.size()>0){
+			Element currentElement =stack.removeLast();
+			Elements children =currentElement.getChildElements();
+			if (children.size()==0){
+				if (sb.length()!=0){
+					sb.append(' ');
+				}
+				sb.append(currentElement.getValue());
+			}
+			if (currentElement.getLocalName().equals(MOLECULE_Container) || currentElement.getLocalName().equals(UNNAMEDMOLECULE_Container)){
+				String beforeMoleculeString = sb.toString();
+				if (seenMolecule && matchSecondChemicalToBeReplacedInbetween.matcher(beforeMoleculeString).matches()){
+					moleculesToIgnore.add(currentElement);
+				}
+				else if (tempMoleculeThatWasReplaced ==null){
+					if (matchFirstChemicalToBeReplacedBefore.matcher(beforeMoleculeString).find()){
+						tempMoleculeThatWasReplaced = currentElement;
+					}
+				}
+				else if (matchFirstChemicalToBeReplacedInbetween.matcher(beforeMoleculeString).matches()){
+					moleculesToIgnore.add(tempMoleculeThatWasReplaced);
+					tempMoleculeThatWasReplaced = null;
+				}
+				sb = new StringBuilder();
+				seenMolecule =true;
+			}
+			else{
+				for (int i = children.size()-1; i >=0; i--) {
+					stack.add(children.get(i));
+				}
+			}
+		}
+		for (Element molecule : moleculesToIgnore) {
+			moleculeToChemicalMap.get(molecule).setEntityType(ChemicalType.falsePositive);
+		}
+	}
+
 	private Set<Element> findAllReagents(Element el) {
 		List<Element> mols = XOMTools.getDescendantElementsWithTagNames(el, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
 		return new LinkedHashSet<Element>(mols);

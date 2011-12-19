@@ -73,32 +73,6 @@ public class ExperimentalSectionParserTest {
 	}
 	
 	@Test
-	public void testPercentAsAPercentYield(){
-		Element reference = TestUtils.stringToXom(
-				"<UNNAMEDMOLECULE>" +
-					"<JJ-COMPOUND>title</JJ-COMPOUND>" +
-					"<NN-CHEMENTITY>compound</NN-CHEMENTITY>" +
-					"<QUANTITY>" +
-						"<_-LRB->(</_-LRB->" +
-						"<MASS>" +
-							"<CD>21.3</CD>" +
-							"<NN-MASS>g</NN-MASS>" +
-						"</MASS>" +
-						"<COMMA>,</COMMA>" +
-						"<PERCENT>" +
-							"<CD>83</CD>" +
-							"<NN-PERCENT>%</NN-PERCENT>" +
-						"</PERCENT>" +
-						"<_-RRB->)</_-RRB->" +
-					"</QUANTITY>" +
-				"</UNNAMEDMOLECULE>");
-		Chemical chem = new Chemical("title compound");
-		assertEquals(null, chem.getPercentYield());
-		ExperimentalStepParser.interpretPercentAsAyield(reference, chem);
-		assertEquals(83, chem.getPercentYield(), 0.5);
-	}
-	
-	@Test
 	public void testGetSectionIdentifier1(){
 		Element procedureEl = TestUtils.stringToXom(
 				"<PROCEDURE>" +
