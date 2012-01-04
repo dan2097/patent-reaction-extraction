@@ -80,17 +80,17 @@
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>indigo</artifactId>
-			<version>1.1-beta6pre</version>
+			<version>1.1-beta7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>indigo-renderer</artifactId>
-			<version>1.1-beta6pre</version>
+			<version>1.1-beta7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>jna</artifactId>
-			<version>1.1-beta6pre</version>
+			<version>1.1-beta7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.collections</groupId>
