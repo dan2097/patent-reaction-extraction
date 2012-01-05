@@ -34,7 +34,7 @@ public class ExperimentalStepParser {
 	
 	private static Pattern matchFirstChemicalToBeReplacedBefore = Pattern.compile("((replac|substitut)[e]?ing( of)?|(substitution|replacement) of)( the)?$", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchFirstChemicalToBeReplacedInbetween = Pattern.compile("for|with|by", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((to )?take the place of|in place of|((is|was) (used|employed) )?instead of|(replac|substitut)[e]?ing)( the)?", Pattern.CASE_INSENSITIVE);
+	private static Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((((is |was )?(used|employed) )?((to )?take the place of|in (the )?place of|instead of))|(replac|substitut)[e]?ing)( the)?", Pattern.CASE_INSENSITIVE);
 
 	private final ExperimentalStep experimentalStep;
 	private final BiMap<Element, Chemical> moleculeToChemicalMap;
