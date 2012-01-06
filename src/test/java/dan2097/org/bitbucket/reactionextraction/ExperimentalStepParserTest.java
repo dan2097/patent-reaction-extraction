@@ -81,7 +81,7 @@ public class ExperimentalStepParserTest {
 		moleculeToChemicalMap.put(molecules.get(1), chem2);
 		ExperimentalStepParser stepParser = new ExperimentalStepParser(mock(ExperimentalStep.class), moleculeToChemicalMap, mock(Chemical.class),  mock(Chemical.class));
 		stepParser.markReplacedChemicalsAsFalsePositives(paragraph.getDocument());
-		assertEquals(ChemicalType.falsePositive, chem1.getEntityType());
+		assertEquals(ChemicalEntityType.falsePositive, chem1.getEntityType());
 		assertEquals(null, chem2.getEntityType());
 	}
 	
@@ -124,6 +124,6 @@ public class ExperimentalStepParserTest {
 		ExperimentalStepParser stepParser = new ExperimentalStepParser(mock(ExperimentalStep.class), moleculeToChemicalMap, mock(Chemical.class),  mock(Chemical.class));
 		stepParser.markReplacedChemicalsAsFalsePositives(paragraph.getDocument());
 		assertEquals(null, chem1.getEntityType());
-		assertEquals(ChemicalType.falsePositive, chem2.getEntityType());
+		assertEquals(ChemicalEntityType.falsePositive, chem2.getEntityType());
 	}
 }

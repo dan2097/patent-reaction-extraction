@@ -41,7 +41,7 @@ public class SynonymRecognitionTest {
 		String resolvableName = "Lithium diisopropylamide";
 		String smiles = Utils.resolveNameToSmiles(resolvableName);
 		assertNotNull(resolvableName +" should be resolvable", smiles);
-		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalType.exact);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalEntityType.exact);
 		assertEquals(1, foundAliases.size());
 		Entry<String, Chemical> entry = foundAliases.entrySet().iterator().next();
 		assertEquals("LITDIPA", entry.getKey());
@@ -64,7 +64,7 @@ public class SynonymRecognitionTest {
 		String resolvableName = "Lithium diisopropylamide";
 		String smiles = Utils.resolveNameToSmiles(resolvableName);
 		assertNotNull(resolvableName +" should be resolvable", smiles);
-		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalType.exact);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalEntityType.exact);
 		assertEquals(1, foundAliases.size());
 		Entry<String, Chemical> entry = foundAliases.entrySet().iterator().next();
 		assertEquals("LITDIPA", entry.getKey());
@@ -82,7 +82,7 @@ public class SynonymRecognitionTest {
 		String resolvableName = "silver";
 		String smiles = Utils.resolveNameToSmiles(resolvableName);
 		assertNotNull(resolvableName +" should be resolvable", smiles);
-		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl , ChemicalType.exact);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl , ChemicalEntityType.exact);
 		assertEquals(0, foundAliases.size());
 	}
 	
@@ -96,7 +96,7 @@ public class SynonymRecognitionTest {
 		String resolvableName = "dimethyl sulfoxide";
 		String smiles = Utils.resolveNameToSmiles(resolvableName);
 		assertNotNull(resolvableName +" should be resolvable", smiles);
-		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalType.falsePositive);
+		Map<String, Chemical> foundAliases = parser.findAliasDefinitions(moleculeEl, ChemicalEntityType.falsePositive);
 		assertEquals(0, foundAliases.size());
 	}
 
