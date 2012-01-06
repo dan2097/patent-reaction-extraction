@@ -41,21 +41,21 @@ public class ChemicalTypeAssigner {
 	static void assignTypeToChemical(Element mol, Chemical chem) {
 		String chemicalName = chem.getName();
 		if (isFalsePositive(chemicalName, mol)){
-			chem.setEntityType(ChemicalType.falsePositive);
+			chem.setEntityType(ChemicalEntityType.falsePositive);
 		}
 		else if (!determineTypeFromSurroundingText(mol, chem)){
 			determineTypeFromChemicalName(chemicalName, chem);
 		}
 		
-		if (!ChemicalType.falsePositive.equals(chem.getEntityType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
-			chem.setEntityType(ChemicalType.definiteReference);
+		if (!ChemicalEntityType.falsePositive.equals(chem.getEntityType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
+			chem.setEntityType(ChemicalEntityType.definiteReference);
 		}
 		if (chem.getEntityType()==null){
 			if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
-				chem.setEntityType(ChemicalType.falsePositive);
+				chem.setEntityType(ChemicalEntityType.falsePositive);
 			}
 			else{
-				chem.setEntityType(ChemicalType.exact);
+				chem.setEntityType(ChemicalEntityType.exact);
 			}
 		}
 	}
@@ -70,17 +70,17 @@ public class ChemicalTypeAssigner {
 	 */
 	private static boolean determineTypeFromChemicalName(String chemicalName, Chemical chem) {
 		if (FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(chemicalName) != null){
-			chem.setEntityType(ChemicalType.chemicalClass);
+			chem.setEntityType(ChemicalEntityType.chemicalClass);
 			return true;
 		}
 		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(chemicalName).extractNames();
 		if (identifiedNames.size()==1 && identifiedNames.get(0).getTextValue().equals(chemicalName)){
 			switch (identifiedNames.get(0).getNameType()) {
 			case family:
-				chem.setEntityType(ChemicalType.chemicalClass);
+				chem.setEntityType(ChemicalEntityType.chemicalClass);
 				return true;
 			case part:
-				chem.setEntityType(ChemicalType.fragment);
+				chem.setEntityType(ChemicalEntityType.fragment);
 				return true;
 			default:
 				//"polymer" and "complete" are insufficient to classify without surrounding text
@@ -88,7 +88,7 @@ public class ChemicalTypeAssigner {
 			}
 		}
 		else if (matchPluralEnding.matcher(chemicalName).matches()){
-			chem.setEntityType(ChemicalType.chemicalClass);
+			chem.setEntityType(ChemicalEntityType.chemicalClass);
 			return true;
 		}
 		return false;
@@ -106,31 +106,31 @@ public class ChemicalTypeAssigner {
 		Element nextEl = Utils.getNextElement(mol);
 		if (nextEl !=null){//examine the head noun
 			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
-				chem.setEntityType(ChemicalType.falsePositive);
+				chem.setEntityType(ChemicalEntityType.falsePositive);
 				return true;
 			}
 			else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
-				chem.setEntityType(ChemicalType.fragment);
+				chem.setEntityType(ChemicalEntityType.fragment);
 				return true;
 			}
 		}
 		Element previousEl = getElementBeforeFirstOSCARCM(mol);
 		if (previousEl !=null){
 			if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
-				chem.setEntityType(ChemicalType.falsePositive);
+				chem.setEntityType(ChemicalEntityType.falsePositive);
 				return true;
 			}
 			else if (previousEl.getLocalName().equals(DT)){
-				chem.setEntityType(ChemicalType.chemicalClass);
+				chem.setEntityType(ChemicalEntityType.chemicalClass);
 				return true;
 			}
 			else if (previousEl.getLocalName().equals(DT_THE)){
-				chem.setEntityType(ChemicalType.definiteReference);
+				chem.setEntityType(ChemicalEntityType.definiteReference);
 				return true;
 			}
 		}
 		if (nextEl !=null && matchClassQualifier.matcher(nextEl.getValue()).matches()){
-			chem.setEntityType(ChemicalType.chemicalClass);
+			chem.setEntityType(ChemicalEntityType.chemicalClass);
 			return true;
 		}
 		return false;

@@ -108,7 +108,7 @@ public class ExperimentalSectionParser {
 
 	private void attemptToResolveAnaphora(Element molOrUnnamedEl, Chemical cm) {
 		if (cm.getEntityType()!=null){
-			if (cm.getSmiles()!=null && !ChemicalType.definiteReference.equals(cm.getEntityType())){
+			if (cm.getSmiles()!=null && !ChemicalEntityType.definiteReference.equals(cm.getEntityType())){
 				//for molecules with known smiles that do not appear to be a back reference do not attempt to resolve the structure by back reference
 				return;
 			}
@@ -215,9 +215,9 @@ public class ExperimentalSectionParser {
 	 * @param type
 	 * @return
 	 */
-	Map<String, Chemical> findAliasDefinitions(Element moleculeEl, ChemicalType type) {
+	Map<String, Chemical> findAliasDefinitions(Element moleculeEl, ChemicalEntityType type) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
-		if (type!=ChemicalType.exact && type!=ChemicalType.definiteReference){
+		if (type!=ChemicalEntityType.exact && type!=ChemicalEntityType.definiteReference){
 			return aliasToChemicalMap;
 		}
 		aliasToChemicalMap.putAll(extractSynonymousChemicalNameAliases(moleculeEl));

@@ -29,7 +29,7 @@ public class Chemical{
 	private Double stoichiometry;
 	private String state;
 	private ChemicalRole role = null;
-	private ChemicalType entityType = null;
+	private ChemicalEntityType entityType = null;
 
 	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
 
@@ -278,11 +278,11 @@ public class Chemical{
 	 * A type indicates whether the name describes an exact compound, fragment, class etc.
 	 * @return
 	 */
-	public ChemicalType getEntityType() {
+	public ChemicalEntityType getEntityType() {
 		return entityType;
 	}
 
-	void setEntityType(ChemicalType entityType) {
+	void setEntityType(ChemicalEntityType entityType) {
 		this.entityType = entityType;
 	}
 	
