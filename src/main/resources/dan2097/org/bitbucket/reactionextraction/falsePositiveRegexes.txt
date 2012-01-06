@@ -56,7 +56,8 @@ xenon
 
 #Miscellany
 [a-z]
-ESI\+
+ES
+ESI[+]?
 ESMS
 .*ES[\+\-].*
 .*=.*
