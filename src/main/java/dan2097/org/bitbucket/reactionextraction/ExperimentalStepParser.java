@@ -214,16 +214,15 @@ public class ExperimentalStepParser {
 				continue;
 			}
 			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getEquivalents() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
-			if ((foundProductWithQuantity && !hasQuantity) || ReactionExtractionMethods.isKnownSolvent(chem)){
+			ChemicalRole believedRole = ChemicalRoleAssigner.determineChemicalRole(synthesizedMolecule, chem);
+			if ((foundProductWithQuantity && !hasQuantity) || ReactionExtractionMethods.isKnownSolvent(chem) || believedRole.equals(ChemicalRole.solvent) || believedRole.equals(ChemicalRole.catalyst)){
 				continue;//skip erroneous characterisation chemicals
 			}
 			if (hasQuantity){
 				foundProductWithQuantity =true;
 			}
 			products.add(synthesizedMolecule);
-			if (chem.getRole()==null){
-				chem.setRole(ChemicalRole.product);
-			}
+			chem.setRole(ChemicalRole.product);
 		}
 		return products;
 	}
@@ -265,7 +264,8 @@ public class ExperimentalStepParser {
 		List<Element> synthesizePhraseProductMolecules = identifySynthesizedProductMolecules(phrase);
 		for (Element synthesizedMolecule : synthesizePhraseProductMolecules) {
 			Chemical chem = moleculeToChemicalMap.get(synthesizedMolecule);
-			if (chem.getEntityType().equals(ChemicalType.falsePositive) || ReactionExtractionMethods.isKnownSolvent(chem)){
+			ChemicalRole believedRole = ChemicalRoleAssigner.determineChemicalRole(synthesizedMolecule, chem);
+			if (chem.getEntityType().equals(ChemicalType.falsePositive) || ReactionExtractionMethods.isKnownSolvent(chem) || believedRole.equals(ChemicalRole.solvent) || believedRole.equals(ChemicalRole.catalyst)){
 				continue;
 			}
 			products.add(synthesizedMolecule);
