@@ -92,7 +92,7 @@ public class ExperimentalSectionParser {
 			for (Element moleculeEl : moleculeEls) {
 				Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(moleculeEl);
 				moleculeToChemicalMap.put(moleculeEl, cm);
-				ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, cm);
+				cm.setEntityType(ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, cm));
 				attemptToResolveAnaphora(moleculeEl, cm);
 				aliasToChemicalMap.putAll(findAliasDefinitions(moleculeEl, cm.getEntityType()));
 			}
@@ -101,7 +101,7 @@ public class ExperimentalSectionParser {
 				Chemical cm = generateChemicalFromMoleculeElAndLocalInformation(unnamedMoleculeEl);
 				moleculeToChemicalMap.put(unnamedMoleculeEl, cm);
 				attemptToResolveAnaphora(unnamedMoleculeEl, cm);
-				ChemicalTypeAssigner.assignTypeToChemical(unnamedMoleculeEl, cm);
+				cm.setEntityType(ChemicalTypeAssigner.determineEntityTypeOfChemical(unnamedMoleculeEl, cm));
 			}
 		}
 	}

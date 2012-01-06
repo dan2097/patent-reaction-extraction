@@ -17,8 +17,7 @@ public class ChemicalTypeAssignmentTest {
 		alphaNum.appendChild("4H");
 		moleculeEl.appendChild(alphaNum);
 		Chemical chem = new Chemical("4H");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.falsePositive, chem.getEntityType());
+		assertEquals(ChemicalEntityType.falsePositive, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -33,8 +32,7 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("benzene-d6");
 		chem.setChemicalIdentifierPair(new ChemicalIdentifierPair("[2H]C1=C([2H])C([2H])=C([2H])C([2H])=C1[2H]", "InChI=1/C6H6/c1-2-4-6-5-3-1/h1-6H/i1D,2D,3D,4D,5D,6D"));
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.falsePositive, chem.getEntityType());
+		assertEquals(ChemicalEntityType.falsePositive, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -48,8 +46,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("tms");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.falsePositive, chem.getEntityType());
+		assertEquals(ChemicalEntityType.falsePositive, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -65,8 +62,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("ice-H2O");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.falsePositive, chem.getEntityType());
+		assertEquals(ChemicalEntityType.falsePositive, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -80,8 +76,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("2,3-dimethylbutane");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.exact, chem.getEntityType());
+		assertEquals(ChemicalEntityType.exact, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -96,8 +91,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -119,8 +113,7 @@ public class ChemicalTypeAssignmentTest {
 		referenceToCompound.appendChild(new Element(RRB));
 		moleculeEl.appendChild(referenceToCompound);
 		Chemical chem = new Chemical("pyridine");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -135,8 +128,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("pyridine");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -153,8 +145,7 @@ public class ChemicalTypeAssignmentTest {
 		qualifier.appendChild("compound");
 		sentence.appendChild(qualifier);
 		Chemical chem = new Chemical("pyridine");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -171,8 +162,7 @@ public class ChemicalTypeAssignmentTest {
 		qualifier.appendChild("ring");
 		sentence.appendChild(qualifier);
 		Chemical chem = new Chemical("pyridine");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.fragment, chem.getEntityType());
+		assertEquals(ChemicalEntityType.fragment, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -186,8 +176,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("phenols");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -201,8 +190,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("foobars");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 
 	@Test
@@ -216,8 +204,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("ethyl");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.fragment, chem.getEntityType());
+		assertEquals(ChemicalEntityType.fragment, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -238,8 +225,7 @@ public class ChemicalTypeAssignmentTest {
 		referenceToCompound.appendChild(new Element(RRB));
 		moleculeEl.appendChild(referenceToCompound);
 		Chemical chem = new Chemical("phenols");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -255,8 +241,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -272,8 +257,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("furan");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -292,8 +276,7 @@ public class ChemicalTypeAssignmentTest {
 		cmCont.appendChild(cm2);
 		moleculeEl.appendChild(cmCont);
 		Chemical chem = new Chemical("sulfamic acid");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -312,8 +295,7 @@ public class ChemicalTypeAssignmentTest {
 		cmCont.appendChild(cm2);
 		moleculeEl.appendChild(cmCont);
 		Chemical chem = new Chemical("sulfamic acid");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -327,8 +309,7 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("Sulfonic acid");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.chemicalClass, chem.getEntityType());
+		assertEquals(ChemicalEntityType.chemicalClass, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -343,8 +324,7 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(cmContainer);
 		moleculeEl.appendChild(new Element(REFERENCETOCOMPOUND_Container));
 		Chemical chem = new Chemical("indole");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -360,8 +340,7 @@ public class ChemicalTypeAssignmentTest {
 		moleculeEl.appendChild(new Element(IN_FROM));
 		moleculeEl.appendChild(new Element(PROCEDURE_Container));
 		Chemical chem = new Chemical("sulfone");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 	
 	@Test
@@ -376,7 +355,6 @@ public class ChemicalTypeAssignmentTest {
 		cmContainer.appendChild(cm);
 		moleculeEl.appendChild(cmContainer);
 		Chemical chem = new Chemical("amide");
-		ChemicalTypeAssigner.assignTypeToChemical(moleculeEl, chem);
-		assertEquals(ChemicalEntityType.definiteReference, chem.getEntityType());
+		assertEquals(ChemicalEntityType.definiteReference, ChemicalTypeAssigner.determineEntityTypeOfChemical(moleculeEl, chem));
 	}
 }
