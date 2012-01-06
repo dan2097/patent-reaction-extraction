@@ -17,32 +17,28 @@ public class ChemicalRoleAssignmentTest {
 		Element chemicalEl = new Element(MOLECULE_Container);
 		chemicalEl.addAttribute(new Attribute(ChemicalTaggerAtrs.ROLE_ATR, ChemicalTaggerAtrs.SOLVENT_ROLE_VAL));
 		Chemical chemical = new Chemical("foo");
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.solvent, chemical.getRole());
+		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 
 	@Test
 	public void assignedAsCatalystFromName1(){
 		Element chemicalEl = new Element(MOLECULE_Container);
 		Chemical chemical = new Chemical("Crabtree catalyst");//uses the word catalyst
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+		assertEquals(ChemicalRole.catalyst, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 	
 	@Test
 	public void assignedAsCatalystFromName2(){
 		Element chemicalEl = new Element(MOLECULE_Container);
 		Chemical chemical = new Chemical("Raney Nickel");//lookup
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+		assertEquals(ChemicalRole.catalyst, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 	
 	@Test
 	public void assignedAsCatalystFromName3(){
 		Element chemicalEl = new Element(MOLECULE_Container);
 		Chemical chemical = new Chemical("Pd / C");//lookup
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+		assertEquals(ChemicalRole.catalyst, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 	
 	@Test
@@ -50,16 +46,14 @@ public class ChemicalRoleAssignmentTest {
 		Element chemicalEl = new Element(MOLECULE_Container);
 		chemicalEl.addAttribute(new Attribute(ChemicalTaggerAtrs.ROLE_ATR, ChemicalTaggerAtrs.CATALYST_ROLE_VAL));
 		Chemical chemical = new Chemical("foo");
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.catalyst, chemical.getRole());
+		assertEquals(ChemicalRole.catalyst, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 	
 	@Test
 	public void insufficientInformationToClassAsSolventOrCatalystTest(){
 		Element chemicalEl = new Element(MOLECULE_Container);
 		Chemical chemical = new Chemical("foo");
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.reactant, chemical.getRole());
+		assertEquals(ChemicalRole.reactant, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 	
 	@Test
@@ -70,8 +64,7 @@ public class ChemicalRoleAssignmentTest {
 		Element chemicalEl = new Element(MOLECULE_Container);
 		parent.appendChild(chemicalEl);
 		Chemical chemical = new Chemical("foo");
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.solvent, chemical.getRole());
+		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 	
 	@Test
@@ -101,16 +94,14 @@ public class ChemicalRoleAssignmentTest {
 		sentence.appendChild(and);
 		sentence.appendChild(nounphrase);
 		sentence.appendChild(new Element(STOP));
-		
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl2, chemical2);
-		assertEquals(ChemicalRole.solvent, chemical2.getRole());
+
+		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(chemicalEl2, chemical2));
 	}
 	
 	@Test
 	public void assignedAsSovlentFromName(){
 		Element chemicalEl = new Element(MOLECULE_Container);
 		Chemical chemical = new Chemical("brine");
-		ChemicalRoleAssigner.assignRoleToChemical(chemicalEl, chemical);
-		assertEquals(ChemicalRole.solvent, chemical.getRole());
+		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(chemicalEl, chemical));
 	}
 }
