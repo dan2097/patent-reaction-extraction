@@ -3,48 +3,47 @@ package dan2097.org.bitbucket.reactionextraction;
 import nu.xom.Element;
 import nu.xom.Node;
 
-import org.apache.log4j.Logger;
-
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
 
 public class ChemicalRoleAssigner {
-
-	private static Logger LOG = Logger.getLogger(ChemicalRoleAssigner.class);
 	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 
-	static void assignRoleToChemical(Element chemicalEl, Chemical chemical) {
+	/**
+	 * Determines the chemical role by:
+	 * examining the chemical structure against known catalysts/InChIs
+	 * surrounding textual clues
+	 * heuristics based on the occurrence of amounts/yield/equaivalents
+	 * @param chemicalEl
+	 * @param chemical
+	 * @return
+	 */
+	static ChemicalRole determineChemicalRole(Element chemicalEl, Chemical chemical) {
 		String lcName = chemical.getName().toLowerCase(); 
-		if (chemical.getEntityType()== ChemicalType.falsePositive){
-			LOG.trace(chemical.getName() +" is believed to be a false positive and has been ignored");
-		}
-		else if (chemical.getRole() !=null){//role already has been explicitly assigned
-			return;
-		}
-		else if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
-			chemical.setRole(ChemicalRole.catalyst);
+		if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
+			return ChemicalRole.catalyst;
 		}
 		else if (isKnownTrivialCatalyst(lcName)){
-			chemical.setRole(ChemicalRole.catalyst);
+			return ChemicalRole.catalyst;
 		}
 		else if (ChemicalTaggerAtrs.CATALYST_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-			chemical.setRole(ChemicalRole.catalyst);
+			return ChemicalRole.catalyst;
 		}
 		else if (chemical.hasAmountOrEquivalentsOrYield()){
-			chemical.setRole(ChemicalRole.reactant);
+			return ChemicalRole.reactant;
 		}
 		else if (ChemicalTaggerAtrs.SOLVENT_ROLE_VAL.equals(chemicalEl.getAttributeValue(ChemicalTaggerAtrs.ROLE_ATR))){
-			chemical.setRole(ChemicalRole.solvent);
+			return ChemicalRole.solvent;
 		}
 		else if (assignAsSolventDueToInKeyword(chemicalEl, chemical) ){
-			chemical.setRole(ChemicalRole.solvent);
+			return ChemicalRole.solvent;
 		}
 		else if (chemicalKnowledge.getSolventNames().contains(lcName)){
-			chemical.setRole(ChemicalRole.solvent);
+			return ChemicalRole.solvent;
 		}
 		else {
-			chemical.setRole(ChemicalRole.reactant);
+			return ChemicalRole.reactant;
 		}
 	}
 

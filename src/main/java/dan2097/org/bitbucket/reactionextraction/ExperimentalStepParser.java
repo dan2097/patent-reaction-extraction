@@ -72,14 +72,8 @@ public class ExperimentalStepParser {
 			for (Entry<Element, PhraseType> entry: phraseMap.entrySet()) {
 				Element phrase = entry.getKey();
 				Reaction tempReaction = new Reaction();
-				Set<Element> reagents;
 				boolean inSynthesis = entry.getValue().equals(PhraseType.synthesis);
-				if (inSynthesis){
-					reagents = findAllReagents(phrase);
-				}
-				else{
-					reagents = Collections.emptySet();
-				}
+				Set<Element> reagents = inSynthesis ? findAllReagents(phrase) : Collections.<Element> emptySet();
 				Set<Element> products = new LinkedHashSet<Element>();
 				Set<Element> productAfterReagents = identifyYieldedProduct(phrase);
 				productAfterReagents.addAll(reagentsWithAYield(reagents));
@@ -102,7 +96,13 @@ public class ExperimentalStepParser {
 				chemicals.addAll(reagents);
 				resolveLocalBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
 				for (Element reagent : reagents) {
-					ChemicalRoleAssigner.assignRoleToChemical(reagent, moleculeToChemicalMap.get(reagent));
+					Chemical reagentChem = moleculeToChemicalMap.get(reagent);
+					if (reagentChem.getEntityType()== ChemicalType.falsePositive){
+						LOG.trace(reagentChem.getName() +" is believed to be a false positive and has been ignored");
+					}
+					else if (reagentChem.getRole() ==null){//only assign a role if one has not already been explicitly assigned
+						reagentChem.setRole(ChemicalRoleAssigner.determineChemicalRole(reagent, reagentChem));
+					}
 				}
 				for (Element chemical : chemicals) {
 					Chemical chemChem = moleculeToChemicalMap.get(chemical);
