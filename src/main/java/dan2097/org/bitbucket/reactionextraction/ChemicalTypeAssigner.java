@@ -34,106 +34,98 @@ public class ChemicalTypeAssigner {
 	}
 
 	/**
-	 * Assigns a preliminary type to each chemical based on the chemical name itself and local textual information
+	 * Determines an entity type for a chemical entity based on the chemical name itself and local textual information
 	 * @param mol
 	 * @param chem
 	 */
-	static void assignTypeToChemical(Element mol, Chemical chem) {
+	static ChemicalEntityType determineEntityTypeOfChemical(Element mol, Chemical chem) {
 		String chemicalName = chem.getName();
 		if (isFalsePositive(chemicalName, mol)){
-			chem.setEntityType(ChemicalEntityType.falsePositive);
+			return ChemicalEntityType.falsePositive;
 		}
-		else if (!determineTypeFromSurroundingText(mol, chem)){
-			determineTypeFromChemicalName(chemicalName, chem);
+		ChemicalEntityType entityType = determineTypeFromSurroundingText(mol, chem);
+		if (entityType==null){
+			entityType =determineTypeFromChemicalName(chemicalName, chem);
 		}
-		
+
 		if (!ChemicalEntityType.falsePositive.equals(chem.getEntityType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
-			chem.setEntityType(ChemicalEntityType.definiteReference);
+			return ChemicalEntityType.definiteReference;
 		}
-		if (chem.getEntityType()==null){
-			if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
-				chem.setEntityType(ChemicalEntityType.falsePositive);
+		if (entityType!=null){
+			return entityType;
+		}
+		if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
+			return ChemicalEntityType.falsePositive;
+		}
+		else{
+			return ChemicalEntityType.exact;
+		}
+	}
+
+	/**
+	 * Looks at the word before the first OSCARCM and after the MOLECULE
+	 * to determine whether the chemical type
+	 * Returns null if type cannot be determined from the surrounding text
+	 * @param mol
+	 * @param chem
+	 * @return 
+	 */
+	private static ChemicalEntityType determineTypeFromSurroundingText(Element mol, Chemical chem) {
+		Element nextEl = Utils.getNextElement(mol);
+		if (nextEl !=null){//examine the head noun
+			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
+				return ChemicalEntityType.falsePositive;
 			}
-			else{
-				chem.setEntityType(ChemicalEntityType.exact);
+			else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
+				return ChemicalEntityType.fragment;
 			}
 		}
+		Element previousEl = getElementBeforeFirstOSCARCM(mol);
+		if (previousEl !=null){
+			if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
+				return ChemicalEntityType.falsePositive;
+			}
+			else if (previousEl.getLocalName().equals(DT)){
+				return ChemicalEntityType.chemicalClass;
+			}
+			else if (previousEl.getLocalName().equals(DT_THE)){
+				return ChemicalEntityType.definiteReference;
+			}
+		}
+		if (nextEl !=null && matchClassQualifier.matcher(nextEl.getValue()).matches()){
+			return ChemicalEntityType.chemicalClass;
+		}
+		return null;
 	}
 
 	/**
 	 * Attempts to assign a type using the output of the OPSIN document extractor is possible
 	 * or failing that from whether the name has a plural ending
-	 * Returns true or false depending on whether the type was set from just the chemical name
+	 * Returns null if the type cannot be determined from just the chemical name
 	 * @param chemicalName
 	 * @param chem
 	 * @return 
 	 */
-	private static boolean determineTypeFromChemicalName(String chemicalName, Chemical chem) {
+	private static ChemicalEntityType determineTypeFromChemicalName(String chemicalName, Chemical chem) {
 		if (FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(chemicalName) != null){
-			chem.setEntityType(ChemicalEntityType.chemicalClass);
-			return true;
+			return ChemicalEntityType.chemicalClass;
 		}
 		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(chemicalName).extractNames();
 		if (identifiedNames.size()==1 && identifiedNames.get(0).getTextValue().equals(chemicalName)){
 			switch (identifiedNames.get(0).getNameType()) {
 			case family:
-				chem.setEntityType(ChemicalEntityType.chemicalClass);
-				return true;
+				return ChemicalEntityType.chemicalClass;
 			case part:
-				chem.setEntityType(ChemicalEntityType.fragment);
-				return true;
+				return ChemicalEntityType.fragment;
 			default:
 				//"polymer" and "complete" are insufficient to classify without surrounding text
 				break;
 			}
 		}
 		else if (matchPluralEnding.matcher(chemicalName).matches()){
-			chem.setEntityType(ChemicalEntityType.chemicalClass);
-			return true;
+			return ChemicalEntityType.chemicalClass;
 		}
-		return false;
-	}
-
-	/**
-	 * Looks at the word before the first OSCARCM and after the MOLECULE
-	 * to determine whether the chemical type
-	 * Returns true or false depending on whether the type was set from the surrounding text
-	 * @param mol
-	 * @param chem
-	 * @return 
-	 */
-	private static boolean determineTypeFromSurroundingText(Element mol, Chemical chem) {
-		Element nextEl = Utils.getNextElement(mol);
-		if (nextEl !=null){//examine the head noun
-			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
-				chem.setEntityType(ChemicalEntityType.falsePositive);
-				return true;
-			}
-			else if (matchFragmentQualifier.matcher(nextEl.getValue()).matches()){
-				chem.setEntityType(ChemicalEntityType.fragment);
-				return true;
-			}
-		}
-		Element previousEl = getElementBeforeFirstOSCARCM(mol);
-		if (previousEl !=null){
-			if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
-				chem.setEntityType(ChemicalEntityType.falsePositive);
-				return true;
-			}
-			else if (previousEl.getLocalName().equals(DT)){
-				chem.setEntityType(ChemicalEntityType.chemicalClass);
-				return true;
-			}
-			else if (previousEl.getLocalName().equals(DT_THE)){
-				chem.setEntityType(ChemicalEntityType.definiteReference);
-				return true;
-			}
-		}
-		if (nextEl !=null && matchClassQualifier.matcher(nextEl.getValue()).matches()){
-			chem.setEntityType(ChemicalEntityType.chemicalClass);
-			return true;
-		}
-		return false;
+		return null;
 	}
 
 	private static boolean hasQualifyingIdentifier(Element mol) {
