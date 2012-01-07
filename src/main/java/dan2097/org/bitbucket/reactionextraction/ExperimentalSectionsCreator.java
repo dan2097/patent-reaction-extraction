@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import uk.ac.cam.ch.wwmm.chemicaltagger.Formatter;
 import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
@@ -339,10 +340,9 @@ public class ExperimentalSectionsCreator {
 	 * @return
 	 */
 	private String findTextCorrespondingToChemicallyTaggedText(Element taggedTextEl, String text) {
-		//TODO do this properly
 		String extractedText = Utils.getElementText(taggedTextEl);
 		char[] extractedCharArray = extractedText.toCharArray();
-		char[] inputCharArray = text.replaceAll("sulph", "sulf").toCharArray();
+		char[] inputCharArray = Formatter.normaliseText(text).toCharArray();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0, j=0; i < inputCharArray.length && j < extractedCharArray.length; i++, j++) {
 			if (inputCharArray[i] == ' '){
