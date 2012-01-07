@@ -43,9 +43,9 @@ public class ChemicalTypeAssigner {
 		if (isFalsePositive(chemicalName, mol)){
 			return ChemicalEntityType.falsePositive;
 		}
-		ChemicalEntityType entityType = determineTypeFromSurroundingText(mol, chem);
+		ChemicalEntityType entityType = determineTypeFromSurroundingText(mol);
 		if (entityType==null){
-			entityType =determineTypeFromChemicalName(chemicalName, chem);
+			entityType =determineTypeFromChemicalName(chemicalName);
 		}
 
 		if (!ChemicalEntityType.falsePositive.equals(chem.getEntityType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
@@ -67,10 +67,9 @@ public class ChemicalTypeAssigner {
 	 * to determine whether the chemical type
 	 * Returns null if type cannot be determined from the surrounding text
 	 * @param mol
-	 * @param chem
 	 * @return 
 	 */
-	private static ChemicalEntityType determineTypeFromSurroundingText(Element mol, Chemical chem) {
+	static ChemicalEntityType determineTypeFromSurroundingText(Element mol) {
 		Element nextEl = Utils.getNextElement(mol);
 		if (nextEl !=null){//examine the head noun
 			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
@@ -82,10 +81,11 @@ public class ChemicalTypeAssigner {
 		}
 		Element previousEl = getElementBeforeFirstOSCARCM(mol);
 		if (previousEl !=null){
-			if (matchSurfacePreQualifier.matcher(previousEl.getValue()).matches()){
+			String previousElVal = previousEl.getValue();
+			if (matchSurfacePreQualifier.matcher(previousElVal).matches()){
 				return ChemicalEntityType.falsePositive;
 			}
-			else if (previousEl.getLocalName().equals(DT)){
+			else if (previousElVal.equalsIgnoreCase("a") || previousElVal.equalsIgnoreCase("an")){
 				return ChemicalEntityType.chemicalClass;
 			}
 			else if (previousEl.getLocalName().equals(DT_THE)){
@@ -103,10 +103,9 @@ public class ChemicalTypeAssigner {
 	 * or failing that from whether the name has a plural ending
 	 * Returns null if the type cannot be determined from just the chemical name
 	 * @param chemicalName
-	 * @param chem
 	 * @return 
 	 */
-	private static ChemicalEntityType determineTypeFromChemicalName(String chemicalName, Chemical chem) {
+	private static ChemicalEntityType determineTypeFromChemicalName(String chemicalName) {
 		if (FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(chemicalName) != null){
 			return ChemicalEntityType.chemicalClass;
 		}

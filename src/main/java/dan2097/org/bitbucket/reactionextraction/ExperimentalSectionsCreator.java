@@ -1,7 +1,9 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -24,6 +26,7 @@ import nu.xom.Nodes;
 public class ExperimentalSectionsCreator {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionsCreator.class);
 	private static ParagraphClassifier paragraphClassifier = ParagraphClassifierHolder.getInstance();
+	private static Pattern matchCompoundWith = Pattern.compile("compd\\. with|compound with", Pattern.CASE_INSENSITIVE);
 	
 	private final List<Element> orderedHeadingsAndParagraphs;
 	private final List<ExperimentalSection> experimentalSections =new ArrayList<ExperimentalSection>();
@@ -90,35 +93,35 @@ public class ExperimentalSectionsCreator {
 				moleculesFound.remove(i);
 			}
 		}
-		if (moleculesFound.size()>1){
-			
-			
-			//TODO consider reimplementing this functionality if performance is still okay
-//			Element startingEl =moleculesFound.get(0);
-//			Elements children;
-//			while ((children = startingEl.getChildElements()).size()!=0){
-//				startingEl = children.get(0);
+//		if (moleculesFound.size()==2){
+//			LinkedList<Element> stack = new LinkedList<Element>();
+//			stack.add(moleculesFound.get(0));
+//			StringBuilder sb = new StringBuilder();
+//			Element tempMoleculeThatWasReplaced = null;
+//			boolean seenMolecule = false;
+//			while (stack.size()>0){
+//				Element currentElement =stack.removeLast();
+//				Elements children =currentElement.getChildElements();
+//				if (children.size()==0){
+//					if (sb.length()!=0){
+//						sb.append(' ');
+//					}
+//					sb.append(currentElement.getValue());
+//				}
+//				if (currentElement.getLocalName().equals(MOLECULE_Container)){
+//					String beforeMoleculeString = sb.toString();
+//					if (matchCompoundWith.matcher(beforeMoleculeString).matches()){
+//						
+//					}
+//					break;
+//				}
+//				else{
+//					for (int i = children.size()-1; i >=0; i--) {
+//						stack.add(children.get(i));
+//					}
+//				}
 //			}
-//			Element lastMolecule = moleculesFound.get(moleculesFound.size() - 1);
-//			StringBuilder nameToTest = new StringBuilder();
-//			do{
-//				Element nextEl = Utils.getNextElement(startingEl);
-//			}
-//			while (){
-//			NameToStructure n2s;
-//			try {
-//				n2s = NameToStructure.getInstance();
-//			} catch (NameToStructureException e) {
-//				throw new RuntimeException(e);
-//			}
-//			IdentifiedChemicalName firstWord = moleculesFound.get(0);
-//			IdentifiedChemicalName lastWord = moleculesFound.get(moleculesFound.size() - 1);
-//			String nameToTest = hiddenHeadingEl.substring(firstWord.getStart(), lastWord.getEnd());
-//			if (n2s.parseChemicalName(hiddenHeadingEl).getStatus()!=OPSIN_RESULT_STATUS.FAILURE){
-//				moleculesFound.clear();
-//				moleculesFound.add(new IdentifiedChemicalName(firstWord.getWordPositionStartIndice(), lastWord.getWordPositionEndIndice(), firstWord.getStart(), lastWord.getEnd(), nameToTest, nameToTest, NameType.complete));
-//			}
-		}
+//		}
 		return moleculesFound;
 	}
 	
@@ -144,10 +147,27 @@ public class ExperimentalSectionsCreator {
 		}
 		if (moleculesFound.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
-			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(0));
-			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(nameComponents), alias);
+			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(createChemicalFromHeadingMoleculeEl(moleculesFound.get(0)), alias);
 			addNameAliasPair(nameAliasPair);
 		}
+	}
+
+	/**
+	 * Creates a chemical from the name contained with the moleculeEl
+	 * If the name appears to be a chemical class e.g. "amide", "a benzaldehyde" smiles/inchi are not set
+	 * @param moleculeEl
+	 * @return
+	 */
+	private Chemical createChemicalFromHeadingMoleculeEl(Element moleculeEl) {
+		List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculeEl);
+		Chemical chem = Utils.createChemicalFromName(nameComponents);
+		String name = chem.getName();
+		String smarts = FunctionalGroupDefinitions.getSmartsFromChemicalName(name);
+		chem.setSmarts(smarts);
+		if ((smarts !=null && FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(name)!=null) || ChemicalEntityType.chemicalClass.equals(ChemicalTypeAssigner.determineTypeFromSurroundingText(moleculeEl))){
+			chem.setChemicalIdentifierPair(new ChemicalIdentifierPair(null, null));
+		}
+		return chem;
 	}
 
 	private boolean isAllCapitalLetters(String text) {
@@ -306,8 +326,7 @@ public class ExperimentalSectionsCreator {
 		}
 		if (moleculesFound.size()==1){
 			String alias = TitleTextAliasExtractor.findAlias(headingText);
-			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(0));
-			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(Utils.createChemicalFromName(nameComponents), alias);
+			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(createChemicalFromHeadingMoleculeEl(moleculesFound.get(0)), alias);
 			addNameAliasPair(nameAliasPair);
 		}
 	}
