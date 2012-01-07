@@ -70,7 +70,7 @@ public class ChemicalTypeAssigner {
 	 * @return 
 	 */
 	static ChemicalEntityType determineTypeFromSurroundingText(Element mol) {
-		Element nextEl = Utils.getNextElement(mol);
+		Element nextEl = getElementAfterLastOSCARCM(mol);
 		if (nextEl !=null){//examine the head noun
 			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
 				return ChemicalEntityType.falsePositive;
@@ -156,6 +156,16 @@ public class ChemicalTypeAssigner {
 			}
 		}
 		return false;
+	}
+	
+	private static Element getElementAfterLastOSCARCM(Element mol) {
+		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
+		if (oscarcms.size()>0){
+			return Utils.getNextElement(oscarcms.get(oscarcms.size()-1));
+		}
+		else{
+			return Utils.getNextElement(mol);
+		}
 	}
 	
 	private static Element getElementBeforeFirstOSCARCM(Element mol) {
