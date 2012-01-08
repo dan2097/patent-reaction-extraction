@@ -1,22 +1,9 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
-import uk.ac.cam.ch.wwmm.chemicaltagger.Formatter;
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-
-import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
-import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
-import dan2097.org.bitbucket.utility.Utils;
-import dan2097.org.bitbucket.utility.XMLAtrs;
-import dan2097.org.bitbucket.utility.XMLTags;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -24,10 +11,20 @@ import nu.xom.Elements;
 import nu.xom.Node;
 import nu.xom.Nodes;
 
+import org.apache.log4j.Logger;
+
+import uk.ac.cam.ch.wwmm.chemicaltagger.Formatter;
+import uk.ac.cam.ch.wwmm.opsin.StringTools;
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
+import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
+import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XMLAtrs;
+import dan2097.org.bitbucket.utility.XMLTags;
+
 public class ExperimentalSectionsCreator {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionsCreator.class);
 	private static ParagraphClassifier paragraphClassifier = ParagraphClassifierHolder.getInstance();
-	private static Pattern matchCompoundWith = Pattern.compile("compd\\. with|compound with", Pattern.CASE_INSENSITIVE);
 	
 	private final List<Element> orderedHeadingsAndParagraphs;
 	private final List<ExperimentalSection> experimentalSections =new ArrayList<ExperimentalSection>();
@@ -94,35 +91,6 @@ public class ExperimentalSectionsCreator {
 				moleculesFound.remove(i);
 			}
 		}
-//		if (moleculesFound.size()==2){
-//			LinkedList<Element> stack = new LinkedList<Element>();
-//			stack.add(moleculesFound.get(0));
-//			StringBuilder sb = new StringBuilder();
-//			Element tempMoleculeThatWasReplaced = null;
-//			boolean seenMolecule = false;
-//			while (stack.size()>0){
-//				Element currentElement =stack.removeLast();
-//				Elements children =currentElement.getChildElements();
-//				if (children.size()==0){
-//					if (sb.length()!=0){
-//						sb.append(' ');
-//					}
-//					sb.append(currentElement.getValue());
-//				}
-//				if (currentElement.getLocalName().equals(MOLECULE_Container)){
-//					String beforeMoleculeString = sb.toString();
-//					if (matchCompoundWith.matcher(beforeMoleculeString).matches()){
-//						
-//					}
-//					break;
-//				}
-//				else{
-//					for (int i = children.size()-1; i >=0; i--) {
-//						stack.add(children.get(i));
-//					}
-//				}
-//			}
-//		}
 		return moleculesFound;
 	}
 	
