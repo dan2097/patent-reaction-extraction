@@ -83,7 +83,9 @@ public class ChemicalTypeAssignmentTest {
 	public void typeDetectionTestADeterminer(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
-		sentence.appendChild(new Element(DT));
+		Element dt = new Element(DT);
+		dt.appendChild("a");
+		sentence.appendChild(dt);
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("pyridine");
@@ -98,7 +100,9 @@ public class ChemicalTypeAssignmentTest {
 	public void typeDetectionTestADeterminerQualified(){
 		Element sentence = new Element(SENTENCE_Container);
 		Element moleculeEl = new Element(MOLECULE_Container);
-		sentence.appendChild(new Element(DT));
+		Element dt = new Element(DT);
+		dt.appendChild("a");
+		sentence.appendChild(dt);
 		sentence.appendChild(moleculeEl);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("pyridine");
@@ -250,7 +254,9 @@ public class ChemicalTypeAssignmentTest {
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
 		moleculeEl.appendChild(new Element(QUANTITY_Container));
-		moleculeEl.appendChild(new Element(DT));
+		Element dt = new Element(DT);
+		dt.appendChild("a");
+		moleculeEl.appendChild(dt);
 		Element cm = new Element(OSCAR_CM);
 		cm.appendChild("furan");
 		Element cmContainer = new Element(OSCARCM_Container);
@@ -285,7 +291,9 @@ public class ChemicalTypeAssignmentTest {
 		Element moleculeEl = new Element(MOLECULE_Container);
 		sentence.appendChild(moleculeEl);
 		moleculeEl.appendChild(new Element(QUANTITY_Container));
-		moleculeEl.appendChild(new Element(DT));
+		Element dt = new Element(DT);
+		dt.appendChild("a");
+		moleculeEl.appendChild(dt);
 		Element cmCont = new Element(OSCARCM_Container);
 		Element cm1 = new Element(OSCAR_CM);
 		cm1.appendChild("sulfamic");
