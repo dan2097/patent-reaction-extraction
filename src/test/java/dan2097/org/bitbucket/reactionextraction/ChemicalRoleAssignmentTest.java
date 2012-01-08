@@ -3,10 +3,14 @@ package dan2097.org.bitbucket.reactionextraction;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import static junit.framework.Assert.assertEquals;
 
+import java.util.List;
+
 import nu.xom.Attribute;
 import nu.xom.Element;
 
 import org.junit.Test;
+
+import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 
@@ -96,6 +100,37 @@ public class ChemicalRoleAssignmentTest {
 		sentence.appendChild(new Element(STOP));
 
 		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(chemicalEl2, chemical2));
+	}
+	
+	@Test
+	public void assignedAsSolventInAMixtureOfChemTest(){
+		Element sentence = TestUtils.stringToXom(
+				"<Sentence>" +
+					"<PrepPhrase>" +
+						"<IN-IN>in</IN-IN>" +
+						"<NounPhrase>" +
+							"<DT>a</DT>" +
+							"<NN-MIXTURE>mixture</NN-MIXTURE>" +
+							"<PrepPhrase>" +
+								"<IN-OF>of</IN-OF>" +
+								"<NounPhrase>" +
+									"<MOLECULE>" +
+								    "<OSCARCM/>" +
+									"</MOLECULE>" +
+									"<CC>and</CC>" +
+									"<MOLECULE>" +
+								    "<OSCARCM/>" +
+									"</MOLECULE>" +
+								"</NounPhrase>" +
+							"</PrepPhrase>" +
+						"</NounPhrase>" +
+					"</PrepPhrase>" +
+					"<COMMA>,</COMMA>" +
+				"</Sentence>");
+		List<Element> molecules = XOMTools.getDescendantElementsWithTagName(sentence, MOLECULE_Container);
+		assertEquals("Problem with unit test", 2, molecules.size());
+		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(molecules.get(0), new Chemical("")));
+		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(molecules.get(1), new Chemical("")));
 	}
 	
 	@Test
