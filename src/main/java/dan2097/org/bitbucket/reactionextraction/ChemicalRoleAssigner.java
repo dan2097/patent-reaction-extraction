@@ -61,20 +61,25 @@ public class ChemicalRoleAssigner {
 		if (chemicalEl.getLocalName().equals(ChemicalTaggerTags.UNNAMEDMOLECULE_Container) && chemical.getVolumeValue()==null){
 			return false;
 		}
-		if (precededByIn(chemicalEl)){
+		if (precededByIn(chemicalEl) || precededByInAMixtureOf(chemicalEl)){
 			return true;
 		}
-		if (followedByStop(chemicalEl) && precededByInChemicalAnd(chemicalEl)){
+		if (precededByInChemicalAnd(chemicalEl)){
 			return true;
 		}
 		return false;
 	}
 
-	private static boolean followedByStop(Element chemicalEl) {
+	private static boolean followedByStopOrComma(Element chemicalEl) {
 		Element next = Utils.getNextElement(chemicalEl);
-		return (next != null && next.getLocalName().equals(ChemicalTaggerTags.STOP));
+		return (next != null && (next.getLocalName().equals(ChemicalTaggerTags.STOP) || next.getLocalName().equals(ChemicalTaggerTags.COMMA)));
 	}
 
+	/**
+	 * Matches cases of bar in phrases like 'in foo and bar,' or 'in a mixture of foo and bar' 
+	 * @param chemicalEl
+	 * @return
+	 */
 	private static boolean precededByInChemicalAnd(Element chemicalEl) {
 		Element previous = Utils.getPreviousElement(chemicalEl);
 		if (previous == null || !previous.getLocalName().equals(ChemicalTaggerTags.CC) || !previous.getValue().equalsIgnoreCase("and")){
@@ -86,7 +91,7 @@ public class ChemicalRoleAssigner {
 			if (molecule ==null){
 				 molecule = getParent(twoBefore, ChemicalTaggerTags.UNNAMEDMOLECULE_Container);
 			}
-			if (molecule !=null && precededByIn(molecule)){
+			if (molecule !=null && ((followedByStopOrComma(chemicalEl) && precededByIn(molecule)) || precededByInAMixtureOf(molecule))){
 				return true;
 			}
 		}
@@ -115,6 +120,23 @@ public class ChemicalRoleAssigner {
 		Element previous = Utils.getPreviousElement(chemicalEl);
 		if (previous != null && previous.getLocalName().equals(ChemicalTaggerTags.IN_IN)){
 			return true;
+		}
+		return false;
+	}
+	
+	private static boolean precededByInAMixtureOf(Element chemicalEl) {
+		Element previous = Utils.getPreviousElement(chemicalEl);
+		if (previous != null && previous.getLocalName().equals(ChemicalTaggerTags.IN_OF)){
+			previous = Utils.getPreviousElement(previous);
+			if (previous != null && previous.getValue().equalsIgnoreCase("mixture")){
+				previous = Utils.getPreviousElement(previous);
+				if (previous != null && previous.getValue().equalsIgnoreCase("a")){
+					previous = Utils.getPreviousElement(previous);
+					if (previous != null && previous.getLocalName().equals(ChemicalTaggerTags.IN_IN)){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}
