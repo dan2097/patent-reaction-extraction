@@ -435,18 +435,39 @@ public class Utils {
 			mol.aromatize();
 			rxn.addProduct(mol);
 		}
+		
+		int i=0;
+		for (IndigoObject product : rxn.iterateProducts()) {
+			product.addDataSGroup(new int[0], new int[0], "smiles", products.get(i));
+			i++;
+		}
+		
 		for (String reactantSmiles : reactants) {
 			IndigoObject mol = indigo.loadMolecule(reactantSmiles);
 			mol.foldHydrogens();
 			mol.aromatize();
 			rxn.addReactant(mol);
 		}
+
+		i=0;
+		for (IndigoObject reactant : rxn.iterateReactants()) {
+			reactant.addDataSGroup(new int[0], new int[0], "smiles", reactants.get(i));
+			i++;
+		}
+		
 		for (String spectatorSmiles : spectators) {
 			IndigoObject mol = indigo.loadMolecule(spectatorSmiles);
 			mol.foldHydrogens();
 			mol.aromatize();
 			rxn.addCatalyst(mol);
 		}
+		
+		i=0;
+		for (IndigoObject catalyst : rxn.iterateCatalysts()) {
+			catalyst.addDataSGroup(new int[0], new int[0], "smiles", spectators.get(i));
+			i++;
+		}
+		
 		return rxn;
 	}
 	

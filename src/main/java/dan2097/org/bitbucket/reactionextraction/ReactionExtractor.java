@@ -74,12 +74,14 @@ public class ReactionExtractor {
 				IndigoObject indigoReaction = Utils.convertToIndigoReaction(reaction);
 				if (reactionIsSane(reaction, indigoReaction)){
 					if (reactionIsMappable(indigoReaction)){
+						new ReactionStoichiometryDeterminer(reaction, indigoReaction).processReactionStoichiometry();
 						completeReactions.put(reaction, indigoReaction);
 					}
 					else {
 						IndigoObject modifiedReaction = attemptToProduceMappableReactionByRoleReclassification(reaction);
 						if (modifiedReaction!=null){
 							indigoReaction = modifiedReaction;
+							new ReactionStoichiometryDeterminer(reaction, indigoReaction).processReactionStoichiometry();
 							completeReactions.put(reaction, indigoReaction);
 						}
 					}
