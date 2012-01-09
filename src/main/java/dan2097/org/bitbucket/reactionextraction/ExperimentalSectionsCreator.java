@@ -3,7 +3,9 @@ package dan2097.org.bitbucket.reactionextraction;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -25,6 +27,7 @@ import dan2097.org.bitbucket.utility.XMLTags;
 public class ExperimentalSectionsCreator {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionsCreator.class);
 	private static ParagraphClassifier paragraphClassifier = ParagraphClassifierHolder.getInstance();
+	private static Pattern matchCompoundWith = Pattern.compile("(; )?(compd\\. with|compound with)", Pattern.CASE_INSENSITIVE);
 	
 	private final List<Element> orderedHeadingsAndParagraphs;
 	private final List<ExperimentalSection> experimentalSections =new ArrayList<ExperimentalSection>();
@@ -95,6 +98,71 @@ public class ExperimentalSectionsCreator {
 	}
 	
 	/**
+	 * If there are two molecules with their OSCARCM_Containers separated by "compound with" removes them an creates a new molecule with the union of the two molecules
+	 * @param moleculesFound
+	 * @param taggedDocRoot
+	 * @return
+	 */
+	 void correctCompoundWithSpecialCase(List<Element> moleculesFound, Element taggedDocRoot) {
+		if (moleculesFound.size()==2){
+			LinkedList<Element> stack = new LinkedList<Element>();
+			stack.add(taggedDocRoot);
+			List<Element> interveningElements = new ArrayList<Element>();
+			boolean seenMolecule = false;
+			while (stack.size()>0){
+				Element currentElement =stack.removeLast();
+				Elements children =currentElement.getChildElements();
+				if (seenMolecule && children.size()==0){
+					interveningElements.add(currentElement);
+				}
+				if (currentElement.getLocalName().equals(OSCARCM_Container)){
+					if (seenMolecule){
+						StringBuilder sb = new StringBuilder();
+						for (Element el : interveningElements) {
+							if (sb.length()!=0){
+								sb.append(' ');
+							}
+							sb.append(el.getValue());
+						}
+						String beforeMoleculeString = sb.toString();
+						if (matchCompoundWith.matcher(beforeMoleculeString).matches()){//assumption made that "compound with" cannot occur within the same molecule
+							Element firstOscarCMContainer = moleculesFound.get(0).getFirstChildElement(OSCARCM_Container);
+							Element secondOscarCMContainer = moleculesFound.get(1).getFirstChildElement(OSCARCM_Container);
+							if (firstOscarCMContainer !=null && secondOscarCMContainer !=null){
+								//create a new molecule from the union of the two molecules
+								Element newMolecule = new Element(MOLECULE_Container);
+								newMolecule.appendChild(new Element(firstOscarCMContainer));
+								Element newOscarCMContainer = newMolecule.getFirstChildElement(OSCARCM_Container);
+								for (int i = 0; i < interveningElements.size(); i++) {
+									Element interveningElCopy = new Element(interveningElements.get(i));
+									if (interveningElCopy.getLocalName().equals(STOP)){//semicolon can screw up name to structure
+										continue;
+									}
+									interveningElCopy.setLocalName(OSCAR_CM);
+									newOscarCMContainer.appendChild(interveningElCopy);
+								}
+								Elements oscarcms = secondOscarCMContainer.getChildElements(OSCAR_CM);
+								for (int i = 0; i < oscarcms.size(); i++) {
+									newOscarCMContainer.appendChild(new Element(oscarcms.get(i)));
+								}
+								moleculesFound.clear();
+								moleculesFound.add(newMolecule);
+							}
+						}
+						break;
+					}
+					seenMolecule =true;
+				}
+				else{
+					for (int i = children.size()-1; i >=0; i--) {
+						stack.add(children.get(i));
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Extracts a procedures and/or molecule from the heading and adds it to the current section
 	 * or step of the current section as a appropriate
 	 * @param headingEl
@@ -104,6 +172,7 @@ public class ExperimentalSectionsCreator {
 		Document taggedDoc = Utils.runChemicalTagger(text);
 		boolean isNonChemicalHeading = isAllCapitalLetters(text);
 		List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractNonFalsePositiveMoleculeEls(taggedDoc.getRootElement());
+		correctCompoundWithSpecialCase(moleculesFound, taggedDoc.getRootElement());
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
 		if (moleculesFound.size()!=1 && procedureNames.size()!=1){
 			//doesn't appear to be an appropriate heading
@@ -288,6 +357,7 @@ public class ExperimentalSectionsCreator {
 	private void processInlineHeading(Element hiddenHeadingEl, Element paraEl, String text) {
 		String headingText = findTextCorrespondingToChemicallyTaggedText(hiddenHeadingEl, text);
 		List<Element> moleculesFound = extractNonFalsePositiveMoleculeEls(hiddenHeadingEl);
+		correctCompoundWithSpecialCase(moleculesFound, hiddenHeadingEl);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
 		if (procedureNames.size()==1){
