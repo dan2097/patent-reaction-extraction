@@ -26,7 +26,7 @@ public class Chemical{
 	private String equivalentsUnits;
 	private Double pH;
 	private Double percentYield;
-	private Double stoichiometry;
+	private Integer stoichiometry;
 	private String state;
 	private ChemicalRole role = null;
 	private ChemicalEntityType entityType = null;
@@ -249,14 +249,14 @@ public class Chemical{
 	
 	/**
 	 * Returns the stoichiometry of this chemical.
-	 * 1 by default
+	 * null by default (i.e. unused in reaction)
 	 * @return
 	 */
-	public Double getStoichiometry() {
+	public Integer getStoichiometry() {
 		return stoichiometry;
 	}
 
-	void setStoichiometry(Double stoichiometry) {
+	void setStoichiometry(Integer stoichiometry) {
 		this.stoichiometry = stoichiometry;
 	}
 	

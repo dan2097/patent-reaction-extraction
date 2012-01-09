@@ -70,10 +70,7 @@ public class ExperimentalSectionParser {
 			processMoleculeToChemicalAndStringToChemicalMappings(step.getParagraphs());
 			ExperimentalStepParser stepParser = new ExperimentalStepParser(step, moleculeToChemicalMap, currentStepTargetCompound, titleCompound);
 			List<Reaction> reactions = stepParser.extractReactions();
-			for (Reaction reaction : reactions) {
-				new ReactionStoichiometryDeterminer(reaction).processReactionStoichiometry();
-				sectionReactions.add(reaction);
-			}
+			sectionReactions.addAll(reactions);
 			recordReactionsInPreviousReactionData(reactions, step);
 		}
 		return sectionReactions;
