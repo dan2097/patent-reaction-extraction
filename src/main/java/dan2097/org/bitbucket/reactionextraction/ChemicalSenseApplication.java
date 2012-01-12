@@ -102,13 +102,14 @@ public class ChemicalSenseApplication {
 	 * @return
 	 */
 	private boolean isAllowedTransitionMetal(IndigoObject atom) {
-		if(atom.atomicNumber() == 24 && atom.valence()==6){
+		int atomicNumber = atom.atomicNumber();
+		if(atomicNumber == 24 && atom.valence()==6){
 			return false;
 		}
-		if(atom.atomicNumber() == 25 && atom.valence()>=6){
+		if(atomicNumber == 25 && atom.valence()>=6){
 			return false;
 		}
-		if(atom.atomicNumber() == 29 && hasBondToCarbon(atom)){//organocuprates are often reactants
+		if((atomicNumber == 29 || atomicNumber == 30 || atomicNumber == 80) && hasBondToCarbon(atom)){//organocopper/zinc/mercury compounds are often reactants
 			return false;
 		}
 		return true;
