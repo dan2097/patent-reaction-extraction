@@ -18,7 +18,7 @@ import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import nu.xom.Element;
 
 public class ChemicalTypeAssigner {
-	private static Pattern matchPluralEnding = Pattern.compile(".*[abcdefghklmnpqrtwy]s$", Pattern.CASE_INSENSITIVE);
+	private static Pattern matchPluralEnding = Pattern.compile(".*[abcdefghklmnpqrtwy]s$");
 	private static Pattern matchSurfacePreQualifier = Pattern.compile("on|onto", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
 	private static Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
@@ -45,7 +45,7 @@ public class ChemicalTypeAssigner {
 		}
 		ChemicalEntityType entityType = determineTypeFromSurroundingText(mol);
 		if (entityType==null){
-			entityType =determineTypeFromChemicalName(chemicalName);
+			entityType =determineTypeFromChemicalName(chemicalName, chem.getSmiles()!=null);
 		}
 
 		if (!ChemicalEntityType.falsePositive.equals(chem.getEntityType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
@@ -103,9 +103,10 @@ public class ChemicalTypeAssigner {
 	 * or failing that from whether the name has a plural ending
 	 * Returns null if the type cannot be determined from just the chemical name
 	 * @param chemicalName
+	 * @param resolvableToSmiles 
 	 * @return 
 	 */
-	private static ChemicalEntityType determineTypeFromChemicalName(String chemicalName) {
+	private static ChemicalEntityType determineTypeFromChemicalName(String chemicalName, boolean resolvableToSmiles) {
 		if (FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(chemicalName) != null){
 			return ChemicalEntityType.chemicalClass;
 		}
@@ -121,7 +122,7 @@ public class ChemicalTypeAssigner {
 				break;
 			}
 		}
-		else if (matchPluralEnding.matcher(chemicalName).matches()){
+		else if (!resolvableToSmiles && matchPluralEnding.matcher(chemicalName).matches()){
 			return ChemicalEntityType.chemicalClass;
 		}
 		return null;
