@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>uk.ac.cam.ch.wwmm</groupId>
 		<artifactId>wwmm-parent</artifactId>
-		<version>4</version>
+		<version>3</version>
 	</parent>
 	<groupId>dan2097.org.bitbucket</groupId>
 	<artifactId>reactionExtraction</artifactId>
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>uk.ac.cam.ch</groupId>
 			<artifactId>chemicalTagger</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch.opsin</groupId>
@@ -60,12 +60,12 @@
 		<dependency>
 			<groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
 			<artifactId>oscar4-chemnamedict</artifactId>
-			<version>4.1-SNAPSHOT</version>
+			<version>4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
 				<artifactId>oscar4-opsin</artifactId>
-			<version>4.1-SNAPSHOT</version>
+			<version>4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf</groupId>
