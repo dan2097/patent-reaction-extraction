@@ -19,8 +19,8 @@ public class ReactionDepicter {
 	}
 	
 	public static void depictReaction(IndigoObject rxn, File depictionFile){
-		rxn.layout();
 		try{
+			rxn.layout();
 			renderer.renderToFile(rxn, depictionFile.getCanonicalPath());
 		}
 		catch (Exception e) {
