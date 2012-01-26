@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.IndigoHolder;
 
 public class ChemicalSenseApplication {
-
+	private static Logger LOG = Logger.getLogger(ChemicalSenseApplication.class);
 	private final Reaction reaction;
 	private Indigo indigo = IndigoHolder.getInstance();
 	
@@ -53,46 +56,51 @@ public class ChemicalSenseApplication {
 	}
 
 	void correctReactantsThatAreCatalysts() {
-		List<IndigoObject> products = new ArrayList<IndigoObject>();
-		for (Chemical product : reaction.getProducts()) {
-			if (product.getSmiles()!=null){
-				products.add(indigo.loadMolecule(product.getSmiles()));
-			}
-		}
-		List<Chemical> reactantsToReclassify = new ArrayList<Chemical>();
-		for (Chemical reactant : reaction.getReactants()) {
-			if (reactant.getSmiles()!=null){
-				IndigoObject reactantMol = indigo.loadMolecule(reactant.getSmiles());
-				List<Integer> transitionMetalInChemical = new ArrayList<Integer>();
-				for (Iterator<IndigoObject> iterator = reactantMol.iterateAtoms(); iterator.hasNext();) {
-					IndigoObject atom = iterator.next();
-					if (!atom.isRSite() && isTransitionMetal(atom.atomicNumber()) && isAllowedTransitionMetal(atom)){
-						transitionMetalInChemical.add(atom.atomicNumber());
-					}
+		try{
+			List<IndigoObject> products = new ArrayList<IndigoObject>();
+			for (Chemical product : reaction.getProducts()) {
+				if (product.getSmiles()!=null){
+					products.add(indigo.loadMolecule(product.getSmiles()));
 				}
-				
-				for (int inorganicAtomNum : transitionMetalInChemical) {
-					boolean foundAtom =false;
-					productLoop: for (IndigoObject product : products) {
-						for (Iterator<IndigoObject> iterator = product.iterateAtoms(); iterator.hasNext();) {
-							IndigoObject atom = iterator.next();
-							if (!atom.isRSite() && atom.atomicNumber() == inorganicAtomNum){
-								foundAtom =true;
-								break productLoop;
-							}
+			}
+			List<Chemical> reactantsToReclassify = new ArrayList<Chemical>();
+			for (Chemical reactant : reaction.getReactants()) {
+				if (reactant.getSmiles()!=null){
+					IndigoObject reactantMol = indigo.loadMolecule(reactant.getSmiles());
+					List<Integer> transitionMetalInChemical = new ArrayList<Integer>();
+					for (Iterator<IndigoObject> iterator = reactantMol.iterateAtoms(); iterator.hasNext();) {
+						IndigoObject atom = iterator.next();
+						if (!atom.isRSite() && isTransitionMetal(atom.atomicNumber()) && isAllowedTransitionMetal(atom)){
+							transitionMetalInChemical.add(atom.atomicNumber());
 						}
 					}
-					if (!foundAtom){
-						reactantsToReclassify.add(reactant);
-						break;
+					
+					for (int inorganicAtomNum : transitionMetalInChemical) {
+						boolean foundAtom =false;
+						productLoop: for (IndigoObject product : products) {
+							for (Iterator<IndigoObject> iterator = product.iterateAtoms(); iterator.hasNext();) {
+								IndigoObject atom = iterator.next();
+								if (!atom.isRSite() && atom.atomicNumber() == inorganicAtomNum){
+									foundAtom =true;
+									break productLoop;
+								}
+							}
+						}
+						if (!foundAtom){
+							reactantsToReclassify.add(reactant);
+							break;
+						}
 					}
 				}
 			}
-		}
-		for (Chemical catalyst : reactantsToReclassify) {
-			catalyst.setRole(ChemicalRole.catalyst);
-			reaction.removeReactant(catalyst);
-			reaction.addSpectator(catalyst);
+			for (Chemical catalyst : reactantsToReclassify) {
+				catalyst.setRole(ChemicalRole.catalyst);
+				reaction.removeReactant(catalyst);
+				reaction.addSpectator(catalyst);
+			}
+		}				
+		catch (IndigoException e) {
+			LOG.warn("Indigo threw an exception whilst loading the constituents of a reaction fromm SMILES", e);
 		}
 	}
 
