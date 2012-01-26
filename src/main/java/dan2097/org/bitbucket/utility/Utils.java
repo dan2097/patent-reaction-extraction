@@ -398,7 +398,7 @@ public class Utils {
 		return createIndigoReaction(products, reactants, spectators);
 	}
 
-	private static List<String> getSmilesForUniqueStructuresUsingInChIs(List<Chemical> chemicals) {
+	public static List<String> getSmilesForUniqueStructuresUsingInChIs(List<Chemical> chemicals) {
 		List<String> uniqueStructureSmiles = new ArrayList<String>();
 		Set<String> seenInChIs = new HashSet<String>();
 		for (Chemical chemical : chemicals) {
