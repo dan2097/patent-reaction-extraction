@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import nu.xom.Document;
 import nu.xom.Element;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.Utils;
@@ -22,6 +25,7 @@ public class ReactionExtractor {
 	private final PreviousReactionData previousReactionData = new PreviousReactionData();
 	private final Map<Reaction, IndigoObject> documentReactions = new LinkedHashMap<Reaction, IndigoObject>();
 	private final Map<Reaction, IndigoObject> completeReactions = new LinkedHashMap<Reaction, IndigoObject>();
+	private static Logger LOG = Logger.getLogger(ReactionExtractor.class);
 
 	/**
 	 * Convenience constructor for extracting reactions from a USPTO patent as a XOM document
@@ -71,22 +75,27 @@ public class ReactionExtractor {
 			ExperimentalSectionParser sectionParser = new ExperimentalSectionParser(experimentalSection, previousReactionData);
 			List<Reaction> reactions  = sectionParser.parseForReactions();
 			for (Reaction reaction : reactions) {
-				IndigoObject indigoReaction = Utils.convertToIndigoReaction(reaction);
-				if (reactionIsSane(reaction, indigoReaction)){
-					if (reactionIsMappable(indigoReaction)){
-						new ReactionStoichiometryDeterminer(reaction, indigoReaction).processReactionStoichiometry();
-						completeReactions.put(reaction, indigoReaction);
-					}
-					else {
-						IndigoObject modifiedReaction = attemptToProduceMappableReactionByRoleReclassification(reaction);
-						if (modifiedReaction!=null){
-							indigoReaction = modifiedReaction;
+				try{
+					IndigoObject indigoReaction = Utils.convertToIndigoReaction(reaction);
+					if (reactionIsSane(reaction, indigoReaction)){
+						if (reactionIsMappable(indigoReaction)){
 							new ReactionStoichiometryDeterminer(reaction, indigoReaction).processReactionStoichiometry();
 							completeReactions.put(reaction, indigoReaction);
 						}
+						else {
+							IndigoObject modifiedReaction = attemptToProduceMappableReactionByRoleReclassification(reaction);
+							if (modifiedReaction!=null){
+								indigoReaction = modifiedReaction;
+								new ReactionStoichiometryDeterminer(reaction, indigoReaction).processReactionStoichiometry();
+								completeReactions.put(reaction, indigoReaction);
+							}
+						}
 					}
+					documentReactions.put(reaction, indigoReaction);
 				}
-				documentReactions.put(reaction, indigoReaction);
+				catch (IndigoException e) {
+					LOG.warn("Indigo threw an exception whilst handling an extracted reaction! The reaction has been ignored", e);
+				}
 			}
 		}
 	}
