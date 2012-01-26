@@ -15,6 +15,7 @@ import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.IndigoHolder;
+import dan2097.org.bitbucket.utility.Utils;
 
 public class ChemicalSenseApplication {
 	private static Logger LOG = Logger.getLogger(ChemicalSenseApplication.class);
@@ -185,7 +186,7 @@ public class ChemicalSenseApplication {
 		Set<String> newSolventInChIs = new HashSet<String>();
 		for (int i = reactants.size()-1; i >=0; i--) {
 			Chemical reactant = reactants.get(i);
-			if (!hasSolvent && ReactionExtractionMethods.isKnownSolvent(reactant) && !reactant.hasAmountOrEquivalentsOrYield()){
+			if ((!hasSolvent || moreThan4UniqueReactantStructures()) && ReactionExtractionMethods.isKnownSolvent(reactant) && !reactant.hasAmountOrEquivalentsOrYield()){
 				reactant.setRole(ChemicalRole.solvent);
 				reaction.removeReactant(reactant);
 				reaction.addSpectator(reactant);
@@ -212,5 +213,13 @@ public class ChemicalSenseApplication {
 		if (!newSolventInChIs.isEmpty()){
 			classifyReactantsThatAreAlsoSolventsAsSolvent(newSolventInChIs);
 		}
+	}
+
+	private boolean moreThan4UniqueReactantStructures() {
+		List<Chemical> reactants = reaction.getReactants();
+		if (reactants.size() >4){
+			return Utils.getSmilesForUniqueStructuresUsingInChIs(reactants).size() > 4;
+		}
+		return false;
 	}
 }
