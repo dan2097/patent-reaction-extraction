@@ -92,6 +92,7 @@ public class ReactionExtractor {
 						}
 					}
 					documentReactions.put(reaction, indigoReaction);
+					reaction.setReactionSmiles(indigoReaction.smiles());
 				}
 				catch (IndigoException e) {
 					LOG.warn("Indigo threw an exception whilst handling an extracted reaction! The reaction has been ignored", e);

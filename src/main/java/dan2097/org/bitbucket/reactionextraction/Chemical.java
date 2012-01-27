@@ -395,7 +395,7 @@ public class Chemical{
 		if (percentYield!=null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(percentYield));
-			amount.addAttribute(new Attribute("units", "unit:" + "percent yield"));
+			amount.addAttribute(new Attribute("units", "unit:percentYield"));
 			reactant.appendChild(amount);
 		}
 		
