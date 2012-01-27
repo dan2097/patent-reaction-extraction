@@ -13,13 +13,22 @@ public class Reaction {
 	private List<Chemical> products =new ArrayList<Chemical>();
 	/** Typically solvents or catalysts*/
 	private List<Chemical> spectators =new ArrayList<Chemical>();
-	Paragraph inputPara;
+	private Paragraph inputPara = null;
+	private String reactionSmiles = null;
 
 	public void setInput(Paragraph inputPara) {
 		this.inputPara =inputPara;	
 	}
 	public Paragraph getInput() {
 		return inputPara;
+	}
+	
+	public String getReactionSmiles() {
+		return reactionSmiles;
+	}
+
+	public void setReactionSmiles(String reactionSmiles) {
+		this.reactionSmiles = reactionSmiles;
 	}
 	
 	public List<Chemical> getReactants() {
@@ -68,6 +77,12 @@ public class Reaction {
 		reaction.addNamespaceDeclaration("unit", "http://www.xml-cml.org/unit/");
 		reaction.addNamespaceDeclaration("cml", "http://www.xml-cml.org/schema");
 		reaction.addNamespaceDeclaration("dl", DL_NAMESPACE);
+		if (reactionSmiles != null){
+			Element reactionSmilesEl = new Element("reactionSmiles", DL_NAMESPACE);
+			reactionSmilesEl.setNamespacePrefix("dl");
+			reactionSmilesEl.appendChild(reactionSmiles);
+			reaction.appendChild(reactionSmilesEl);
+		}
 		Element productList = new Element("productList", CML_NAMESPACE);
 		reaction.appendChild(productList);
 		int i=0;
