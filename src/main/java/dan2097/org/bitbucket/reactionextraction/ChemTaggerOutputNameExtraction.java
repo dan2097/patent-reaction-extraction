@@ -21,7 +21,7 @@ public class ChemTaggerOutputNameExtraction {
 	 * @param moleculeOrUnnamedMolecule
 	 * @return
 	 */
-	static List<String> findMoleculeName(Element moleculeOrUnnamedMolecule) {
+	public static List<String> findMoleculeName(Element moleculeOrUnnamedMolecule) {
 		String elName= moleculeOrUnnamedMolecule.getLocalName();
 		if (elName.equals(MOLECULE_Container)) {
 			Element oscarCM = moleculeOrUnnamedMolecule.getFirstChildElement(OSCARCM_Container);
