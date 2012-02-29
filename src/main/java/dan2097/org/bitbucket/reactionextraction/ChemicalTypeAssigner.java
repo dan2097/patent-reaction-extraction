@@ -38,7 +38,7 @@ public class ChemicalTypeAssigner {
 	 * @param mol
 	 * @param chem
 	 */
-	static ChemicalEntityType determineEntityTypeOfChemical(Element mol, Chemical chem) {
+	public static ChemicalEntityType determineEntityTypeOfChemical(Element mol, Chemical chem) {
 		String chemicalName = chem.getName();
 		if (isFalsePositive(chemicalName, mol)){
 			return ChemicalEntityType.falsePositive;
@@ -144,7 +144,7 @@ public class ChemicalTypeAssigner {
 				Utils.getSystematicChemicalNamesFromText(chem.getName()).size()==0);
 	}
 
-	static boolean isFalsePositive(String chemicalName, Element mol) {
+	public static boolean isFalsePositive(String chemicalName, Element mol) {
 		if (ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
 			return true;
 		}
