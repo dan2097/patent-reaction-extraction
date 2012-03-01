@@ -16,6 +16,7 @@ import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
+import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLTags;
 
@@ -46,6 +47,16 @@ public class ReactionExtractor {
 			headingsAndParagraphsCopy.add(new Element(element));
 		}
 		headingsAndParagraphs = headingsAndParagraphsCopy;
+		IndigoHolder.getInstance().setOption("aam-timeout", 60000);
+	}
+	
+	/**
+	 * Allows the timeout on reaction mapping to be set. 60,000 milliseconds by default
+	 * On most systems can be reduced to 10,000 with minimal impact on results
+	 * @param milliseconds
+	 */
+	public void setIndigoAtomMappingTimeout(int milliseconds){
+		IndigoHolder.getInstance().setOption("aam-timeout", milliseconds);
 	}
 	
 	/**
