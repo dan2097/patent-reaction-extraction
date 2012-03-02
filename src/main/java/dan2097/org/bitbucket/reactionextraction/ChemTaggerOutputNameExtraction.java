@@ -32,7 +32,9 @@ public class ChemTaggerOutputNameExtraction {
 			Element oscarCM = moleculeOrUnnamedMolecule.getFirstChildElement(OSCARCM_Container);
 			if (oscarCM ==null){
 				LOG.warn("malformed Molecule, no child OSCAR-CM: " + moleculeOrUnnamedMolecule.toXML());
-				return new ArrayList<String>();
+				List<String> nameComponents = new ArrayList<String>();
+				nameComponents.add("");
+				return nameComponents;
 			}
 			return findMoleculeNameFromOscarCM(oscarCM);
 		}
