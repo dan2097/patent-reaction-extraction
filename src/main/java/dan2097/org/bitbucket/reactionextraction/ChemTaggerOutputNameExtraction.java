@@ -11,10 +11,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import nu.xom.Element;
 import nu.xom.Elements;
 
 public class ChemTaggerOutputNameExtraction {
+	
+	private static Logger LOG = Logger.getLogger(ChemTaggerOutputNameExtraction.class);
+
 	/**
 	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE_Container/UNNAMEDMOLECULE_Container
 	 * In the case of a mixture e.g. octanol-water the returned list will contain multiple entries
@@ -26,7 +31,8 @@ public class ChemTaggerOutputNameExtraction {
 		if (elName.equals(MOLECULE_Container)) {
 			Element oscarCM = moleculeOrUnnamedMolecule.getFirstChildElement(OSCARCM_Container);
 			if (oscarCM ==null){
-				throw new IllegalArgumentException("malformed Molecule, no child OSCAR-CM: " + moleculeOrUnnamedMolecule.toXML());
+				LOG.warn("malformed Molecule, no child OSCAR-CM: " + moleculeOrUnnamedMolecule.toXML());
+				return new ArrayList<String>();
 			}
 			return findMoleculeNameFromOscarCM(oscarCM);
 		}
