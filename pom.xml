@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>dan2097.org.bitbucket</groupId>
 	<artifactId>reactionExtraction</artifactId>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Patent Reaction Extraction</name>
   <description>Tool for extracting chemical reactions from chemical text especially patents</description>
