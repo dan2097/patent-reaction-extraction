@@ -169,6 +169,11 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
+		if (text.length()>35000){
+			//far too long to be an appropriate heading
+			addCurrentSectionIfNonEmptyAndReset();
+			return;
+		}
 		Document taggedDoc = Utils.runChemicalTagger(text);
 		boolean isNonChemicalHeading = isAllCapitalLetters(text);
 		List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractNonFalsePositiveMoleculeEls(taggedDoc.getRootElement());
@@ -311,7 +316,7 @@ public class ExperimentalSectionsCreator {
 		if (text.equals("")){//blank paragraph
 			return;
 		}
-		boolean isExperimentalParagraph = paragraphClassifier.isExperimental(text);
+		boolean isExperimentalParagraph = text.length() > 35000 ? false : paragraphClassifier.isExperimental(text);
 		if (!isExperimentalParagraph){
 			if (currentSection.getCurrentStepProcedureElement()!=null){
 				currentSection.moveToNextStep();
