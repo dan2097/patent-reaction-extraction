@@ -52,7 +52,7 @@ public class AliasDetectionTest {
 	
 	@Test
 	public void aliasFromTitleText10() {
-		assertEquals("2′", TitleTextAliasExtractor.findAlias("benzene 2′"));
+		assertEquals("2\u2032", TitleTextAliasExtractor.findAlias("benzene 2\u2032"));//prime
 	}
 	
 	@Test
