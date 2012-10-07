@@ -78,7 +78,7 @@ public class Utils {
 	}
 
 	/**
-	 * Tags a string with parts of speech using chemical tagger. Where known the annotations will be more specific than those used for the Brown corpus
+	 * Tags a string with parts of speech using ChemicalTagger. Where known the annotations will be more specific than those used for the Brown corpus
 	 * @param text
 	 * @return
 	 */
@@ -88,23 +88,28 @@ public class Utils {
 	}
 	
 	/**
-	 * Given a tagged string returns the sentence as a hierarchy grouped by identified phrases of chemical significance
-	 * @param tagged
-	 * @return
-	 */
-	public static Document runChemicalSentenceParsingOnTaggedString(String tagged) {
-		ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(tagged);
-		chemistrySentenceParser.parseTags();
-		return chemistrySentenceParser.makeXMLDocument();
-	}
-	
-	/**
-	 * Convenience method to tag and parse a string of text
+	 * Convenience method to tag and parse a string of text using ChemicalTagger
 	 * @param tagged
 	 * @return
 	 */
 	public static Document runChemicalTagger(String text) {
-		return runChemicalSentenceParsingOnTaggedString(tagString(text));
+		try{
+			String taggedText = tagString(text);
+			ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(taggedText);
+			chemistrySentenceParser.parseTags();
+			Document doc = chemistrySentenceParser.makeXMLDocument();
+			if (doc ==null){
+				LOG.warn("Chemical tagger failed to tag a text string indicating a bug in ChemicalTagger");
+				Element root = new Element("Document");
+				return new Document(root);
+			}
+			return doc;
+		}
+		catch (StackOverflowError e){
+			LOG.error("A StackOverflowError was encountered while running with ChemicalTagger. Possibly a section of text with A LOT of brackets was encountered");
+			Element root = new Element("Document");
+			return new Document(root);
+		}
 	}
 
 	/**
