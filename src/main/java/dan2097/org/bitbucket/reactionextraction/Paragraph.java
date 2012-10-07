@@ -38,9 +38,6 @@ public class Paragraph {
 		}
 		else{
 			taggedSentencesDocument = Utils.runChemicalTagger(untaggedString);
-			if (taggedSentencesDocument ==null){
-				throw new RuntimeException("Chemical tagger failed to tag a text string indicating a bug in chemical tagger");
-			}
 		}
 	}
 
