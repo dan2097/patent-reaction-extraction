@@ -25,7 +25,7 @@ public class ReactionMapper {
 		}
 		for (IndigoObject m: reaction.iterateMolecules()){
 			for (IndigoObject b: m.iterateBonds()){
-				reaction.setReactingCenter(b, Indigo.RC_UNCHANGED | Indigo.RC_ORDER_CHANGED);
+				reaction.setReactingCenter(b, Indigo.RC_UNCHANGED | Indigo.RC_ORDER_CHANGED | Indigo.RC_MADE_OR_BROKEN);
 			}
 		}
 		try{
