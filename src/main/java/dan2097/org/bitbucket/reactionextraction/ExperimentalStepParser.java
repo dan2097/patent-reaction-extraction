@@ -72,6 +72,7 @@ public class ExperimentalStepParser {
 	List<Reaction> extractReactions() {
 		List<Reaction> reactions = new ArrayList<Reaction>();
 		List<Paragraph> paragraphs = experimentalStep.getParagraphs();
+		Element orphanYieldElement = null;
 		for (Paragraph paragraph : paragraphs) {
 			markReplacedChemicalsAsFalsePositives(paragraph.getTaggedSentencesDocument());
 			Reaction currentReaction = new Reaction();
@@ -129,10 +130,19 @@ public class ExperimentalStepParser {
 						LOG.debug("Role not assigned to: " +chemChem.getName());
 					}
 				}
+				
+				Element yieldElementInPhrase = findOrphanYieldInPhrase(phrase);
+				if (yieldElementInPhrase != null){
+					orphanYieldElement = yieldElementInPhrase;
+				}
 		
 				currentReaction.importReaction(tempReaction);
 				if (!currentReaction.getProducts().isEmpty() && !reagentsExpectedAfterProduct){
 					currentReaction.setInput(paragraph);
+					if (orphanYieldElement != null){
+						assignYieldToProduct(currentReaction, orphanYieldElement);
+						orphanYieldElement = null;
+					}
 					reactions.add(currentReaction);
 					currentReaction = new Reaction();
 				}
@@ -149,6 +159,10 @@ public class ExperimentalStepParser {
 				}
 			}
 		}
+		if (orphanYieldElement != null && reactions.size() > 0){
+			assignYieldToProduct(reactions.get(reactions.size()-1), orphanYieldElement);
+		}
+		
 		for (Reaction reaction : reactions) {
 			ChemicalSenseApplication chemicalSenseApplication = new ChemicalSenseApplication(reaction);
 			chemicalSenseApplication.mergeProductsByInChI();
@@ -445,6 +459,43 @@ public class ExperimentalStepParser {
 		return false;
 	}
 	
+	private Element findOrphanYieldInPhrase(Element phrase) {
+		List<Element> yields = XOMTools.getDescendantElementsWithTagName(phrase, YIELD_Container);
+		//remove those that are in a molecule or unnamed molecule
+		yieldLoop: for (int i = yields.size() - 1; i >=0; i--) {
+			Element yield = yields.get(i);
+			Element parent = (Element) yield.getParent();
+			while (!parent.equals(phrase)){
+				if (parent.getLocalName().equals(MOLECULE_Container) || parent.getLocalName().equals(UNNAMEDMOLECULE_Container)){
+					yields.remove(i);
+					continue yieldLoop;
+				}
+				parent = (Element) parent.getParent();
+			}
+		}
+		if (yields.size() == 1){
+			return yields.get(0);
+		}
+		return null;
+	}
+
+	private void assignYieldToProduct(Reaction currentReaction, Element yield) {
+		List<Chemical> products = currentReaction.getProducts();
+		if (products.size()==1){
+			Chemical product = products.get(0);
+			if (product.getPercentYield()==null){
+				String value = yield.query(".//" + ChemicalTaggerTags.CD).get(0).getValue();
+				try{ 
+					double d = Double.parseDouble(value);
+					product.setPercentYield(d);
+				}
+				catch (NumberFormatException e) {
+					LOG.debug("Yield was not a numeric percentage");
+				}
+			}
+		}
+	}
+
 	/**
 	 * Returns true or false depending on whether a suitable reaction was found to add the target compound to
 	 * @param reactions
