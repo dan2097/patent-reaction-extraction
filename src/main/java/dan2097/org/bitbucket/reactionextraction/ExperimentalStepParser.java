@@ -42,7 +42,7 @@ public class ExperimentalStepParser {
 	private static Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((((is |was )?(used|employed) )?((to )?take the place of|in (the )?place of|instead of))|(replac[e]?(ing|s)|substitut[e]?ing))( the)?", Pattern.CASE_INSENSITIVE);
 	
 	/*The chemical after this expression was mentioned only due to the reaction being performed similarly*/
-	private static Pattern matchChemicalUsedAsAnalogy = Pattern.compile("((analogy|analogously|in a like manner) to|as for)( (the (preparation|reaction|synthesis)|that) of)?$", Pattern.CASE_INSENSITIVE);
+	private static Pattern matchChemicalUsedAsAnalogy = Pattern.compile("((analogy|analogously|in( a)? like manner) to|as for)( (the (preparation|reaction|synthesis)|that) of)?$", Pattern.CASE_INSENSITIVE);
 	
 	private final ExperimentalStep experimentalStep;
 	private final BiMap<Element, Chemical> moleculeToChemicalMap;
