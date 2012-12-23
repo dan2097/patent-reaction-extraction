@@ -32,10 +32,18 @@ import nu.xom.Nodes;
 public class ExperimentalStepParser {
 	private static Logger LOG = Logger.getLogger(ExperimentalStepParser.class);
 	
+	/*The chemical after this expression does not occur as it has been replaced (needs to be confirmed by a match with matchFirstChemicalToBeReplacedInbetween)*/
 	private static Pattern matchFirstChemicalToBeReplacedBefore = Pattern.compile("((replac|substitut)[e]?ing( of)?|(substitution|replacement) of)( the)?$", Pattern.CASE_INSENSITIVE);
+	
+	/*Goes between the chemical to be replaced and the chemical that is replacing it in this instance of the reaction*/
 	private static Pattern matchFirstChemicalToBeReplacedInbetween = Pattern.compile("for|with|by", Pattern.CASE_INSENSITIVE);
+	
+	/*The chemical after this expression was replaced in this instance of the reaction*/
 	private static Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((((is |was )?(used|employed) )?((to )?take the place of|in (the )?place of|instead of))|(replac[e]?(ing|s)|substitut[e]?ing))( the)?", Pattern.CASE_INSENSITIVE);
-
+	
+	/*The chemical after this expression was mentioned only due to the reaction being performed similarly*/
+	private static Pattern matchChemicalUsedAsAnalogy = Pattern.compile("((analogy|analogously|in a like manner) to|as for)( (the (preparation|reaction|synthesis)|that) of)?$", Pattern.CASE_INSENSITIVE);
+	
 	private final ExperimentalStep experimentalStep;
 	private final BiMap<Element, Chemical> moleculeToChemicalMap;
 	private final Chemical targetCompound;
@@ -168,6 +176,9 @@ public class ExperimentalStepParser {
 			if (currentElement.getLocalName().equals(MOLECULE_Container) || currentElement.getLocalName().equals(UNNAMEDMOLECULE_Container)){
 				String beforeMoleculeString = sb.toString();
 				if (seenMolecule && matchSecondChemicalToBeReplacedInbetween.matcher(beforeMoleculeString).matches()){
+					moleculesToIgnore.add(currentElement);
+				}
+				else if (matchChemicalUsedAsAnalogy.matcher(beforeMoleculeString).matches()){
 					moleculesToIgnore.add(currentElement);
 				}
 				else if (tempMoleculeThatWasReplaced ==null){
