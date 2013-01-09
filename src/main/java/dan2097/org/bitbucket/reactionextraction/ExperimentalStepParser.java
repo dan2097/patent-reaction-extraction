@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.google.common.collect.BiMap;
 
@@ -413,9 +414,14 @@ public class ExperimentalStepParser {
 	}
 	
 	private String generateAromaticSmiles(String smiles) {
-		IndigoObject chem = indigo.loadMolecule(smiles);
-		chem.aromatize();
-		return chem.smiles();
+		try{
+			IndigoObject chem = indigo.loadMolecule(smiles);
+			chem.aromatize();
+			return chem.smiles();
+		}
+		catch (IndigoException e){
+			return null;
+		}
 	}
 	
 	/**
@@ -425,17 +431,22 @@ public class ExperimentalStepParser {
 	 * @return
 	 */
 	private List<Chemical> findMatchesUsingSmarts(String smarts, List<Chemical> chemicalsToMatchAgainst) {
-		IndigoObject query = indigo.loadSmarts(smarts);
-		List<Chemical> chemicalMatches = new ArrayList<Chemical>();
-		for (Chemical chemical : chemicalsToMatchAgainst) {
-			if (chemical.getSmiles()!=null){
-				IndigoObject substructureMatcher = indigo.substructureMatcher(indigo.loadMolecule(chemical.getSmiles()));
-				if (substructureMatcher.match(query) !=null){
-					chemicalMatches.add(chemical);
+		try {
+			IndigoObject query = indigo.loadSmarts(smarts);
+			List<Chemical> chemicalMatches = new ArrayList<Chemical>();
+			for (Chemical chemical : chemicalsToMatchAgainst) {
+				if (chemical.getSmiles()!=null){
+					IndigoObject substructureMatcher = indigo.substructureMatcher(indigo.loadMolecule(chemical.getSmiles()));
+					if (substructureMatcher.match(query) !=null){
+						chemicalMatches.add(chemical);
+					}
 				}
 			}
+			return chemicalMatches;
 		}
-		return chemicalMatches;
+		catch (IndigoException e){
+			return new ArrayList<Chemical>();
+		}
 	}
 	
 	/**
