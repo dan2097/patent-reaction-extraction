@@ -47,7 +47,7 @@ public class ReactionExtractor {
 			headingsAndParagraphsCopy.add(new Element(element));
 		}
 		headingsAndParagraphs = headingsAndParagraphsCopy;
-		IndigoHolder.getInstance().setOption("aam-timeout", 60000);
+		IndigoHolder.getInstance().setOption("aam-timeout", 15000);
 	}
 	
 	/**
