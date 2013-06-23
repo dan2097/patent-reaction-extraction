@@ -258,7 +258,7 @@ public class Utils {
 	 * @throws IOException
 	 */
 	public static Document buildXmlFromString(String xmlAsText) throws ValidityException, ParsingException, IOException {
-		return xomBuilder.build(xmlAsText, "");
+		return xomBuilder.build(xmlAsText, null);
 	}
 	
 	/**
