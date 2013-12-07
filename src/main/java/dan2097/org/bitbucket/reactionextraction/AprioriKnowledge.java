@@ -8,10 +8,10 @@ import dan2097.org.bitbucket.utility.Utils;
 
 public class AprioriKnowledge {
 
-	static String KNOWN_SOLVENTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventInChIs.txt";
-	static String KNOWN_SOLVENTNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventNames.txt";
-	static String KNOWN_CATALYSTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
-	static String KNOWN_CATALYSTSNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystNames.txt";
+	static final String KNOWN_SOLVENTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventInChIs.txt";
+	static final String KNOWN_SOLVENTNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownSolventNames.txt";
+	static final String KNOWN_CATALYSTSINCHIS_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystInChIs.txt";
+	static final String KNOWN_CATALYSTSNAMES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/knownCatalystNames.txt";
 
 	private final Set<String> solventInChIs = new HashSet<String>();
 	private final Set<String> solventNames;
