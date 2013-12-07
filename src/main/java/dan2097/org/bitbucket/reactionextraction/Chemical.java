@@ -7,8 +7,9 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 public class Chemical{
-	private static String CML_NAMESPACE = "http://www.xml-cml.org/schema";
-	private static String DL_NAMESPACE = "http://bitbucket.org/dan2097";
+	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
+	private final static String CML_NAMESPACE = "http://www.xml-cml.org/schema";
+	private final static String DL_NAMESPACE = "http://bitbucket.org/dan2097";
 	
 	private final String name;
 	private ChemicalIdentifierPair chemicalIdentifierPair = new ChemicalIdentifierPair(null, null);
@@ -30,9 +31,6 @@ public class Chemical{
 	private String state;
 	private ChemicalRole role = null;
 	private ChemicalEntityType entityType = null;
-
-	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
-
 
 	public Chemical(String name) {
 		this.name = name;
@@ -300,7 +298,7 @@ public class Chemical{
 	}
 
 	boolean hasImpreciseVolume() {
-		if (volumeValue==null || volumeUnits ==null){
+		if (volumeValue == null || volumeUnits == null){
 			return true;
 		}
 		if (matchCentiLitresOrLarger.matcher(volumeUnits).matches()){
@@ -342,57 +340,57 @@ public class Chemical{
 			reactant.addAttribute(new Attribute("role", role.toString()));
 		}
 		
-		if (amountValue!=null){
+		if (amountValue != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(amountValue));
-			if (amountUnits!=null){
+			if (amountUnits != null){
 				amount.addAttribute(new Attribute("units", "unit:" + amountUnits));
 			}
 			reactant.appendChild(amount);
 		}
-		if (molarityValue!=null){
+		if (molarityValue != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(molarityValue));
-			if (molarityUnits!=null){
+			if (molarityUnits != null){
 				amount.addAttribute(new Attribute("units", "unit:" + molarityUnits));
 			}
 			reactant.appendChild(amount);
 		}
-		if (volumeValue!=null){
+		if (volumeValue != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(volumeValue));
-			if (volumeUnits!=null){
+			if (volumeUnits != null){
 				amount.addAttribute(new Attribute("units", "unit:" + volumeUnits));
 			}
 			reactant.appendChild(amount);
 		}
-		if (massValue!=null){
+		if (massValue != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(massValue));
-			if (massUnits!=null){
+			if (massUnits != null){
 				amount.addAttribute(new Attribute("units", "unit:" + massUnits));
 			}
 			reactant.appendChild(amount);
 		}
-		if (stoichiometry !=null){
+		if (stoichiometry != null){
 			reactant.addAttribute(new Attribute("count", String.valueOf(stoichiometry)));
 		}
 
-		if (equivalents!=null){
+		if (equivalents != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(equivalents));
 			amount.addAttribute(new Attribute("units", "unit:" + equivalentsUnits));
 			reactant.appendChild(amount);
 		}
 		
-		if (pH!=null){
+		if (pH != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(pH));
 			amount.addAttribute(new Attribute("units", "unit:" + "pH"));
 			reactant.appendChild(amount);
 		}
 		
-		if (percentYield!=null){
+		if (percentYield != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
 			amount.appendChild(String.valueOf(percentYield));
 			amount.addAttribute(new Attribute("units", "unit:percentYield"));

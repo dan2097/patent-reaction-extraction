@@ -17,8 +17,10 @@ public class ParagraphClassifier {
 
 	private static final URL EXPERIMENTAL_URL = ClassLoader.getSystemResource("dan2097/org/bitbucket/paragraphclassification/experimental");
 	private static final URL NON_EXPERIMENTAL_URL = ClassLoader.getSystemResource("dan2097/org/bitbucket/paragraphclassification/non-experimental");
-	private static Pattern matchWhiteSpace = Pattern.compile("\\s+");
-	
+	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
+
+	private final BayesianClassifier bayesianClassifier = new BayesianClassifier(); 
+
 	private static class xmlFileFilter implements FileFilter {
 		public boolean accept(File f) {
 			if (f.getName().endsWith(".xml")) {
@@ -27,8 +29,6 @@ public class ParagraphClassifier {
 			return false;
 		}
 	}
-	
-	private BayesianClassifier bayesianClassifier = new BayesianClassifier(); 
 	
 	public ParagraphClassifier(){
 		File[] expFiles = getXMLFiles(EXPERIMENTAL_URL);
