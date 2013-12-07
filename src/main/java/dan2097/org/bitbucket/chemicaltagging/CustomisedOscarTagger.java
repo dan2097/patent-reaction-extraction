@@ -16,7 +16,7 @@ import dan2097.org.bitbucket.utility.Utils;
 
 public class CustomisedOscarTagger extends OscarTagger {
 	
-	private static String STOPWORDS_LOCATION = "/dan2097/org/bitbucket/chemicaltagging/stopWords.txt";
+	private final static String STOPWORDS_LOCATION = "/dan2097/org/bitbucket/chemicaltagging/stopWords.txt";
 	private final Set<String> stopWords;
 
 	public CustomisedOscarTagger(Oscar oscar) {
