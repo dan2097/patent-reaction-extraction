@@ -18,7 +18,7 @@ import nu.xom.Elements;
 
 public class ChemTaggerOutputNameExtraction {
 	
-	private static Logger LOG = Logger.getLogger(ChemTaggerOutputNameExtraction.class);
+	private static final Logger LOG = Logger.getLogger(ChemTaggerOutputNameExtraction.class);
 
 	/**
 	 * Finds the chemical name of the chemical described by a chemical tagger MOLECULE_Container/UNNAMEDMOLECULE_Container
@@ -27,10 +27,10 @@ public class ChemTaggerOutputNameExtraction {
 	 * @return
 	 */
 	public static List<String> findMoleculeName(Element moleculeOrUnnamedMolecule) {
-		String elName= moleculeOrUnnamedMolecule.getLocalName();
+		String elName = moleculeOrUnnamedMolecule.getLocalName();
 		if (elName.equals(MOLECULE_Container)) {
 			Element oscarCM = moleculeOrUnnamedMolecule.getFirstChildElement(OSCARCM_Container);
-			if (oscarCM ==null){
+			if (oscarCM == null){
 				LOG.warn("malformed Molecule, no child OSCAR-CM: " + moleculeOrUnnamedMolecule.toXML());
 				List<String> nameComponents = new ArrayList<String>();
 				nameComponents.add("");
@@ -98,22 +98,22 @@ public class ChemTaggerOutputNameExtraction {
 			if (localName.startsWith("JJ") || localName.startsWith("NN")
 					|| localName.equals(REFERENCETOCOMPOUND_Container)
 					|| localName.equals(OSCAR_ASE)){
-				foundStartOfName =true;
+				foundStartOfName = true;
 				builder.append(getStringContent(elToConsider));
 			}
 			else if (foundStartOfName) {
 				break;
 			}
 		}
-		if (builder.length()==0){
+		if (builder.length() == 0){
 			return null;
 		}
-		builder.deleteCharAt(builder.length()-1);
+		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
 	}
 	
 	/**
-	 * Uses a stack to iteratively enumerate and space concatenate the given element and its descendents in document order
+	 * Uses a stack to iteratively enumerate and space concatenate the given element and its descendants in document order
 	 * @param startingEl
 	 * @return
 	 */
@@ -122,9 +122,9 @@ public class ChemTaggerOutputNameExtraction {
 		LinkedList<Element> stack = new LinkedList<Element>();
 		stack.add(startingEl);
 		while (!stack.isEmpty()) {
-			Element currentEl =stack.removeFirst();
+			Element currentEl = stack.removeFirst();
 			Elements els = currentEl.getChildElements();
-			if (els.size()>0){
+			if (els.size() > 0){
 				for (int i = 0; i < els.size(); i++) {
 					stack.add(els.get(i));
 				}

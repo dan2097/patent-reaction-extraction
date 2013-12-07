@@ -10,21 +10,19 @@ import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 
 import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-
 import dan2097.org.bitbucket.utility.Utils;
-
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
-
 import nu.xom.Element;
 
 public class ChemicalTypeAssigner {
-	private static Pattern matchPluralEnding = Pattern.compile(".*[abcdefghklmnpqrtwy]s$");
-	private static Pattern matchSurfacePreQualifier = Pattern.compile("on|onto", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
-	private static Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
-	public static List<Pattern> falsePositivePatterns = new ArrayList<Pattern>();
-	private static String FALSE_POSITIVE_REGEXES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/falsePositiveRegexes.txt";
+	private static final String FALSE_POSITIVE_REGEXES_LOCATION = "/dan2097/org/bitbucket/reactionextraction/falsePositiveRegexes.txt";
+	
+	private static final Pattern matchPluralEnding = Pattern.compile(".*[abcdefghklmnpqrtwy]s$");
+	private static final Pattern matchSurfacePreQualifier = Pattern.compile("on|onto", Pattern.CASE_INSENSITIVE);
+	private static final Pattern matchSurfaceQualifier = Pattern.compile("surface|interface", Pattern.CASE_INSENSITIVE);
+	private static final Pattern matchClassQualifier = Pattern.compile("(compound|derivative)[s]?", Pattern.CASE_INSENSITIVE);
+	private static final Pattern matchFragmentQualifier = Pattern.compile("group[s]?|atom[s]?|functional|ring[s]?|chain[s]?|bond[s]?|bridge[s]?|contact[s]?|complex", Pattern.CASE_INSENSITIVE);
+	public static final List<Pattern> falsePositivePatterns = new ArrayList<Pattern>();
 	
 	static{
 		Set<String> regexes = Utils.fileToStringSet(FALSE_POSITIVE_REGEXES_LOCATION);
@@ -44,14 +42,14 @@ public class ChemicalTypeAssigner {
 			return ChemicalEntityType.falsePositive;
 		}
 		ChemicalEntityType entityType = determineTypeFromSurroundingText(mol);
-		if (entityType==null){
-			entityType =determineTypeFromChemicalName(chemicalName, chem.getSmiles()!=null);
+		if (entityType == null){
+			entityType = determineTypeFromChemicalName(chemicalName, chem.getSmiles() != null);
 		}
 
 		if (!ChemicalEntityType.falsePositive.equals(chem.getEntityType()) && (hasQualifyingIdentifier(mol) || isTextualAnaphora(chemicalName))){
 			return ChemicalEntityType.definiteReference;
 		}
-		if (entityType!=null){
+		if (entityType != null){
 			return entityType;
 		}
 		if (hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(mol, chem)){
@@ -60,6 +58,21 @@ public class ChemicalTypeAssigner {
 		else{
 			return ChemicalEntityType.exact;
 		}
+	}
+
+	public static boolean isFalsePositive(String chemicalName, Element mol) {
+		if (ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
+			return true;
+		}
+		if (APPARATUS_Container.equals(((Element) mol.getParent()).getLocalName())){
+			return true;
+		}
+		for (Pattern pat : falsePositivePatterns) {
+			if (pat.matcher(chemicalName).matches()){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -71,7 +84,7 @@ public class ChemicalTypeAssigner {
 	 */
 	static ChemicalEntityType determineTypeFromSurroundingText(Element mol) {
 		Element nextEl = getElementAfterLastOSCARCM(mol);
-		if (nextEl !=null){//examine the head noun
+		if (nextEl != null){//examine the head noun
 			if (matchSurfaceQualifier.matcher(nextEl.getValue()).matches()){
 				return ChemicalEntityType.falsePositive;
 			}
@@ -80,7 +93,7 @@ public class ChemicalTypeAssigner {
 			}
 		}
 		Element previousEl = getElementBeforeFirstOSCARCM(mol);
-		if (previousEl !=null){
+		if (previousEl != null){
 			String previousElVal = previousEl.getValue();
 			if (matchSurfacePreQualifier.matcher(previousElVal).matches()){
 				return ChemicalEntityType.falsePositive;
@@ -92,7 +105,7 @@ public class ChemicalTypeAssigner {
 				return ChemicalEntityType.definiteReference;
 			}
 		}
-		if (nextEl !=null && matchClassQualifier.matcher(nextEl.getValue()).matches()){
+		if (nextEl != null && matchClassQualifier.matcher(nextEl.getValue()).matches()){
 			return ChemicalEntityType.chemicalClass;
 		}
 		return null;
@@ -111,7 +124,7 @@ public class ChemicalTypeAssigner {
 			return ChemicalEntityType.chemicalClass;
 		}
 		List<IdentifiedChemicalName> identifiedNames = new DocumentToStructures(chemicalName).extractNames();
-		if (identifiedNames.size()==1 && identifiedNames.get(0).getTextValue().equals(chemicalName)){
+		if (identifiedNames.size() == 1 && identifiedNames.get(0).getTextValue().equals(chemicalName)){
 			switch (identifiedNames.get(0).getNameType()) {
 			case family:
 				return ChemicalEntityType.chemicalClass;
@@ -129,7 +142,7 @@ public class ChemicalTypeAssigner {
 	}
 
 	private static boolean hasQualifyingIdentifier(Element mol) {
-		return XOMTools.getDescendantElementsWithTagNames(mol, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size()>0;
+		return XOMTools.getDescendantElementsWithTagNames(mol, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size() > 0;
 	}
 
 	private static boolean isTextualAnaphora(String chemicalName) {
@@ -139,30 +152,15 @@ public class ChemicalTypeAssigner {
 	private static boolean hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(Element mol, Chemical chem) {
 		return (chem.getSmiles() == null &&
 				chem.getInchi() == null &&
-				XOMTools.getDescendantElementsWithTagName(mol, QUANTITY_Container).size()==0 &&
+				XOMTools.getDescendantElementsWithTagName(mol, QUANTITY_Container).size() == 0 &&
 				!ReactionExtractionMethods.isKnownTrivialNameWithNoCT(chem) &&
-				Utils.getSystematicChemicalNamesFromText(chem.getName()).size()==0);
+				Utils.getSystematicChemicalNamesFromText(chem.getName()).size() == 0);
 	}
 
-	public static boolean isFalsePositive(String chemicalName, Element mol) {
-		if (ATMOSPHEREPHRASE_Container.equals(((Element) mol.getParent()).getLocalName())){
-			return true;
-		}
-		if (APPARATUS_Container.equals(((Element) mol.getParent()).getLocalName())){
-			return true;
-		}
-		for (Pattern pat : falsePositivePatterns) {
-			if (pat.matcher(chemicalName).matches()){
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	private static Element getElementAfterLastOSCARCM(Element mol) {
 		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
-		if (oscarcms.size()>0){
-			return Utils.getNextElement(oscarcms.get(oscarcms.size()-1));
+		if (oscarcms.size() > 0){
+			return Utils.getNextElement(oscarcms.get(oscarcms.size() - 1));
 		}
 		else{
 			return Utils.getNextElement(mol);
@@ -171,7 +169,7 @@ public class ChemicalTypeAssigner {
 	
 	private static Element getElementBeforeFirstOSCARCM(Element mol) {
 		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
-		if (oscarcms.size()>0){
+		if (oscarcms.size() > 0){
 			return Utils.getPreviousElement(oscarcms.get(0));
 		}
 		else{
