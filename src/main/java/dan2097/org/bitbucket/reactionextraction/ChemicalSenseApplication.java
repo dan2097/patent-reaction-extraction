@@ -18,9 +18,10 @@ import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;
 
 public class ChemicalSenseApplication {
-	private static Logger LOG = Logger.getLogger(ChemicalSenseApplication.class);
+	private static final Indigo indigo = IndigoHolder.getInstance();
+	private static final Logger LOG = Logger.getLogger(ChemicalSenseApplication.class);
+
 	private final Reaction reaction;
-	private Indigo indigo = IndigoHolder.getInstance();
 	
 	ChemicalSenseApplication(Reaction reaction) {
 		this.reaction = reaction;
@@ -60,13 +61,13 @@ public class ChemicalSenseApplication {
 		try{
 			List<IndigoObject> products = new ArrayList<IndigoObject>();
 			for (Chemical product : reaction.getProducts()) {
-				if (product.getSmiles()!=null){
+				if (product.getSmiles() != null){
 					products.add(indigo.loadMolecule(product.getSmiles()));
 				}
 			}
 			List<Chemical> reactantsToReclassify = new ArrayList<Chemical>();
 			for (Chemical reactant : reaction.getReactants()) {
-				if (reactant.getSmiles()!=null){
+				if (reactant.getSmiles() != null){
 					IndigoObject reactantMol = indigo.loadMolecule(reactant.getSmiles());
 					List<Integer> transitionMetalInChemical = new ArrayList<Integer>();
 					for (Iterator<IndigoObject> iterator = reactantMol.iterateAtoms(); iterator.hasNext();) {
@@ -77,7 +78,7 @@ public class ChemicalSenseApplication {
 					}
 					
 					for (int inorganicAtomNum : transitionMetalInChemical) {
-						boolean foundAtom =false;
+						boolean foundAtom = false;
 						productLoop: for (IndigoObject product : products) {
 							for (Iterator<IndigoObject> iterator = product.iterateAtoms(); iterator.hasNext();) {
 								IndigoObject atom = iterator.next();
@@ -112,10 +113,10 @@ public class ChemicalSenseApplication {
 	 */
 	private boolean isAllowedTransitionMetal(IndigoObject atom) {
 		int atomicNumber = atom.atomicNumber();
-		if(atomicNumber == 24 && atom.valence()==6){
+		if(atomicNumber == 24 && atom.valence() == 6){
 			return false;
 		}
-		if(atomicNumber == 25 && atom.valence()>=6){
+		if(atomicNumber == 25 && atom.valence() >= 6){
 			return false;
 		}
 		if((atomicNumber == 29 || atomicNumber == 30 || atomicNumber == 80) && hasBondToCarbon(atom)){//organocopper/zinc/mercury compounds are often reactants
@@ -126,7 +127,7 @@ public class ChemicalSenseApplication {
 
 	private boolean hasBondToCarbon(IndigoObject atom) {
 		for (IndigoObject neighbour : atom.iterateNeighbors()) {
-			if (neighbour.atomicNumber()==6){
+			if (neighbour.atomicNumber() == 6){
 				return true;
 			}
 		}
@@ -139,9 +140,9 @@ public class ChemicalSenseApplication {
 	 * @return
 	 */
 	private boolean isTransitionMetal(int atomicNumber) {
-		return (atomicNumber >=21 && atomicNumber <=30) ||
-			(atomicNumber >=39 && atomicNumber <=48) ||
-			(atomicNumber >=72 && atomicNumber <=80);
+		return (atomicNumber >=21 && atomicNumber <= 30) ||
+			(atomicNumber >=39 && atomicNumber <= 48) ||
+			(atomicNumber >=72 && atomicNumber <= 80);
 	}
 
 
@@ -152,6 +153,16 @@ public class ChemicalSenseApplication {
 	}
 
 
+
+	private Set<String> getSolventInChIs() {
+		Set<String> solventInChIs = new HashSet<String>();
+		for (Chemical spectator : reaction.getSpectators()) {
+			if (ChemicalRole.solvent.equals(spectator.getRole()) && spectator.getInchi() != null){
+				solventInChIs.add(spectator.getInchi());
+			}
+		}
+		return solventInChIs;
+	}
 
 	/**
 	 * Applies the heuristic that the same chemical cannot be both a reactant and solvent
@@ -170,18 +181,8 @@ public class ChemicalSenseApplication {
 		}
 	}
 
-	private Set<String> getSolventInChIs() {
-		Set<String> solventInChIs = new HashSet<String>();
-		for (Chemical spectator : reaction.getSpectators()) {
-			if (ChemicalRole.solvent.equals(spectator.getRole()) && spectator.getInchi() != null){
-				solventInChIs.add(spectator.getInchi());
-			}
-		}
-		return solventInChIs;
-	}
-
 	private void classifyReactantAsSolventsUsingAprioriKnowledge() {
-		boolean hasSolvent = getSolventInChIs().size()>0;
+		boolean hasSolvent = getSolventInChIs().size() > 0;
 		List<Chemical> reactants = reaction.getReactants();
 		Set<String> newSolventInChIs = new HashSet<String>();
 		for (int i = reactants.size()-1; i >=0; i--) {
@@ -197,13 +198,13 @@ public class ChemicalSenseApplication {
 		if (!hasSolvent){
 			for (int i = reactants.size()-1; i >=0; i--) {
 				Chemical reactant = reactants.get(i);
-				if (!hasSolvent && reactant.getVolumeValue()!=null && !reactant.hasAmountOrEquivalentsOrYield() && reactant.hasImpreciseVolume()){
+				if (!hasSolvent && reactant.getVolumeValue() != null && !reactant.hasAmountOrEquivalentsOrYield() && reactant.hasImpreciseVolume()){
 					//solvents will be liquids but typically with imprecise volume and no amount given
 					reactant.setRole(ChemicalRole.solvent);
 					reaction.removeReactant(reactant);
 					reaction.addSpectator(reactant);
 					String inchi = reactant.getInchi();
-					if (inchi !=null){
+					if (inchi != null){
 						newSolventInChIs.add(inchi);
 					}
 					hasSolvent = true;
@@ -217,7 +218,7 @@ public class ChemicalSenseApplication {
 
 	private boolean moreThan4UniqueReactantStructures() {
 		List<Chemical> reactants = reaction.getReactants();
-		if (reactants.size() >4){
+		if (reactants.size() > 4){
 			return Utils.getSmilesForUniqueStructuresUsingInChIs(reactants).size() > 4;
 		}
 		return false;

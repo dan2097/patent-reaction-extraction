@@ -302,18 +302,18 @@ public class Utils {
 			return null;
 		}
 		int index = parent.indexOf(startingEl);
-		if (index +1 >=parent.getChildCount()){
+		if (index + 1 >= parent.getChildCount()){
 			return getNextElement((Element) parent);//reached end of element
 		}
-		Node nextNode = parent.getChild(index+1);
+		Node nextNode = parent.getChild(index + 1);
 		if (!(nextNode instanceof Element)){
 			return null;
 		}
-		Element next =(Element) nextNode;
-		Elements children =next.getChildElements();
-		while (children.size()!=0){
-			next =children.get(0);
-			children =next.getChildElements();
+		Element next = (Element) nextNode;
+		Elements children = next.getChildElements();
+		while (children.size() != 0){
+			next = children.get(0);
+			children = next.getChildElements();
 		}
 		return next;
 	}
@@ -332,15 +332,15 @@ public class Utils {
 		if (index ==0) {
 			return getPreviousElement((Element) parent);//reached beginning of element
 		}
-		Node previousNode = parent.getChild(index-1);
+		Node previousNode = parent.getChild(index - 1);
 		if (!(previousNode instanceof Element)){
 			return null;
 		}
 		Element previous =(Element) previousNode;
-		Elements children =previous.getChildElements();
-		while (children.size()!=0){
-			previous =children.get(children.size()-1);
-			children =previous.getChildElements();
+		Elements children = previous.getChildElements();
+		while (children.size() != 0){
+			previous = children.get(children.size() - 1);
+			children = previous.getChildElements();
 		}
 		return previous;
 	}

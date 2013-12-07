@@ -8,13 +8,13 @@ import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
 
 public class ChemicalRoleAssigner {
-	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
+	private static final AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 
 	/**
 	 * Determines the chemical role by:
 	 * examining the chemical structure against known catalysts/InChIs
 	 * surrounding textual clues
-	 * heuristics based on the occurrence of amounts/yield/equaivalents
+	 * heuristics based on the occurrence of amounts/yield/equivalents
 	 * @param chemicalEl
 	 * @param chemical
 	 * @return
@@ -58,7 +58,7 @@ public class ChemicalRoleAssigner {
 	}
 
 	private static boolean assignAsSolventDueToInKeyword(Element chemicalEl, Chemical chemical) {
-		if (chemicalEl.getLocalName().equals(ChemicalTaggerTags.UNNAMEDMOLECULE_Container) && chemical.getVolumeValue()==null){
+		if (chemicalEl.getLocalName().equals(ChemicalTaggerTags.UNNAMEDMOLECULE_Container) && chemical.getVolumeValue() == null){
 			return false;
 		}
 		if (precededByIn(chemicalEl) || precededByInAMixtureOf(chemicalEl)){
@@ -68,11 +68,6 @@ public class ChemicalRoleAssigner {
 			return true;
 		}
 		return false;
-	}
-
-	private static boolean followedByStopOrComma(Element chemicalEl) {
-		Element next = Utils.getNextElement(chemicalEl);
-		return (next != null && (next.getLocalName().equals(ChemicalTaggerTags.STOP) || next.getLocalName().equals(ChemicalTaggerTags.COMMA)));
 	}
 
 	/**
@@ -86,16 +81,21 @@ public class ChemicalRoleAssigner {
 			return false;
 		}
 		Element twoBefore = Utils.getPreviousElement(previous);
-		if (twoBefore!=null){
+		if (twoBefore != null){
 			Element molecule = getParent(twoBefore, ChemicalTaggerTags.MOLECULE_Container);
-			if (molecule ==null){
+			if (molecule == null){
 				 molecule = getParent(twoBefore, ChemicalTaggerTags.UNNAMEDMOLECULE_Container);
 			}
-			if (molecule !=null && ((followedByStopOrComma(chemicalEl) && precededByIn(molecule)) || precededByInAMixtureOf(molecule))){
+			if (molecule != null && ((followedByStopOrComma(chemicalEl) && precededByIn(molecule)) || precededByInAMixtureOf(molecule))){
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private static boolean followedByStopOrComma(Element chemicalEl) {
+		Element next = Utils.getNextElement(chemicalEl);
+		return (next != null && (next.getLocalName().equals(ChemicalTaggerTags.STOP) || next.getLocalName().equals(ChemicalTaggerTags.COMMA)));
 	}
 
 	/**
@@ -106,12 +106,12 @@ public class ChemicalRoleAssigner {
 	 */
 	private static Element getParent(Element element, String elementName) {
 		Node parent = element.getParent();
-		while (parent !=null && parent instanceof Element){
+		while (parent != null && parent instanceof Element){
 			Element parentEl = (Element)parent;
 			if (parentEl.getLocalName().equals(elementName)){
 				return parentEl;
 			}
-			 parent = parent.getParent();
+			parent = parent.getParent();
 		}
 		return null;
 	}

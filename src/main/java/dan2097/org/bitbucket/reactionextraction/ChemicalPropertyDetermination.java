@@ -18,12 +18,11 @@ import nu.xom.Elements;
  */
 public class ChemicalPropertyDetermination {
 
-	static Logger LOG = Logger.getLogger(ChemicalPropertyDetermination.class);
+	private static final Logger LOG = Logger.getLogger(ChemicalPropertyDetermination.class);
 	
 	static void determineProperties(Chemical chemical, Element molecule){
 	    List<Element> quantityElements = XOMTools.getDescendantElementsWithTagName(molecule, ChemicalTaggerTags.QUANTITY_Container);
-		for (int i = 0; i < quantityElements.size(); i++) {
-		    Element quantityElement = quantityElements.get(i);
+		for (Element quantityElement : quantityElements) {
 			determineVolume(chemical, quantityElement);
 			determineAmount(chemical, quantityElement);
 			determineMass(chemical, quantityElement);
@@ -37,11 +36,11 @@ public class ChemicalPropertyDetermination {
 
 	private static void determineVolume(Chemical chemical, Element quantityElement) {
 		Elements volumes = quantityElement.getChildElements(ChemicalTaggerTags.VOLUME_Container);
-		if (volumes.size()>1){
+		if (volumes.size() > 1){
 			LOG.debug("More than 1 volume given for same chemical");
 		}
-		else if (volumes.size()>0){
-			if (chemical.getVolumeValue()!=null){
+		else if (volumes.size() > 0){
+			if (chemical.getVolumeValue() != null){
 				LOG.debug("More than 1 volume given for same chemical");
 			}
 			else{
@@ -54,11 +53,11 @@ public class ChemicalPropertyDetermination {
 
 	private static void determineAmount(Chemical chemical, Element quantityElement) {
 		Elements amounts = quantityElement.getChildElements(ChemicalTaggerTags.AMOUNT_Container);
-		if (amounts.size()>1){
+		if (amounts.size() > 1){
 			LOG.debug("More than 1 amount given for same chemical");
 		}
-		else if (amounts.size()>0){
-			if (chemical.getAmountValue()!=null){
+		else if (amounts.size() > 0){
+			if (chemical.getAmountValue() != null){
 				LOG.debug("More than 1 amount given for same chemical");
 			}
 			else{
@@ -71,11 +70,11 @@ public class ChemicalPropertyDetermination {
 	
 	private static void determineMass(Chemical chemical, Element quantityElement) {
 		Elements masses = quantityElement.getChildElements(ChemicalTaggerTags.MASS_Container);
-		if (masses.size()>1){
+		if (masses.size() > 1){
 			LOG.debug("More than 1 mass given for same chemical");
 		}
-		else if (masses.size()>0){
-			if (chemical.getMassValue()!=null){
+		else if (masses.size() > 0){
+			if (chemical.getMassValue() != null){
 				LOG.debug("More than 1 mass given for same chemical");
 			}
 			else{
@@ -88,11 +87,11 @@ public class ChemicalPropertyDetermination {
 
 	private static void determineMolarity(Chemical chemical, Element quantityElement) {
 		Elements molarAmounts = quantityElement.getChildElements(ChemicalTaggerTags.MOLAR_Container);
-		if (molarAmounts.size()>1){
+		if (molarAmounts.size() > 1){
 			LOG.debug("More than 1 molarity given for same chemical");
 		}
-		else if (molarAmounts.size()>0){
-			if (chemical.getMolarity()!=null){
+		else if (molarAmounts.size() > 0){
+			if (chemical.getMolarity() != null){
 				LOG.debug("More than 1 molarity given for same chemical");
 			}
 			else{
@@ -105,17 +104,17 @@ public class ChemicalPropertyDetermination {
 	
 	private static void determinepH(Chemical chemical, Element quantityElement) {
 		Elements pH_els = quantityElement.getChildElements(ChemicalTaggerTags.PH_Container);
-		if (pH_els.size()>1){
+		if (pH_els.size() > 1){
 			LOG.debug("More than 1 pH given for same chemical");
 		}
-		else if (pH_els.size()>0){
-			if (chemical.getpH()!=null){
+		else if (pH_els.size() > 0){
+			if (chemical.getpH() != null){
 				LOG.debug("More than 1 pH given for same chemical");
 			}
 			else{
 				String ph = pH_els.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
 				Element possibleSymbol = pH_els.get(0).getFirstChildElement(ChemicalTaggerTags.SYM);
-				if (possibleSymbol !=null && !possibleSymbol.getValue().equals("=")){
+				if (possibleSymbol != null && !possibleSymbol.getValue().equals("=")){
 					return;
 				}
 				try{ 
@@ -131,11 +130,11 @@ public class ChemicalPropertyDetermination {
 	
 	private static void determineEquivalents(Chemical chemical, Element quantityElement) {
 		Elements equivalentsEls = quantityElement.getChildElements(ChemicalTaggerTags.EQUIVALENT_Container);
-		if (equivalentsEls.size()>1){
+		if (equivalentsEls.size() > 1){
 			LOG.debug("More than 1 value for equivalents given for same chemical");
 		}
-		else if (equivalentsEls.size()>0){
-			if (chemical.getEquivalents()!=null){
+		else if (equivalentsEls.size() > 0){
+			if (chemical.getEquivalents() != null){
 				LOG.debug("More than 1 value for equivalents given for same chemical");
 			}
 			else{
@@ -156,11 +155,11 @@ public class ChemicalPropertyDetermination {
 
 	private static void determineYield(Chemical chemical, Element quantityElement) {
 		Elements yields = quantityElement.getChildElements(ChemicalTaggerTags.YIELD_Container);
-		if (yields.size()>1){
+		if (yields.size() > 1){
 			LOG.debug("More than 1 yield given for same chemical");
 		}
-		else if (yields.size()>0){
-			if (chemical.getPercentYield()!=null){
+		else if (yields.size() > 0){
+			if (chemical.getPercentYield() != null){
 				LOG.debug("More than 1 yield given for same chemical");
 			}
 			else{
@@ -179,10 +178,10 @@ public class ChemicalPropertyDetermination {
 
 	private static void determineState(Chemical chemical, Element moleculeEl) {
 		List<Element> stateEls = XOMTools.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.NN_STATE);
-		if (stateEls.size()>1){
+		if (stateEls.size() > 1){
 			LOG.debug("More than 1 state given for same chemical");
 		}
-		else if (stateEls.size()>0){
+		else if (stateEls.size() > 0){
 			chemical.setState(stateEls.get(0).getValue());
 		}
 	}
