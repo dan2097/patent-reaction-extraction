@@ -14,8 +14,9 @@ import dan2097.org.bitbucket.utility.Utils;
 public class TrivialChemicalNameTagger implements Tagger {
 
 	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
-	private static Map<String, HashHolder> wordToHashHolderMap = new HashMap<String, HashHolder>();
-	private static String DICTIONARY_LOCATION = "/dan2097/org/bitbucket/chemicaltagging/trivialNameDictionary.txt";
+	private static final String DICTIONARY_LOCATION = "/dan2097/org/bitbucket/chemicaltagging/trivialNameDictionary.txt";
+	
+	private final Map<String, HashHolder> wordToHashHolderMap = new HashMap<String, HashHolder>();
 	
 	private static class HashHolder {
 		private Map<String, HashHolder> wordToHashHolderMap;
@@ -51,11 +52,11 @@ public class TrivialChemicalNameTagger implements Tagger {
 		}
 	}
 
-	private static void addToHashMaps(String name) {
+	private void addToHashMaps(String name) {
 		String[] words = matchWhiteSpace.split(name);
-		if (words.length>0){
+		if (words.length > 0){
 			HashHolder currentHashHolder;
-			boolean isTerminal = words.length==1;
+			boolean isTerminal = words.length == 1;
 			if (wordToHashHolderMap.containsKey(words[0])){
 				currentHashHolder = wordToHashHolderMap.get(words[0]);
 				if (isTerminal){
@@ -68,8 +69,8 @@ public class TrivialChemicalNameTagger implements Tagger {
 			}
 			for (int i = 1; i < words.length; i++) {
 				Map<String, HashHolder> wordToHashHolderMap = currentHashHolder.getWordToHashHolderMap();
-				isTerminal = (words.length-1==i);
-				if (wordToHashHolderMap !=null){
+				isTerminal = (words.length - 1 == i);
+				if (wordToHashHolderMap != null){
 					if (wordToHashHolderMap.containsKey(words[i])){
 						currentHashHolder = wordToHashHolderMap.get(words[i]);
 						if (isTerminal){
@@ -99,21 +100,22 @@ public class TrivialChemicalNameTagger implements Tagger {
 	 ***********************************************/
 	public List<String> runTagger(List<Token> tokenList, String inputSentence) {
 		List<String> tagList = new ArrayList<String>();
-		for (int i = 0; i < tokenList.size(); i++) {
+		int len = tokenList.size();
+		for (int i = 0; i < len; i++) {
 			tagList.add("nil");
 		}
-		for (int i = 0; i < tokenList.size(); i++) {
+		for (int i = 0; i < len; i++) {
 			String tokenStr = tokenList.get(i).getSurface().toLowerCase();
 			HashHolder currentHashHolder = wordToHashHolderMap.get(tokenStr);
-			if (currentHashHolder!=null){
+			if (currentHashHolder != null){
 				if (currentHashHolder.isTerminal()){
 					tagList.set(i, "OSCAR-CM");
 				}
-				for (int j = i + 1; j < tokenList.size(); j++) {
+				for (int j = i + 1; j < len; j++) {
 					Map<String, HashHolder> wordToHashHolderMap = currentHashHolder.getWordToHashHolderMap();
-					if (wordToHashHolderMap !=null){
+					if (wordToHashHolderMap != null){
 						currentHashHolder = wordToHashHolderMap.get(tokenList.get(j).getSurface().toLowerCase());
-						if (currentHashHolder!=null){
+						if (currentHashHolder != null){
 							if (currentHashHolder.isTerminal()){
 								for (int wordToTagIndice = i; wordToTagIndice <= j; wordToTagIndice++) {
 									tagList.set(wordToTagIndice, "OSCAR-CM");
