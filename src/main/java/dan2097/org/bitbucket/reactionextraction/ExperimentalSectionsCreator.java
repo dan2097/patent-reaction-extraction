@@ -25,14 +25,19 @@ import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
 
 public class ExperimentalSectionsCreator {
-	private static Logger LOG = Logger.getLogger(ExperimentalSectionsCreator.class);
-	private static ParagraphClassifier paragraphClassifier = ParagraphClassifierHolder.getInstance();
-	private static Pattern matchCompoundWith = Pattern.compile("(; )?(compd\\. with|compound with)", Pattern.CASE_INSENSITIVE);
+	
+	/**Maximum number of characters allowed in a paragraph that will be processed*/
+	private static final int MAX_PARA_SIZE = 35000;
+	
+	private static final Logger LOG = Logger.getLogger(ExperimentalSectionsCreator.class);
+	private static final ParagraphClassifier paragraphClassifier = ParagraphClassifierHolder.getInstance();
+	private static final Pattern matchCompoundWith = Pattern.compile("(; )?(compd\\. with|compound with)", Pattern.CASE_INSENSITIVE);
 	
 	private final List<Element> orderedHeadingsAndParagraphs;
-	private final List<ExperimentalSection> experimentalSections =new ArrayList<ExperimentalSection>();
+	private final List<ExperimentalSection> experimentalSections = new ArrayList<ExperimentalSection>();
+
 	private ExperimentalSection currentSection = new ExperimentalSection();
-	private int unnamedProcedureCounter =1;
+	private int unnamedProcedureCounter = 1;
 
 	public ExperimentalSectionsCreator(List<Element> orderedHeadingsAndParagraphs) {
 		this.orderedHeadingsAndParagraphs = orderedHeadingsAndParagraphs;
@@ -69,7 +74,7 @@ public class ExperimentalSectionsCreator {
 				boolean isNonChemicalHeading = isAllCapitalLetters(text);
 				List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractNonFalsePositiveMoleculeEls(taggedDoc.getRootElement());
 				List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
-				return moleculesFound.size() >0 || procedureNames.size() >0;
+				return moleculesFound.size() > 0 || procedureNames.size() > 0;
 			}
 			else{
 				return false;
@@ -104,22 +109,22 @@ public class ExperimentalSectionsCreator {
 	 * @return
 	 */
 	 void correctCompoundWithSpecialCase(List<Element> moleculesFound, Element taggedDocRoot) {
-		if (moleculesFound.size()==2){
+		if (moleculesFound.size() == 2){
 			LinkedList<Element> stack = new LinkedList<Element>();
 			stack.add(taggedDocRoot);
 			List<Element> interveningElements = new ArrayList<Element>();
 			boolean seenMolecule = false;
-			while (stack.size()>0){
+			while (stack.size() > 0){
 				Element currentElement =stack.removeLast();
 				Elements children =currentElement.getChildElements();
-				if (seenMolecule && children.size()==0){
+				if (seenMolecule && children.size() == 0){
 					interveningElements.add(currentElement);
 				}
 				if (currentElement.getLocalName().equals(OSCARCM_Container)){
 					if (seenMolecule){
 						StringBuilder sb = new StringBuilder();
 						for (Element el : interveningElements) {
-							if (sb.length()!=0){
+							if (sb.length() != 0){
 								sb.append(' ');
 							}
 							sb.append(el.getValue());
@@ -133,8 +138,8 @@ public class ExperimentalSectionsCreator {
 								Element newMolecule = new Element(MOLECULE_Container);
 								newMolecule.appendChild(new Element(firstOscarCMContainer));
 								Element newOscarCMContainer = newMolecule.getFirstChildElement(OSCARCM_Container);
-								for (int i = 0; i < interveningElements.size(); i++) {
-									Element interveningElCopy = new Element(interveningElements.get(i));
+								for (Element interveningElement : interveningElements) {
+									Element interveningElCopy = new Element(interveningElement);
 									if (interveningElCopy.getLocalName().equals(STOP)){//semicolon can screw up name to structure
 										continue;
 									}
@@ -154,7 +159,7 @@ public class ExperimentalSectionsCreator {
 					seenMolecule =true;
 				}
 				else{
-					for (int i = children.size()-1; i >=0; i--) {
+					for (int i = children.size() - 1; i >=0; i--) {
 						stack.add(children.get(i));
 					}
 				}
@@ -169,7 +174,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void handleHeading(Element headingEl) {
 		String text = Utils.getElementText(headingEl);
-		if (text.length()>35000){
+		if (text.length() > MAX_PARA_SIZE){
 			//far too long to be an appropriate heading
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
@@ -179,16 +184,16 @@ public class ExperimentalSectionsCreator {
 		List<Element> moleculesFound = isNonChemicalHeading ? new ArrayList<Element>() : extractNonFalsePositiveMoleculeEls(taggedDoc.getRootElement());
 		correctCompoundWithSpecialCase(moleculesFound, taggedDoc.getRootElement());
 		List<Element> procedureNames = extractProcedureNames(taggedDoc.getRootElement());
-		if (moleculesFound.size()!=1 && procedureNames.size()!=1){
+		if (moleculesFound.size() != 1 && procedureNames.size() != 1){
 			//doesn't appear to be an appropriate heading
 			addCurrentSectionIfNonEmptyAndReset();
 			return;
 		}
 		boolean isSubHeading = isSubHeading(headingEl, taggedDoc.getRootElement());
-		if (procedureNames.size()==1){
+		if (procedureNames.size() == 1){
 			addProcedure(procedureNames.get(0), isSubHeading);
 		}
-		if (moleculesFound.size()==1){
+		if (moleculesFound.size() == 1){
 			String alias = TitleTextAliasExtractor.findAlias(text);
 			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(createChemicalFromHeadingMoleculeEl(moleculesFound.get(0)), alias);
 			addNameAliasPair(nameAliasPair);
@@ -207,7 +212,7 @@ public class ExperimentalSectionsCreator {
 		String name = chem.getName();
 		String smarts = FunctionalGroupDefinitions.getSmartsFromChemicalName(name);
 		chem.setSmarts(smarts);
-		if ((smarts !=null && FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(name)!=null) || ChemicalEntityType.chemicalClass.equals(ChemicalTypeAssigner.determineTypeFromSurroundingText(moleculeEl))){
+		if ((smarts != null && FunctionalGroupDefinitions.getFunctionalClassSmartsFromChemicalName(name) != null) || ChemicalEntityType.chemicalClass.equals(ChemicalTypeAssigner.determineTypeFromSurroundingText(moleculeEl))){
 			chem.setChemicalIdentifierPair(new ChemicalIdentifierPair(null, null));
 		}
 		return chem;
@@ -229,24 +234,24 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void addProcedure(Element procedure, boolean isSubHeading) {
 		if (isSubHeading){
-			if (currentSection.getCurrentStepProcedureElement()!=null && !currentSection.currentStepHasParagraphs()){
+			if (currentSection.getCurrentStepProcedureElement() != null && !currentSection.currentStepHasParagraphs()){
 				LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
 			}
 			currentSection.moveToNextStep();
 			currentSection.setCurrentStepProcedure(procedure);
 		}
 		else {
-			if (currentSection.getExperimentalSteps().size()==1 && !currentSection.currentStepHasParagraphs()){
-				if (currentSection.getProcedureElement()!=null){
+			if (currentSection.getExperimentalSteps().size() == 1 && !currentSection.currentStepHasParagraphs()){
+				if (currentSection.getProcedureElement() != null){
 					LOG.trace(currentSection.getProcedureElement().toXML() + " was discarded!");
 				}
-				if (currentSection.getCurrentStepProcedureElement()!=null){
+				if (currentSection.getCurrentStepProcedureElement() != null){
 					LOG.trace(currentSection.getCurrentStepProcedureElement().toXML() + " was discarded!");
 				}
-				if (currentSection.getTargetChemicalNamePair()!=null){
+				if (currentSection.getTargetChemicalNamePair() != null){
 					LOG.trace(currentSection.getTargetChemicalNamePair() + " was discarded!");
 				}
-				if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
+				if (currentSection.getCurrentStepTargetChemicalNamePair() != null){
 					LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
 				}
 			}
@@ -263,8 +268,8 @@ public class ExperimentalSectionsCreator {
 		if (currentSection.currentStepHasParagraphs()){
 			addCurrentSectionIfNonEmptyAndReset();
 		}
-		if (currentSection.getCurrentStepProcedureElement()!=null || currentSection.getTargetChemicalNamePair()!=null){
-			if (currentSection.getCurrentStepTargetChemicalNamePair()!=null){
+		if (currentSection.getCurrentStepProcedureElement() != null || currentSection.getTargetChemicalNamePair() != null){
+			if (currentSection.getCurrentStepTargetChemicalNamePair() != null){
 				LOG.trace(currentSection.getCurrentStepTargetChemicalNamePair() + " was discarded!");
 			}
 			currentSection.setCurrentStepTargetChemicalNamePair(nameAliasPair);
@@ -287,14 +292,14 @@ public class ExperimentalSectionsCreator {
 	boolean isSubHeading(Element heading, Element taggedDocRoot) {
 		if (heading.getLocalName().equals(XMLTags.P)){
 			String id = heading.getAttributeValue(XMLAtrs.ID); 
-			if (id !=null && id.startsWith("h-")){
+			if (id != null && id.startsWith("h-")){
 				return true;
 			}
 		}
 		List<Element> procedures = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, PROCEDURE_Container);
-		if (procedures.size()==1){
+		if (procedures.size() == 1){
 			List<Element> methodAndExampleEls =  XOMTools.getDescendantElementsWithTagNames(procedures.get(0), new String[]{NN_METHOD, NN_EXAMPLE});
-			if (methodAndExampleEls.size()==0){
+			if (methodAndExampleEls.size() == 0){
 				return true;
 			}
 			for (Element method : methodAndExampleEls) {
@@ -313,12 +318,12 @@ public class ExperimentalSectionsCreator {
 	 */
 	private void handleParagraph(Element paraEl) {
 		String text = Utils.detachIrrelevantElementsAndGetParagraphText(paraEl);
-		if (text.equals("")){//blank paragraph
+		if (text.length() == 0){//blank paragraph
 			return;
 		}
-		boolean isExperimentalParagraph = text.length() > 35000 ? false : paragraphClassifier.isExperimental(text);
+		boolean isExperimentalParagraph = text.length() > MAX_PARA_SIZE ? false : paragraphClassifier.isExperimental(text);
 		if (!isExperimentalParagraph){
-			if (currentSection.getCurrentStepProcedureElement()!=null){
+			if (currentSection.getCurrentStepProcedureElement() != null){
 				currentSection.moveToNextStep();
 			}
 			else{
@@ -331,15 +336,15 @@ public class ExperimentalSectionsCreator {
 		
 		//Sometimes headings are present at the start of paragraphs...
 		Element hiddenHeadingEl = findAndDetachHiddenHeadingContent(para.getTaggedSentencesDocument());
-		if (hiddenHeadingEl !=null){
+		if (hiddenHeadingEl != null){
 			processInlineHeading(hiddenHeadingEl, paraEl, text);
-			if (para.getTaggedSentencesDocument().getValue().equals("")){//paragraph was just a heading
+			if (para.getTaggedSentencesDocument().getValue().length() == 0){//paragraph was just a heading
 				return;
 			}
 		}
 
-		if (currentSection.getProcedureElement()==null && currentSection.getCurrentStepProcedureElement()==null 
-				&& currentSection.getTargetChemicalNamePair()==null && currentSection.getCurrentStepTargetChemicalNamePair()==null ){//typically experimental paragraphs are preceded by a suitable heading
+		if (currentSection.getProcedureElement() == null && currentSection.getCurrentStepProcedureElement() == null 
+				&& currentSection.getTargetChemicalNamePair() == null && currentSection.getCurrentStepTargetChemicalNamePair() == null ){//typically experimental paragraphs are preceded by a suitable heading
 			addCurrentSectionIfNonEmptyAndReset();
 			if (isSelfStandingParagraph(para.getTaggedSentencesDocument())){
 				currentSection.addParagraphToCurrentStep(para);
@@ -365,10 +370,10 @@ public class ExperimentalSectionsCreator {
 		correctCompoundWithSpecialCase(moleculesFound, hiddenHeadingEl);
 		List<Element> procedureNames = extractProcedureNames(hiddenHeadingEl);
 		boolean isSubHeading = isSubHeading(paraEl, hiddenHeadingEl);
-		if (procedureNames.size()==1){
+		if (procedureNames.size() == 1){
 			addProcedure(procedureNames.get(0), isSubHeading);
 		}
-		if (moleculesFound.size()==1){
+		if (moleculesFound.size() == 1){
 			String alias = TitleTextAliasExtractor.findAlias(headingText);
 			ChemicalAliasPair nameAliasPair = new ChemicalAliasPair(createChemicalFromHeadingMoleculeEl(moleculesFound.get(0)), alias);
 			addNameAliasPair(nameAliasPair);
@@ -407,10 +412,10 @@ public class ExperimentalSectionsCreator {
 		Element heading = null;
 		if (firstSentence != null){
 			List<Element> elementsToConsider = expandActionPhrases(firstSentence.getChildElements());
-			if (elementsToConsider.size() >=1){
+			if (elementsToConsider.size() >= 1){
 				Element firstPhrase =elementsToConsider.get(0);
 				if (firstPhrase.getLocalName().equals(NOUN_PHRASE_Container) && nounphraseContainsRecognisedHeadingForm(firstPhrase)){
-					if (elementsToConsider.size()>=2){
+					if (elementsToConsider.size() >= 2){
 						Element secondPhrase = elementsToConsider.get(1);
 						if (isPeriodOrSemiColonOrColon(secondPhrase)){
 							heading = new Element(XMLTags.HEADING);
@@ -418,9 +423,9 @@ public class ExperimentalSectionsCreator {
 							detachElementAndEmptySentenceAndActionPhraseParents(secondPhrase);
 							heading.appendChild(firstPhrase);
 							heading.appendChild(secondPhrase);
-							if(elementsToConsider.size() >=4){
-								Element thirdPhrase =elementsToConsider.get(2);
-								Element fourthPhrase =elementsToConsider.get(3);
+							if(elementsToConsider.size() >= 4){
+								Element thirdPhrase = elementsToConsider.get(2);
+								Element fourthPhrase = elementsToConsider.get(3);
 								if (thirdPhrase.getLocalName().equals(NOUN_PHRASE_Container) 
 										&& nounphraseContainsRecognisedHeadingForm(thirdPhrase)
 										&& isPeriodOrSemiColonOrColon(fourthPhrase)){
@@ -446,7 +451,7 @@ public class ExperimentalSectionsCreator {
 	private void detachElementAndEmptySentenceAndActionPhraseParents(Element element) {
 		Element parent = (Element) element.getParent();
 		element.detach();
-		while (parent.getLocalName().equals(ACTIONPHRASE_Container) && parent.getChildElements().size()==0){
+		while (parent.getLocalName().equals(ACTIONPHRASE_Container) && parent.getChildElements().size() == 0){
 			Node newParent = parent.getParent();
 			parent.detach();
 			if (!(newParent instanceof Element)){
@@ -482,13 +487,13 @@ public class ExperimentalSectionsCreator {
 	 */
 	private boolean nounphraseContainsRecognisedHeadingForm(Element nounPhrase) {
 		Elements nounPhraseChildren = nounPhrase.getChildElements();
-		if (nounPhraseChildren.size()==1){
+		if (nounPhraseChildren.size() == 1){
 			String child1Lc = nounPhraseChildren.get(0).getLocalName();
 			if (child1Lc.equals(MOLECULE_Container) || child1Lc.equals(PROCEDURE_Container) || child1Lc.equals(UNNAMEDMOLECULE_Container)){
 				return true;
 			}
 		}
-		else if (nounPhraseChildren.size()==2){
+		else if (nounPhraseChildren.size() == 2){
 			String child1Lc = nounPhraseChildren.get(0).getLocalName();
 			String child2Lc = nounPhraseChildren.get(1).getLocalName();
 			if ((child1Lc.equals(UNNAMEDMOLECULE_Container) || child1Lc.equals(PROCEDURE_Container) )
@@ -503,7 +508,7 @@ public class ExperimentalSectionsCreator {
 				return true;
 			}
 		}
-		else if (nounPhraseChildren.size()==3){
+		else if (nounPhraseChildren.size() == 3){
 			String child1Lc = nounPhraseChildren.get(0).getLocalName();
 			String child2Lc = nounPhraseChildren.get(1).getLocalName();
 			String child3Lc = nounPhraseChildren.get(2).getLocalName();
@@ -522,7 +527,7 @@ public class ExperimentalSectionsCreator {
 	 */
 	private boolean isAnOfNounPhrasePrepPhrase(Element prepPhrase) {
 		Elements childrenOfPrepPhrase = prepPhrase.getChildElements();
-		if (childrenOfPrepPhrase.size()==2){
+		if (childrenOfPrepPhrase.size() == 2){
 			String child1Lc = childrenOfPrepPhrase.get(0).getLocalName();
 			String child2Lc = childrenOfPrepPhrase.get(1).getLocalName();
 			if (child1Lc.equals(IN_OF) && child2Lc.equals(NOUN_PHRASE_Container)){
@@ -569,13 +574,13 @@ public class ExperimentalSectionsCreator {
 
 	private void addCurrentSectionIfNonEmpty() {
 		List<ExperimentalStep> steps = currentSection.getExperimentalSteps();
-		if (steps.size()>0){
-			ExperimentalStep lastStep = steps.get(steps.size()-1);
-			if (lastStep.getParagraphs().size()==0){
+		if (steps.size() > 0){
+			ExperimentalStep lastStep = steps.get(steps.size() - 1);
+			if (lastStep.getParagraphs().size() == 0){
 				steps.remove(lastStep);
 			}
 			if (!steps.isEmpty()){
-				if (currentSection.getProcedureElement()==null){
+				if (currentSection.getProcedureElement() == null){
 					addDummyProcedureElement();
 				}
 				experimentalSections.add(currentSection);

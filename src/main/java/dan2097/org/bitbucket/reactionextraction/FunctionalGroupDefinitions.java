@@ -7,6 +7,7 @@ public class FunctionalGroupDefinitions {
 
 	public static final Map<String, String> functionalClassToSmartsMap = new HashMap<String, String>();
 	public static final Map<String, String> functionalGroupToSmartsMap = new HashMap<String, String>();
+
 	static {
 		functionalClassToSmartsMap.put("alkene", "[$([CX3]=[CX3])]");
 		functionalClassToSmartsMap.put("alkyne", "[$([CX2]#C)]");
