@@ -58,14 +58,14 @@ public class PreviousReactionData {
 	 * @param step
 	 */
 	void addReactions(List<Reaction> reactions, String section, String step){
-		if (reactions ==null){
+		if (reactions == null){
 			throw new IllegalArgumentException("Null reactions paramater");
 		}
-		if (section ==null){
+		if (section == null){
 			throw new IllegalArgumentException("Null section paramater");
 		}
 		List<StepReactionHolder> stepHolders;
-		if (sectionIdentifierToSectionReactions.get(section)==null){
+		if (sectionIdentifierToSectionReactions.get(section) == null){
 			stepHolders = new ArrayList<StepReactionHolder>();
 		}
 		else{
@@ -85,7 +85,7 @@ public class PreviousReactionData {
 	List<Reaction> getReactions(String sectionIdentifier){
 		List<Reaction> reactions = new ArrayList<Reaction>();
 		List<StepReactionHolder> stepReactionHolders = sectionIdentifierToSectionReactions.get(sectionIdentifier);
-		if (stepReactionHolders ==null){
+		if (stepReactionHolders == null){
 			return null;
 		}
 		for (StepReactionHolder stepReactionHolder : stepReactionHolders) {
@@ -102,11 +102,11 @@ public class PreviousReactionData {
 	 */
 	List<Reaction> getReactions(String sectionIdentifier, String stepIdentifier){
 		List<StepReactionHolder> stepReactionHolders = sectionIdentifierToSectionReactions.get(sectionIdentifier);
-		if (stepReactionHolders ==null){
+		if (stepReactionHolders == null){
 			return null;
 		}
-		if (stepIdentifier ==null && stepReactionHolders.size()>0){
-			return stepReactionHolders.get(stepReactionHolders.size()-1).getReactions();
+		if (stepIdentifier == null && stepReactionHolders.size() > 0){
+			return stepReactionHolders.get(stepReactionHolders.size() - 1).getReactions();
 		}
 		for (StepReactionHolder stepReactionHolder : stepReactionHolders) {
 			if (stepIdentifier.equals(stepReactionHolder.getIdentifier())){
@@ -127,8 +127,8 @@ public class PreviousReactionData {
 		if (reactions == null || reactions.isEmpty()){
 			return null;
 		}
-		List<Chemical> products = reactions.get(reactions.size()-1).getProducts();
-		if (products.size()==1){
+		List<Chemical> products = reactions.get(reactions.size() - 1).getProducts();
+		if (products.size() == 1){
 			return products.get(0);
 		}
 		return null;
@@ -146,8 +146,8 @@ public class PreviousReactionData {
 		if (reactions == null || reactions.isEmpty()){
 			return null;
 		}
-		List<Chemical> products = reactions.get(reactions.size()-1).getProducts();
-		if (products.size()==1){
+		List<Chemical> products = reactions.get(reactions.size() - 1).getProducts();
+		if (products.size() == 1){
 			return products.get(0);
 		}
 		return null;

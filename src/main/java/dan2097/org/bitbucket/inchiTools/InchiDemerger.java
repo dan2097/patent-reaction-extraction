@@ -9,11 +9,11 @@ import uk.ac.cam.ch.wwmm.opsin.StringTools;
 
 public class InchiDemerger {
 
-	private final static Pattern matchSlash = Pattern.compile("/");
-	private final static Pattern matchDot = Pattern.compile("[.]");
-	private final static Pattern matchSemiColon = Pattern.compile("[;]");
-	private final static Pattern matchMultiplierStar = Pattern.compile("([2-9][0-9]?)\\*");
-	private final static Pattern matchMultiplier = Pattern.compile("([2-9][0-9]?)");
+	private static final Pattern matchSlash = Pattern.compile("/");
+	private static final Pattern matchDot = Pattern.compile("[.]");
+	private static final Pattern matchSemiColon = Pattern.compile("[;]");
+	private static final Pattern matchMultiplierStar = Pattern.compile("([2-9][0-9]?)\\*");
+	private static final Pattern matchMultiplier = Pattern.compile("([2-9][0-9]?)");
 	private final String inchi;
 	
 	/**

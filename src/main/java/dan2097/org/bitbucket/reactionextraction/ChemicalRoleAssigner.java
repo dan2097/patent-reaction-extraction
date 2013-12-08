@@ -7,7 +7,7 @@ import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
 
-public class ChemicalRoleAssigner {
+class ChemicalRoleAssigner {
 	private static final AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
 
 	/**

@@ -40,7 +40,7 @@ public class ExperimentalSection {
 	}
 
 	boolean currentStepHasParagraphs() {
-		return currentStep.getParagraphs().size()>0;
+		return currentStep.getParagraphs().size() > 0;
 	}
 	
 	void setCurrentStepProcedure(Element procedureEl) {

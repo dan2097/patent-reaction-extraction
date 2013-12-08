@@ -54,13 +54,13 @@ import dan2097.org.bitbucket.reactionextraction.ReactionDepicter;
 
 public class Utils {
 	
-	private static Logger LOG = Logger.getLogger(Utils.class);
-	private static Builder xomBuilder;
-	private final static Pattern matchTab = Pattern.compile("\\t");
-	private final static Pattern matchWhiteSpace = Pattern.compile("\\s+");
-	private final static Pattern matchDot = Pattern.compile("\\.");
-	private final static Pattern matchForwardSlash = Pattern.compile("/");
-	private final static Pattern matchMiddleDot = Pattern.compile("\u00B7");
+	private static final Logger LOG = Logger.getLogger(Utils.class);
+	private static final Builder xomBuilder;
+	private static final Pattern matchTab = Pattern.compile("\\t");
+	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
+	private static final Pattern matchDot = Pattern.compile("\\.");
+	private static final Pattern matchForwardSlash = Pattern.compile("/");
+	private static final Pattern matchMiddleDot = Pattern.compile("\u00B7");
 	
 	static {
 		XMLReader xmlReader;
@@ -100,7 +100,7 @@ public class Utils {
 			ChemistrySentenceParser chemistrySentenceParser = new ChemistrySentenceParser(taggedText);
 			chemistrySentenceParser.parseTags();
 			Document doc = chemistrySentenceParser.makeXMLDocument();
-			if (doc ==null){
+			if (doc == null){
 				LOG.warn("Chemical tagger failed to tag a text string indicating a bug in ChemicalTagger");
 				Element root = new Element("Document");
 				return new Document(root);
@@ -132,15 +132,15 @@ public class Utils {
 	 */
 	public static String resolveNameToSmiles(List<String> nameComponents) {
 		String completeSmiles = resolveNameToSmiles(StringTools.stringListToString(nameComponents, " "));
-		if (completeSmiles ==null){
-			if (nameComponents.size()>1){
+		if (completeSmiles == null){
+			if (nameComponents.size() > 1){
 				StringBuilder smilesSB = new StringBuilder();
 				for (String nameComponent : nameComponents) {
 					String partialSmiles = resolveNameToSmiles(nameComponent);
-					if (partialSmiles ==null){
+					if (partialSmiles == null){
 						return null;
 					}
-					if (smilesSB.length() >0){
+					if (smilesSB.length() > 0){
 						smilesSB.append('.');
 					}
 					smilesSB.append(partialSmiles);
@@ -149,7 +149,7 @@ public class Utils {
 			}
 			else{
 				nameComponents = splitNameIntoComponents(nameComponents.get(0));
-				if (nameComponents.size()>1){
+				if (nameComponents.size() > 1){
 					return resolveNameToSmiles(nameComponents);
 				}
 			}
@@ -179,12 +179,12 @@ public class Utils {
 	 */
 	public static String resolveNameToInchi(List<String> nameComponents) {
 		String completeInChI = resolveNameToInchi(StringTools.stringListToString(nameComponents, " "));
-		if (completeInChI ==null){
-			if (nameComponents.size()>1){
+		if (completeInChI == null){
+			if (nameComponents.size() > 1){
 				List<String> partialInchis = new ArrayList<String>();
 				for (String nameComponent : nameComponents) {
 					String partialInChI = resolveNameToInchi(nameComponent);
-					if (partialInChI ==null){
+					if (partialInChI == null){
 						return null;
 					}
 					partialInchis.add(partialInChI);
@@ -194,7 +194,7 @@ public class Utils {
 			}
 			else{
 				nameComponents = splitNameIntoComponents(nameComponents.get(0));
-				if (nameComponents.size()>1){
+				if (nameComponents.size() > 1){
 					return resolveNameToInchi(nameComponents);
 				}
 			}
@@ -210,19 +210,19 @@ public class Utils {
 	 */
 	private static List<String> splitNameIntoComponents(String nameComponent) {
 		String[] middleDotSeperatedStrs = matchMiddleDot.split(nameComponent);
-		if (middleDotSeperatedStrs.length >1){
+		if (middleDotSeperatedStrs.length > 1){
 			return StringTools.arrayToList(middleDotSeperatedStrs);
 		}
 		String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
-		if (slashSeperatedStrs.length >1){
+		if (slashSeperatedStrs.length > 1){
 			return StringTools.arrayToList(slashSeperatedStrs);
 		}
 		String[] dotSeperatedStrs = matchDot.split(nameComponent);
-		if (dotSeperatedStrs.length >1){
+		if (dotSeperatedStrs.length > 1){
 			return StringTools.arrayToList(dotSeperatedStrs);
 		}
 		String[] whiteSpaceSeperatedStrs = matchWhiteSpace.split(nameComponent);
-		if (whiteSpaceSeperatedStrs.length ==2){
+		if (whiteSpaceSeperatedStrs.length == 2){
 			return StringTools.arrayToList(whiteSpaceSeperatedStrs);
 		}
 		List<String> nameComponents = new ArrayList<String>();
@@ -273,7 +273,7 @@ public class Utils {
 		if (!paragraphEl.getLocalName().equals(XMLTags.P)){
 			throw new IllegalArgumentException("A paragraph element was expected!");
 		}
-		List<Element> elsToDetach =  XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
+		List<Element> elsToDetach = XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
 		for (Element elToDetach : elsToDetach) {
 			elToDetach.detach();
 		}
@@ -351,7 +351,7 @@ public class Utils {
 	 * @return
 	 */
 	public static Chemical createChemicalFromName(String name) {
-		if (name==null){
+		if (name == null){
 			throw new IllegalArgumentException("Input name was null");
 		}
 		Chemical chem = new Chemical(name);
@@ -366,7 +366,7 @@ public class Utils {
 	 * @return
 	 */
 	public static Chemical createChemicalFromName(List<String> nameComponents) {
-		if (nameComponents==null){
+		if (nameComponents == null){
 			throw new IllegalArgumentException("Input nameComponents was null");
 		}
 		Chemical chem = new Chemical(StringTools.stringListToString(nameComponents, " "));
@@ -412,7 +412,7 @@ public class Utils {
 			String smiles = chemical.getSmiles();
 			if (smiles != null){
 				String inchi = chemical.getInchi();
-				if (inchi !=null){
+				if (inchi != null){
 					if (!seenInChIs.contains(inchi)){
 						uniqueStructureSmiles.add(smiles);
 						seenInChIs.add(inchi);
@@ -443,7 +443,7 @@ public class Utils {
 			rxn.addProduct(mol);
 		}
 		
-		int i=0;
+		int i = 0;
 		for (IndigoObject product : rxn.iterateProducts()) {
 			product.addDataSGroup(new int[0], new int[0], "smiles", products.get(i));
 			i++;
@@ -456,7 +456,7 @@ public class Utils {
 			rxn.addReactant(mol);
 		}
 
-		i=0;
+		i = 0;
 		for (IndigoObject reactant : rxn.iterateReactants()) {
 			reactant.addDataSGroup(new int[0], new int[0], "smiles", reactants.get(i));
 			i++;
@@ -469,7 +469,7 @@ public class Utils {
 			rxn.addCatalyst(mol);
 		}
 		
-		i=0;
+		i = 0;
 		for (IndigoObject catalyst : rxn.iterateCatalysts()) {
 			catalyst.addDataSGroup(new int[0], new int[0], "smiles", spectators.get(i));
 			i++;
@@ -491,12 +491,12 @@ public class Utils {
 			Reaction reaction = entry.getKey();
 			IndigoObject indigoReaction = entry.getValue();
 			String identifier = reaction.getInput().getIdentifier();//may be null for non USPTO documents
-			if (identifierToCount.get(identifier)==null){
+			if (identifierToCount.get(identifier) == null){
 				identifierToCount.put(identifier, 1);
 			}
-			String paraIdent = identifier !=null ? identifier : "";
+			String paraIdent = identifier != null ? identifier : "";
 			Integer subParaIdent = identifierToCount.get(identifier);
-			identifierToCount.put(identifier, subParaIdent +1);
+			identifierToCount.put(identifier, subParaIdent + 1);
 			try {
 				File f = new File(directory, "reaction" + paraIdent +"_" + subParaIdent + ".png");
 				ReactionDepicter.depictReaction(indigoReaction, f);

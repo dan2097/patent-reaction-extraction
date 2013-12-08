@@ -4,11 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TitleTextAliasExtractor {
-	private final static Pattern matchAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*(?![\\-])", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
-	private final static Pattern matchTerminalAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*$", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
-	private final static Pattern matchStereochemicalQualification = Pattern.compile("(endo|exo|syn|anti|erythro|threo|ent|cis|trans|all-trans|\\([rsez+-](,[rsez+-])*\\)||[rsez+-](,[rsez+-])*)-?$", Pattern.CASE_INSENSITIVE);
-	private final static Pattern matchStereochemicalQualificationToIgnore = Pattern.compile("(\u00B1|\\(\u00B1\\))-?");
-	private final static Pattern matchPreIdentifierWord = Pattern.compile("formula|intermediate|example|preparation|synthesis|adduct|compound|product|complex|ligand|monomer|oligomer|reactant|reagent|solution", Pattern.CASE_INSENSITIVE);
+	private static final Pattern matchAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*(?![\\-])", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
+	private static final Pattern matchTerminalAlphaNumericIdentifier = Pattern.compile("\\d+[a-z]?['`\u2032]*$", Pattern.CASE_INSENSITIVE);//TODO normalise all to apostrophe?
+	private static final Pattern matchStereochemicalQualification = Pattern.compile("(endo|exo|syn|anti|erythro|threo|ent|cis|trans|all-trans|\\([rsez+-](,[rsez+-])*\\)||[rsez+-](,[rsez+-])*)-?$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern matchStereochemicalQualificationToIgnore = Pattern.compile("(\u00B1|\\(\u00B1\\))-?");
+	private static final Pattern matchPreIdentifierWord = Pattern.compile("formula|intermediate|example|preparation|synthesis|adduct|compound|product|complex|ligand|monomer|oligomer|reactant|reagent|solution", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Attempts to find an identifier in the given heading text
@@ -18,7 +18,7 @@ public class TitleTextAliasExtractor {
 	 */
 	public static String findAlias(String text) {
 		text = text.trim();
-		if (text.length()==0){
+		if (text.length() == 0){
 			return null;
 		}
 		char finalChar = text.charAt(text.length()-1);
@@ -26,7 +26,7 @@ public class TitleTextAliasExtractor {
 			text = text.substring(0, text.length()-1);
 			finalChar = text.charAt(text.length()-1);
 		}
-		if (text.length()==0){
+		if (text.length() == 0){
 			return null;
 		}
 		String identifier = matchEndingIndentifier(text);
@@ -64,21 +64,21 @@ public class TitleTextAliasExtractor {
 	private static String matchEndingBrackettedIdentifier(String text, char finalChar) {
 		Integer openingBracket = null;
 		if (finalChar == ')'){
-			openingBracket = findMatchingOpeningBracketIndice(text, '(', ')');
+			openingBracket = findMatchingOpeningBracketIndex(text, '(', ')');
 		}
 		else if (finalChar == ']'){
-			openingBracket = findMatchingOpeningBracketIndice(text, '[', ']');
+			openingBracket = findMatchingOpeningBracketIndex(text, '[', ']');
 		}
 		else if (finalChar == '}'){
-			openingBracket = findMatchingOpeningBracketIndice(text, '{', '}');
+			openingBracket = findMatchingOpeningBracketIndex(text, '{', '}');
 		}
-		if (openingBracket !=null) {
+		if (openingBracket != null) {
 			return extractBrackettedIdentifier(text.substring(openingBracket +1, text.length()-1));
 		}
 		return null;
 	}
 
-	private static Integer findMatchingOpeningBracketIndice(String text, char openingBracket, char closingBracket) {
+	private static Integer findMatchingOpeningBracketIndex(String text, char openingBracket, char closingBracket) {
 		int bracketLevel =0;
 		for (int i = text.length() -1 ; i >=0; i--) {
 			if (text.charAt(i) == openingBracket){
@@ -107,15 +107,15 @@ public class TitleTextAliasExtractor {
 		Integer closingBracket = null;
 		char firstChar = text.charAt(0);
 		if (firstChar == '('){
-			closingBracket = findMatchingClosingBracketIndice(text, '(', ')');
+			closingBracket = findMatchingClosingBracketIndex(text, '(', ')');
 		}
 		else if (firstChar == '['){
-			closingBracket = findMatchingClosingBracketIndice(text, '[', ']');
+			closingBracket = findMatchingClosingBracketIndex(text, '[', ']');
 		}
 		else if (firstChar == '{'){
-			closingBracket = findMatchingClosingBracketIndice(text, '{', '}');
+			closingBracket = findMatchingClosingBracketIndex(text, '{', '}');
 		}
-		if (closingBracket !=null) {
+		if (closingBracket != null) {
 			return extractBrackettedIdentifier(text.substring(1, closingBracket));
 		}
 		
@@ -123,7 +123,7 @@ public class TitleTextAliasExtractor {
 		if (m.lookingAt()){
 			Matcher matchIdentifier = matchAlphaNumericIdentifier.matcher(text.substring(m.end()).trim());
 			if (matchIdentifier.lookingAt()){
-				return m.group() +" "+ matchIdentifier.group();
+				return m.group() + " " + matchIdentifier.group();
 			}
 		}
 		
@@ -142,7 +142,7 @@ public class TitleTextAliasExtractor {
 		return null;
 	}
 	
-	private static Integer findMatchingClosingBracketIndice(String text, char openingBracket, char closingBracket) {
+	private static Integer findMatchingClosingBracketIndex(String text, char openingBracket, char closingBracket) {
 		int bracketLevel =0;
 		for (int i = 0 ; i <text.length(); i++) {
 			if (text.charAt(i) == openingBracket){

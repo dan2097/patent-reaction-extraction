@@ -41,10 +41,10 @@ public class ExperimentalSectionParser {
 	public List<Reaction> parseForReactions(){
 		List<Reaction> sectionReactions = new ArrayList<Reaction>();
 		Chemical ultimateTargetCompound = null;
-		if (experimentalSection.getTargetChemicalNamePair()!=null){
+		if (experimentalSection.getTargetChemicalNamePair() != null){
 			ChemicalAliasPair nameAliasPair = experimentalSection.getTargetChemicalNamePair();
 			ultimateTargetCompound = nameAliasPair.getChemical();
-			if (nameAliasPair.getAlias() !=null){
+			if (nameAliasPair.getAlias() != null){
 				previousReactionData.getAliasToChemicalMap().put(nameAliasPair.getAlias(), ultimateTargetCompound);
 			}
 		}
@@ -52,10 +52,10 @@ public class ExperimentalSectionParser {
 		for (int i = 0; i < steps.size(); i++) {
 			ExperimentalStep step = steps.get(i);
 			Chemical currentStepTargetCompound = null;
-			if (step.getTargetChemicalNamePair()!=null){
+			if (step.getTargetChemicalNamePair() != null){
 				ChemicalAliasPair nameAliasPair = step.getTargetChemicalNamePair();
 				currentStepTargetCompound = nameAliasPair.getChemical();
-				if (nameAliasPair.getAlias() !=null){
+				if (nameAliasPair.getAlias() != null){
 					previousReactionData.getAliasToChemicalMap().put(nameAliasPair.getAlias(), currentStepTargetCompound);
 				}
 			}
@@ -104,32 +104,32 @@ public class ExperimentalSectionParser {
 	}
 
 	private void attemptToResolveAnaphora(Element molOrUnnamedEl, Chemical cm) {
-		if (cm.getEntityType()!=null){
-			if (cm.getSmiles()!=null && !ChemicalEntityType.definiteReference.equals(cm.getEntityType())){
+		if (cm.getEntityType() != null){
+			if (cm.getSmiles() != null && !ChemicalEntityType.definiteReference.equals(cm.getEntityType())){
 				//for molecules with known smiles that do not appear to be a back reference do not attempt to resolve the structure by back reference
 				return;
 			}
 		}
 		List<Element> references = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
-		if (references.size()==1){
+		if (references.size() == 1){
 			attemptToResolveReferenceToCompound(references.get(0), cm);
 		}
-		else if (references.size() >0){
-			LOG.debug("Multiple referenceToCompounds present in : " +molOrUnnamedEl.toXML());
+		else if (references.size() > 0){
+			LOG.debug("Multiple referenceToCompounds present in : " + molOrUnnamedEl.toXML());
 		}
 		List<Element> procedures = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.PROCEDURE_Container);
-		if (procedures.size()==1){
+		if (procedures.size() == 1){
 			attemptToResolveReferenceToProcedure(procedures.get(0), cm);
 		}
-		else if (procedures.size() >0){
-			LOG.debug("Multiple procedures present in : " +molOrUnnamedEl.toXML());
+		else if (procedures.size() > 0){
+			LOG.debug("Multiple procedures present in : " + molOrUnnamedEl.toXML());
 		}
 	}
 
 	private void attemptToResolveReferenceToCompound(Element reference, Chemical cm) {
 		String identifier = getIdentifierFromReference(reference);
 		Chemical referencedChemical = previousReactionData.getAliasToChemicalMap().get(identifier);
-		if (referencedChemical !=null){
+		if (referencedChemical != null){
 			if (!referencedChemical.hasInchi()){
 				LOG.trace(identifier + " resolved to a compound with no InChI! This identifier was ignored.");
 				return;
@@ -153,7 +153,7 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	private boolean hasShorterInChI(Chemical compound, Chemical compoundToCompareWith) {
-		return (compound.getInchi() !=null && compoundToCompareWith.getInchi() !=null &&
+		return (compound.getInchi() != null && compoundToCompareWith.getInchi() != null &&
 				compound.getInchi().length() < compoundToCompareWith.getInchi().length());
 	}
 
@@ -165,10 +165,10 @@ public class ExperimentalSectionParser {
 	 */
 	private void attemptToResolveReferenceToProcedure(Element procedureEl, Chemical cm) {
 		SectionAndStepIdentifier sectionAndStepIdentifier = getSectionAndStepIdentifier(procedureEl);
-		if (sectionAndStepIdentifier!=null){
+		if (sectionAndStepIdentifier != null){
 			Chemical referencedChemical = previousReactionData.getProductOfReaction(sectionAndStepIdentifier.getSectionIdentifier(), sectionAndStepIdentifier.getStepIdentifier());
-			if (referencedChemical !=null){
-				if (cm.getInchi() !=null && !cm.getInchi().equals(referencedChemical.getInchi()) && sectionAndStepIdentifier.getStepIdentifier()==null){
+			if (referencedChemical != null){
+				if (cm.getInchi() !=null && !cm.getInchi().equals(referencedChemical.getInchi()) && sectionAndStepIdentifier.getStepIdentifier() == null){
 					List<String> productInChIs = ReactionExtractionMethods.getProductInchis(previousReactionData.getReactions(sectionAndStepIdentifier.getSectionIdentifier()));
 					if (productInChIs.contains(cm.getInchi())){
 						return;//is a reference to a product of a sub step
@@ -198,7 +198,7 @@ public class ExperimentalSectionParser {
 		List<Element> identifierEls = XOMTools.getChildElementsWithTagNames(referenceEl, new String[]{CD, CD_ALPHANUM, NN_IDENTIFIER});
 		StringBuilder sb = new StringBuilder();
 		for (Element identifierEl : identifierEls) {
-			if (sb.length()!=0){
+			if (sb.length() != 0){
 				sb.append(' ');
 			}
 			sb.append(identifierEl.getValue());
@@ -214,16 +214,16 @@ public class ExperimentalSectionParser {
 	 */
 	Map<String, Chemical> findAliasDefinitions(Element moleculeEl, ChemicalEntityType type) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
-		if (type!=ChemicalEntityType.exact && type!=ChemicalEntityType.definiteReference){
+		if (type != ChemicalEntityType.exact && type != ChemicalEntityType.definiteReference){
 			return aliasToChemicalMap;
 		}
 		aliasToChemicalMap.putAll(extractSynonymousChemicalNameAliases(moleculeEl));
 		List<Element> references = XOMTools.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
-		if (references.size()==1){
+		if (references.size() == 1){
 			String identifier = getIdentifierFromReference(references.get(0));
 			aliasToChemicalMap.put(identifier, moleculeToChemicalMap.get(moleculeEl));
 		}
-		else if (references.size() >1){
+		else if (references.size() > 1){
 			LOG.debug("Multiple referenceToCompounds present in : " +moleculeEl.toXML());
 		}
 		return aliasToChemicalMap;
@@ -239,7 +239,7 @@ public class ExperimentalSectionParser {
 	private Map<String, Chemical> extractSynonymousChemicalNameAliases(Element moleculeEl) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
 		List<Element> oscarCMsAndMixtures = XOMTools.getChildElementsWithTagNames(moleculeEl, new String[]{OSCARCM_Container, MIXTURE_Container});
-		if (oscarCMsAndMixtures.size()==2 && oscarCMsAndMixtures.get(0).getLocalName().equals(OSCARCM_Container)){
+		if (oscarCMsAndMixtures.size() == 2 && oscarCMsAndMixtures.get(0).getLocalName().equals(OSCARCM_Container)){
 			//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
 			Element firstOscarcm = oscarCMsAndMixtures.get(0);
 			Element secondOscarcm;
@@ -259,16 +259,16 @@ public class ExperimentalSectionParser {
 			String smiles1 = Utils.resolveNameToSmiles(nameComponents1);
 			String name1 = StringTools.stringListToString(nameComponents1, " ");
 			List<String> nameComponents2 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(secondOscarcm);
-			String smiles2 =Utils.resolveNameToSmiles(nameComponents2);
+			String smiles2 = Utils.resolveNameToSmiles(nameComponents2);
 			String name2 = StringTools.stringListToString(nameComponents2, " ");
 
-			if (smiles1 !=null && smiles2 ==null){
+			if (smiles1 != null && smiles2 == null){
 				Chemical cm = new Chemical(name2);
 				cm.setChemicalIdentifierPair(new ChemicalIdentifierPair(smiles1, Utils.resolveNameToInchi(nameComponents1)));
 				aliasToChemicalMap.put(name2, cm);
 				LOG.trace(name1 +" is the same as " + name2 +" " +moleculeEl.getParent().toXML());
 			}
-			else if (smiles1 ==null && smiles2 !=null){
+			else if (smiles1 == null && smiles2 != null){
 				Chemical cm = new Chemical(name1);
 				cm.setChemicalIdentifierPair(new ChemicalIdentifierPair(smiles2, Utils.resolveNameToInchi(nameComponents2)));
 				aliasToChemicalMap.put(name1, cm);
@@ -282,7 +282,7 @@ public class ExperimentalSectionParser {
 		Elements children = oscarcm.getChildElements();
 		if (children.size() >=3 &&
 				children.get(0).getLocalName().equals(LRB) &&
-				children.get(children.size()-1).getLocalName().equals(RRB)){
+				children.get(children.size() - 1).getLocalName().equals(RRB)){
 			return true;
 		}
 		return false;
@@ -293,11 +293,11 @@ public class ExperimentalSectionParser {
 			return oscarCmOrMixture;
 		}
 		Element lrb = oscarCmOrMixture.getFirstChildElement(LRB);
-		if (lrb !=null){
+		if (lrb != null){
 			Element oscarcm = (Element) XOMTools.getNextSibling(lrb);
-			if (oscarcm !=null && oscarcm.getLocalName().equals(OSCARCM_Container)){
+			if (oscarcm != null && oscarcm.getLocalName().equals(OSCARCM_Container)){
 				Element delimiter = (Element) XOMTools.getNextSibling(oscarcm);
-				if (delimiter !=null && (delimiter.getLocalName().equals(COMMA) || delimiter.getLocalName().equals(COLON))){
+				if (delimiter != null && (delimiter.getLocalName().equals(COMMA) || delimiter.getLocalName().equals(COLON))){
 					return oscarcm;
 				}
 			}
@@ -347,18 +347,18 @@ public class ExperimentalSectionParser {
 	 * @param step 
 	 */
 	private void recordReactionsInPreviousReactionData(List<Reaction> reactions, ExperimentalStep step) {
-		if (experimentalSection.getProcedureElement()==null){
+		if (experimentalSection.getProcedureElement() == null){
 			throw new RuntimeException("procedure element should never be null after section creation");
 		}
 		String sectionIdentifier = getSectionIdentifier(experimentalSection.getProcedureElement());
-		if (sectionIdentifier ==null){
+		if (sectionIdentifier == null){
 			LOG.debug(experimentalSection.getProcedureElement().toXML() +" was not understood as section identifier");
 			return;
 		}
-		String stepIdentifier =null;
-		if (step.getProcedureEl()!=null){
+		String stepIdentifier = null;
+		if (step.getProcedureEl() != null){
 			stepIdentifier = getStepIdentifier(step.getProcedureEl(), sectionIdentifier);
-			if (stepIdentifier ==null){
+			if (stepIdentifier == null){
 				LOG.debug(step.getProcedureEl().toXML() +" was not understood as step identifier");
 				return;
 			}
@@ -374,7 +374,7 @@ public class ExperimentalSectionParser {
 	 */
 	String getSectionIdentifier(Element procedureEl) {
 		List<Element> sectionIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
-		if (sectionIdentifiers.size()==1){
+		if (sectionIdentifiers.size() == 1){
 			return sectionIdentifiers.get(0).getValue();
 		}
 		return null;
@@ -407,7 +407,7 @@ public class ExperimentalSectionParser {
 	 */
 	SectionAndStepIdentifier getSectionAndStepIdentifier(Element procedureEl) {
 		List<Element> stepIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
-		if (stepIdentifiers.size()==1){
+		if (stepIdentifiers.size() == 1){
 			Element stepIdentifier = stepIdentifiers.get(0);
 			if (isSectionIdentifier(stepIdentifier)){
 				return new SectionAndStepIdentifier(stepIdentifier.getValue(), null);
@@ -417,7 +417,7 @@ public class ExperimentalSectionParser {
 				return new SectionAndStepIdentifier(sectionIdentifier, stepIdentifier.getValue());
 			}
 		}
-		if (stepIdentifiers.size()==2){
+		if (stepIdentifiers.size() == 2){
 			boolean firstIsSectionIdentifier = isSectionIdentifier(stepIdentifiers.get(0));
 			boolean secondIsSectionIdentifier = isSectionIdentifier(stepIdentifiers.get(1));
 			if (firstIsSectionIdentifier && !secondIsSectionIdentifier){

@@ -10,7 +10,7 @@ import dan2097.org.bitbucket.utility.IndigoHolder;
 
 public class ReactionDepicter {
 
-	final static IndigoRenderer renderer;
+	private static final IndigoRenderer renderer;
 
 	static{
 		Indigo indigo = IndigoHolder.getInstance();

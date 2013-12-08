@@ -45,12 +45,7 @@ public class ExtractOrganicChemistryPatents {
 	 * @throws IOException 
 	 */
 	public ExtractOrganicChemistryPatents(String inputDirectoryLocation, String outputDirectoryLocation) throws IOException {
-		File in = new File(inputDirectoryLocation);
-		File out = new File(outputDirectoryLocation);
-		checkInputs(in, out);
-		FileUtils.forceMkdir(out);
-		inputDirectory = in;
-		outputDirectory = out;
+		this(new File(inputDirectoryLocation), new File(outputDirectoryLocation));
 	}
 	
 	/**
@@ -116,6 +111,7 @@ public class ExtractOrganicChemistryPatents {
 				IOUtils.closeQuietly(fos);
 			}
 		}
+		zipFile.close();
 	}
 	
 	/**
@@ -161,6 +157,7 @@ public class ExtractOrganicChemistryPatents {
 					}
 				}
 			}
+			zipFile.close();
 		}
 	}
 
@@ -169,9 +166,9 @@ public class ExtractOrganicChemistryPatents {
 		for (int i = 0; i < classifications.size(); i++) {
 			Element classification = (Element) classifications.get(i);
 			Element section = classification.getFirstChildElement("section");
-			if (section !=null && section.getValue().equalsIgnoreCase("C")){
+			if (section != null && section.getValue().equalsIgnoreCase("C")){
 				Element claz = classification.getFirstChildElement("class");
-				if (claz !=null && (claz.getValue().equalsIgnoreCase("07") || claz.getValue().equalsIgnoreCase("7"))){
+				if (claz != null && (claz.getValue().equalsIgnoreCase("07") || claz.getValue().equalsIgnoreCase("7"))){
 					return true;
 				}
 			}

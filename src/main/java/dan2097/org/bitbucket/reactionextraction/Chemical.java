@@ -7,9 +7,9 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 public class Chemical{
-	private final static Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
-	private final static String CML_NAMESPACE = "http://www.xml-cml.org/schema";
-	private final static String DL_NAMESPACE = "http://bitbucket.org/dan2097";
+	private static final Pattern matchCentiLitresOrLarger = Pattern.compile("dm3|(centi|deci|kilo|mega)?lit(er|re)[s]?", Pattern.CASE_INSENSITIVE);
+	private static final String CML_NAMESPACE = "http://www.xml-cml.org/schema";
+	private static final String DL_NAMESPACE = "http://bitbucket.org/dan2097";
 	
 	private final String name;
 	private ChemicalIdentifierPair chemicalIdentifierPair = new ChemicalIdentifierPair(null, null);

@@ -6,7 +6,8 @@ import java.util.List;
 import dan2097.org.bitbucket.inchiTools.InchiDemerger;
 
 public class ReactionExtractionMethods {
-	private static AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
+	private static final AprioriKnowledge chemicalKnowledge = AprioriKnowledge.getInstance();
+
 	/**
 	 * Is the string equal in meaning to "step"
 	 * e.g. "step", "stage"
@@ -23,7 +24,7 @@ public class ReactionExtractionMethods {
 	 * @return
 	 */
 	public static boolean isKnownSolvent(Chemical chem) {
-		if (chem.getInchi() !=null){
+		if (chem.getInchi() != null){
 			List<String> inchis = new InchiDemerger(chem.getInchi()).generateDemergedInchis();
 			for (String inchi : inchis) {
 				if (!chemicalKnowledge.isKnownSolventInChI(inchi)){

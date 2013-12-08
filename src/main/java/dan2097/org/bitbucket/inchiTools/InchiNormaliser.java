@@ -8,7 +8,7 @@ import uk.ac.cam.ch.wwmm.opsin.StringTools;
 
 public class InchiNormaliser {
 
-	private final static Pattern matchSlash = Pattern.compile("/");
+	private static final Pattern matchSlash = Pattern.compile("/");
 	
 	/**
 	 * Return a modified version of the given InChI where the:

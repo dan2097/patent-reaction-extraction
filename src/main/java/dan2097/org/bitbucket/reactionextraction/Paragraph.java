@@ -34,7 +34,7 @@ public class Paragraph {
 		untaggedString = paragraphText;
 		this.identifier = identifier;
 		if (untaggedString.equals("")){
-			taggedSentencesDocument =new Document(new Element("Document"));
+			taggedSentencesDocument = new Document(new Element("Document"));
 		}
 		else{
 			taggedSentencesDocument = Utils.runChemicalTagger(untaggedString);
@@ -60,16 +60,16 @@ public class Paragraph {
 	Map<Element, PhraseType> generatePhraseToTypeMapping(BiMap<Element, Chemical> moleculeToChemicalMap) {
 		Map<Element, PhraseType> phraseToAssignment = new LinkedHashMap<Element, PhraseType>();
 		Nodes sentences = taggedSentencesDocument.query("//" +SENTENCE_Container);
-		boolean inWorkup =false;
+		boolean inWorkup = false;
 		for (int i = 0; i < sentences.size(); i++) {
 			Element sentence = (Element) sentences.get(i);
 			List<Element> phrases = getChildPhraseElements(sentence);
 			for (Element phrase : phrases) {
-				Boolean workup = false;
+				boolean workup = false;
 				if (phrase.getLocalName().equals(ACTIONPHRASE_Container)){
 					String phraseType = phrase.getAttributeValue(ChemicalTaggerAtrs.TYPE_ATR);
 					if (WORKUP_PHRASES.contains(phraseType) && !phraseContainsMoleculeWithAmountEquivalentsOrYields(phrase, moleculeToChemicalMap)){
-						workup =true;
+						workup = true;
 					}
 				}
 				if (workup){
@@ -78,7 +78,7 @@ public class Paragraph {
 				}
 				else{
 					if (inWorkup && phraseContainsMoleculeWithAmountEquivalentsOrYields(phrase, moleculeToChemicalMap)){
-						inWorkup =false;
+						inWorkup = false;
 					}
 					
 					if (inWorkup){
@@ -86,7 +86,7 @@ public class Paragraph {
 						if (phrase.getLocalName().equals(ACTIONPHRASE_Container)){
 							String phraseType = phrase.getAttributeValue(ChemicalTaggerAtrs.TYPE_ATR);
 							if (phraseType.equals("Synthesize") || phraseType.equals("Yield")){
-								inWorkup =false;
+								inWorkup = false;
 							}
 						}
 					}

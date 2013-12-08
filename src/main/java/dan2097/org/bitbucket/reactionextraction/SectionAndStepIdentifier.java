@@ -1,11 +1,11 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-public class SectionAndStepIdentifier {
+class SectionAndStepIdentifier {
 
 	private final String sectionIdentifier;
 	private final String stepIdentifier;
 	
-	public SectionAndStepIdentifier(String sectionIdentifier, String stepIdentifier) {
+	SectionAndStepIdentifier(String sectionIdentifier, String stepIdentifier) {
 		this.sectionIdentifier = sectionIdentifier;
 		this.stepIdentifier = stepIdentifier;
 	}

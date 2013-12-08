@@ -7,7 +7,7 @@ import com.ggasoftware.indigo.IndigoObject;
 
 
 
-public class ReactionStoichiometryDeterminer {
+class ReactionStoichiometryDeterminer {
 	private final Reaction reaction;
 	private final IndigoObject indigoReaction;
 
@@ -15,8 +15,7 @@ public class ReactionStoichiometryDeterminer {
 		this.reaction = reaction;
 		this.indigoReaction = indigoReaction;
 	}
-	
-	
+
 	/**
 	 * Uses the atom mapping to determine the stoichiometry of reactants used.
 	 * The property "smiles" in the Indigo reactions is used to link the CML representation with the Indigo representation
