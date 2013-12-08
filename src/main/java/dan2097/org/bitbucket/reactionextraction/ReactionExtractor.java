@@ -21,12 +21,13 @@ import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLTags;
 
 public class ReactionExtractor {
+	
+	private static final  Logger LOG = Logger.getLogger(ReactionExtractor.class);
 
 	private final List<Element> headingsAndParagraphs;
 	private final PreviousReactionData previousReactionData = new PreviousReactionData();
 	private final Map<Reaction, IndigoObject> documentReactions = new LinkedHashMap<Reaction, IndigoObject>();
 	private final Map<Reaction, IndigoObject> completeReactions = new LinkedHashMap<Reaction, IndigoObject>();
-	private static Logger LOG = Logger.getLogger(ReactionExtractor.class);
 
 	/**
 	 * Convenience constructor for extracting reactions from a USPTO patent as a XOM document
@@ -77,7 +78,7 @@ public class ReactionExtractor {
 	
 	/**
 	 * Performs reaction extraction
-	 * The getter methods of this class will return null prior to this being run
+	 * The getter methods of this class will return empty results prior to this being run
 	 */
 	public void extractReactions(){
 		ExperimentalSectionsCreator sectionsCreator = new ExperimentalSectionsCreator(headingsAndParagraphs);
@@ -95,7 +96,7 @@ public class ReactionExtractor {
 						}
 						else {
 							IndigoObject modifiedReaction = attemptToProduceMappableReactionByRoleReclassification(reaction);
-							if (modifiedReaction!=null){
+							if (modifiedReaction != null){
 								indigoReaction = modifiedReaction;
 								new ReactionStoichiometryDeterminer(reaction, indigoReaction).processReactionStoichiometry();
 								completeReactions.put(reaction, indigoReaction);
@@ -182,7 +183,7 @@ public class ReactionExtractor {
 	 * @return
 	 */
 	private boolean reactionIsSane(Reaction reaction, IndigoObject indigoReaction) {
-		if (indigoReaction.countProducts() ==0){
+		if (indigoReaction.countProducts() == 0){
 			return false;
 		}
 		if (indigoReaction.countReactants() + indigoReaction.countCatalysts() < 2){
@@ -221,7 +222,7 @@ public class ReactionExtractor {
 
 	private static List<Element> getHeadingsAndParagraphsFromUSPTOPatent(Document usptoPatentDoc) {
 		Element description = usptoPatentDoc.getRootElement().getFirstChildElement(XMLTags.DESCRIPTION);
-		if (description ==null){
+		if (description == null){
 			throw new RuntimeException("Malformed USPTO patent, no \"description\" element found");
 		}
 		return XOMTools.getChildElementsWithTagNames(description, new String[]{XMLTags.HEADING, XMLTags.P});

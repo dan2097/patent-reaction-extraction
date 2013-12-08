@@ -5,7 +5,7 @@ import java.util.List;
 
 import nu.xom.Element;
 
-public class ExperimentalStep {
+class ExperimentalStep {
 
 	private Element procedureEl; 
 	private ChemicalAliasPair targetChemicalNamePair;

@@ -6,7 +6,8 @@ import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
 public class ReactionMapper {
-	private static Logger LOG = Logger.getLogger(ReactionMapper.class);
+	private static final Logger LOG = Logger.getLogger(ReactionMapper.class);
+
 	private final IndigoObject reaction;
 	
 	public ReactionMapper(IndigoObject indigoReaction) {
@@ -20,7 +21,7 @@ public class ReactionMapper {
 	 * @return
 	 */
 	public boolean mapReaction() {
-		if (reaction.countProducts()==0 || reaction.countReactants()==0){
+		if (reaction.countProducts() == 0 || reaction.countReactants() == 0){
 			return false;
 		}
 		for (IndigoObject m: reaction.iterateMolecules()){
@@ -45,7 +46,7 @@ public class ReactionMapper {
 		return true;
 	}
 	
-	public boolean allProductAtomsAreMapped(){
+	public boolean allProductAtomsAreMapped() {
 		for (IndigoObject product : reaction.iterateProducts()) {
 			for (IndigoObject atom : product.iterateAtoms()) {
 				if(reaction.atomMappingNumber(atom) == 0){

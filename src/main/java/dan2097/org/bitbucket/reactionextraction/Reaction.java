@@ -6,18 +6,18 @@ import java.util.List;
 import nu.xom.Element;
 
 public class Reaction {
-	private static String CML_NAMESPACE = "http://www.xml-cml.org/schema";
-	private static String DL_NAMESPACE = "http://bitbucket.org/dan2097";
+	private static final String CML_NAMESPACE = "http://www.xml-cml.org/schema";
+	private static final String DL_NAMESPACE = "http://bitbucket.org/dan2097";
 
-	private List<Chemical> reactants =new ArrayList<Chemical>();
-	private List<Chemical> products =new ArrayList<Chemical>();
+	private final List<Chemical> reactants = new ArrayList<Chemical>();
+	private final List<Chemical> products = new ArrayList<Chemical>();
 	/** Typically solvents or catalysts*/
-	private List<Chemical> spectators =new ArrayList<Chemical>();
+	private final List<Chemical> spectators =new ArrayList<Chemical>();
 	private Paragraph inputPara = null;
 	private String reactionSmiles = null;
 
 	public void setInput(Paragraph inputPara) {
-		this.inputPara =inputPara;	
+		this.inputPara = inputPara;	
 	}
 	public Paragraph getInput() {
 		return inputPara;
@@ -85,9 +85,9 @@ public class Reaction {
 		}
 		Element productList = new Element("productList", CML_NAMESPACE);
 		reaction.appendChild(productList);
-		int i=0;
+		int i = 0;
 		for (Chemical product : products) {
-			Element productCml =product.toCML("m" +i++);
+			Element productCml = product.toCML("m" + i++);
 			productCml.setLocalName("product");
 			productList.appendChild(productCml);
 		}
@@ -95,13 +95,13 @@ public class Reaction {
 		Element reactantList = new Element("reactantList", CML_NAMESPACE);
 		reaction.appendChild(reactantList);
 		for (Chemical reactant : reactants) {
-			reactantList.appendChild(reactant.toCML("m" +i++));
+			reactantList.appendChild(reactant.toCML("m" + i++));
 		}
 		
 		Element spectatorList = new Element("spectatorList", CML_NAMESPACE);
 		reaction.appendChild(spectatorList);
 		for (Chemical spectator : spectators) {
-			Element solventCml =spectator.toCML("m" +i++);
+			Element solventCml =spectator.toCML("m" + i++);
 			solventCml.setLocalName("spectator");
 			spectatorList.appendChild(solventCml);
 		}
