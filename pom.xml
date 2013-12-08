@@ -74,7 +74,7 @@
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
-				<artifactId>oscar4-opsin</artifactId>
+			<artifactId>oscar4-opsin</artifactId>
 			<version>4.1</version>
 		</dependency>
 		<dependency>
@@ -90,12 +90,12 @@
 		<dependency>
 			<groupId>com.ggasoftware</groupId>
 			<artifactId>indigo</artifactId>
-			<version>1.1.10</version>
+			<version>1.1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ggasoftware.indigo</groupId>
 			<artifactId>indigo-renderer</artifactId>
-			<version>1.1.10</version>
+			<version>1.1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.collections</groupId>
@@ -113,6 +113,11 @@
 			<version>1.5</version>
 		</dependency>
 		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
@@ -123,11 +128,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.8.5</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 		</dependency>
 	</dependencies>
 </project>
