@@ -31,19 +31,25 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 
 public class ExperimentalStepParser {
-	private static Logger LOG = Logger.getLogger(ExperimentalStepParser.class);
+	private static final Logger LOG = Logger.getLogger(ExperimentalStepParser.class);
+	private static final Indigo indigo = IndigoHolder.getInstance();
 	
-	/*The chemical after this expression does not occur as it has been replaced (needs to be confirmed by a match with matchFirstChemicalToBeReplacedInbetween)*/
-	private static Pattern matchFirstChemicalToBeReplacedBefore = Pattern.compile("((replac|substitut)[e]?ing( of)?|(substitution|replacement) of)( the)?$", Pattern.CASE_INSENSITIVE);
+	/**The chemical after this expression does not occur as it has been replaced (needs to be confirmed by a match with matchFirstChemicalToBeReplacedInbetween)*/
+	private static final Pattern matchFirstChemicalToBeReplacedBefore = Pattern.compile("((replac|substitut)[e]?ing( of)?|(substitution|replacement) of)( the)?$", Pattern.CASE_INSENSITIVE);
 	
-	/*Goes between the chemical to be replaced and the chemical that is replacing it in this instance of the reaction*/
-	private static Pattern matchFirstChemicalToBeReplacedInbetween = Pattern.compile("for|with|by", Pattern.CASE_INSENSITIVE);
+	/**Goes between the chemical to be replaced and the chemical that is replacing it in this instance of the reaction*/
+	private static final Pattern matchFirstChemicalToBeReplacedInbetween = Pattern.compile("for|with|by", Pattern.CASE_INSENSITIVE);
 	
-	/*The chemical after this expression was replaced in this instance of the reaction*/
-	private static Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((((is |was )?(used|employed) )?((to )?take the place of|in (the )?place of|instead of))|(replac[e]?(ing|s)|substitut[e]?ing))( the)?", Pattern.CASE_INSENSITIVE);
+	/**The chemical after this expression was replaced in this instance of the reaction*/
+	private static final Pattern matchSecondChemicalToBeReplacedInbetween = Pattern.compile("((((is |was )?(used|employed) )?((to )?take the place of|in (the )?place of|instead of))|(replac[e]?(ing|s)|substitut[e]?ing))( the)?", Pattern.CASE_INSENSITIVE);
 	
-	/*The chemical after this expression was mentioned only due to the reaction being performed similarly*/
-	private static Pattern matchChemicalUsedAsAnalogy = Pattern.compile("((analogy|analogously|in( a)? like manner) to|as for)( (the (preparation|reaction|synthesis)|that) of)?$", Pattern.CASE_INSENSITIVE);
+	/**The chemical after this expression was mentioned only due to the reaction being performed similarly*/
+	private static final Pattern matchChemicalUsedAsAnalogy = Pattern.compile("((analogy|analogously|in( a)? like manner) to|as for)( (the (preparation|reaction|synthesis)|that) of)?$", Pattern.CASE_INSENSITIVE);
+	
+	/**A yield phrase*/
+	private static final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
+	
+	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final|aimed|expected|anticipated) (compound|product)", Pattern.CASE_INSENSITIVE);
 	
 	private final ExperimentalStep experimentalStep;
 	private final BiMap<Element, Chemical> moleculeToChemicalMap;
@@ -52,12 +58,6 @@ public class ExperimentalStepParser {
 	 * Due to confusion in the experimental section creator the title compound may be mentioned before the final step*/
 	private final Chemical titleCompound;
 
-	/*A yield phrase*/
-	private static final String yieldPhraseProduct = "self::node()/descendant-or-self::ActionPhrase[@type='Yield']//*[self::MOLECULE or self::UNNAMEDMOLECULE]";
-
-	static final Pattern matchProductTextualAnaphora = Pattern.compile("(crude|desired|title[d]?|final|aimed|expected|anticipated) (compound|product)", Pattern.CASE_INSENSITIVE);
-	private static final Indigo indigo = IndigoHolder.getInstance();
-	
 	public ExperimentalStepParser(ExperimentalStep experimentalStep, BiMap<Element, Chemical> moleculeToChemicalMap, Chemical targetCompound, Chemical titleCompound) {
 		this.experimentalStep = experimentalStep;
 		this.moleculeToChemicalMap = moleculeToChemicalMap;
@@ -87,16 +87,16 @@ public class ExperimentalStepParser {
 				Set<Element> products = new LinkedHashSet<Element>();
 				Set<Element> productAfterReagents = identifyYieldedProduct(phrase);
 				productAfterReagents.addAll(reagentsWithAYield(reagents));
-				if (currentReaction.getReactants().size()==0 ){
+				if (currentReaction.getReactants().size() == 0){
 					//A reaction with no reagents and a backreferenced "product" probably means its the product of a previous reaction
 					removeBackReferencedCompoundFromProductListIfPresent(productAfterReagents);
 				}
-				if (productAfterReagents.size() >0 ){
+				if (productAfterReagents.size() > 0 ){
 					reagentsExpectedAfterProduct = false;
 				}
 				products.addAll(productAfterReagents);
 				Set<Element> productBeforeReagents = identifyProductBeforeReagents(phrase);
-				if (productBeforeReagents.size() >0 ){
+				if (productBeforeReagents.size() > 0 ){
 					reagentsExpectedAfterProduct = true;
 				}
 				products.addAll(productBeforeReagents);
@@ -107,10 +107,10 @@ public class ExperimentalStepParser {
 				resolveLocalBackReferencesAndChangeRoleIfNecessary(chemicals, reactions);
 				for (Element reagent : reagents) {
 					Chemical reagentChem = moleculeToChemicalMap.get(reagent);
-					if (reagentChem.getEntityType()== ChemicalEntityType.falsePositive){
-						LOG.trace(reagentChem.getName() +" is believed to be a false positive and has been ignored");
+					if (reagentChem.getEntityType() == ChemicalEntityType.falsePositive){
+						LOG.trace(reagentChem.getName() + " is believed to be a false positive and has been ignored");
 					}
-					else if (reagentChem.getRole() ==null){//only assign a role if one has not already been explicitly assigned
+					else if (reagentChem.getRole() == null){//only assign a role if one has not already been explicitly assigned
 						reagentChem.setRole(ChemicalRoleAssigner.determineChemicalRole(reagent, reagentChem));
 					}
 				}
@@ -148,12 +148,12 @@ public class ExperimentalStepParser {
 					currentReaction = new Reaction();
 				}
 			}
-			if (currentReaction.getProducts().size()>0 || currentReaction.getReactants().size()>0){
+			if (currentReaction.getProducts().size() > 0 || currentReaction.getReactants().size() > 0){
 				currentReaction.setInput(paragraph);
 				reactions.add(currentReaction);
 			}
 		}
-		if (targetCompound !=null){
+		if (targetCompound != null){
 			if (!compoundIsProductOfAReaction(reactions, targetCompound)){
 				if (!addTargetCompoundToLastReactionWithReactantsIfHasNoProduct(reactions)){
 					LOG.trace("Failed to assign: " + targetCompound.getName() + " to a reaction!");
@@ -161,7 +161,7 @@ public class ExperimentalStepParser {
 			}
 		}
 		if (orphanYieldElement != null && reactions.size() > 0){
-			assignYieldToProduct(reactions.get(reactions.size()-1), orphanYieldElement);
+			assignYieldToProduct(reactions.get(reactions.size() - 1), orphanYieldElement);
 		}
 		
 		for (Reaction reaction : reactions) {
@@ -179,11 +179,11 @@ public class ExperimentalStepParser {
 		StringBuilder sb = new StringBuilder();
 		Element tempMoleculeThatWasReplaced = null;
 		boolean seenMolecule = false;
-		while (stack.size()>0){
+		while (stack.size() > 0){
 			Element currentElement =stack.removeLast();
 			Elements children =currentElement.getChildElements();
-			if (children.size()==0){
-				if (sb.length()!=0){
+			if (children.size() == 0){
+				if (sb.length() != 0){
 					sb.append(' ');
 				}
 				sb.append(currentElement.getValue());
@@ -196,7 +196,7 @@ public class ExperimentalStepParser {
 				else if (matchChemicalUsedAsAnalogy.matcher(beforeMoleculeString).matches()){
 					moleculesToIgnore.add(currentElement);
 				}
-				else if (tempMoleculeThatWasReplaced ==null){
+				else if (tempMoleculeThatWasReplaced == null){
 					if (matchFirstChemicalToBeReplacedBefore.matcher(beforeMoleculeString).find()){
 						tempMoleculeThatWasReplaced = currentElement;
 					}
@@ -209,7 +209,7 @@ public class ExperimentalStepParser {
 				seenMolecule =true;
 			}
 			else{
-				for (int i = children.size()-1; i >=0; i--) {
+				for (int i = children.size() - 1; i >=0; i--) {
 					stack.add(children.get(i));
 				}
 			}
@@ -239,7 +239,7 @@ public class ExperimentalStepParser {
 			if (chem.getEntityType().equals(ChemicalEntityType.falsePositive)){
 				continue;
 			}
-			boolean hasQuantity = (chem.getAmountValue() !=null || chem.getEquivalents() !=null || chem.getMassValue() !=null || chem.getPercentYield() !=null);
+			boolean hasQuantity = (chem.getAmountValue() != null || chem.getEquivalents() != null || chem.getMassValue() != null || chem.getPercentYield() != null);
 			ChemicalRole believedRole = ChemicalRoleAssigner.determineChemicalRole(synthesizedMolecule, chem);
 			if ((foundProductWithQuantity && !hasQuantity) || ReactionExtractionMethods.isKnownSolvent(chem) || believedRole.equals(ChemicalRole.solvent) || believedRole.equals(ChemicalRole.catalyst)){
 				continue;//skip erroneous characterisation chemicals
@@ -262,7 +262,7 @@ public class ExperimentalStepParser {
 		Set<Element> reagentsWithYield = new LinkedHashSet<Element>();
 		for (Element reagent : reagents) {
 			Chemical chem = moleculeToChemicalMap.get(reagent);
-			if (moleculeToChemicalMap.get(reagent).getPercentYield()!=null){
+			if (moleculeToChemicalMap.get(reagent).getPercentYield() != null){
 				reagentsWithYield.add(reagent);
 				chem.setRole(ChemicalRole.product);
 			}
@@ -271,7 +271,7 @@ public class ExperimentalStepParser {
 	}
 
 	private void removeBackReferencedCompoundFromProductListIfPresent(Set<Element> yieldedCompounds) {
-		if (yieldedCompounds.size()==1){
+		if (yieldedCompounds.size() == 1){
 			Chemical cm = moleculeToChemicalMap.get(yieldedCompounds.iterator().next());
 			if (cm.getEntityType().equals(ChemicalEntityType.definiteReference)){
 				cm.setRole(null);
@@ -295,7 +295,7 @@ public class ExperimentalStepParser {
 				continue;
 			}
 			products.add(synthesizedMolecule);
-			if (chem.getRole()==null){
+			if (chem.getRole() == null){
 				chem.setRole(ChemicalRole.product);
 			}
 		}
@@ -304,7 +304,7 @@ public class ExperimentalStepParser {
 	
 	/**
 	 * Finds molecules in a phrase that have been synthesized
-	 * e.g. Acetic anhydride (was/is) (synthesized/prepared) from methyl acetate and carbon monoxid
+	 * e.g. Acetic anhydride (was/is) (synthesized/prepared) from methyl acetate and carbon monoxide
 	 * @param phrase
 	 * @return
 	 */
@@ -316,11 +316,11 @@ public class ExperimentalStepParser {
 		nounPhrases.addAll(XOMTools.getDescendantElementsWithTagName(phrase, NOUN_PHRASE_Container));
 		for (Element nounPhrase : nounPhrases) {
 			Element adjacentVerbPhrase = (Element) XOMTools.getNextSibling(nounPhrase);
-			if (adjacentVerbPhrase !=null && adjacentVerbPhrase.getLocalName().equals(VERBPHRASE_Container)){
+			if (adjacentVerbPhrase != null && adjacentVerbPhrase.getLocalName().equals(VERBPHRASE_Container)){
 				List<Element> verbs = XOMTools.getChildElementsWithTagNames(adjacentVerbPhrase, new String[]{VBD, VBP, VBZ});
-				for (Element verb  : verbs) {
+				for (Element verb : verbs) {
 					Element synthesizeVerb = (Element) XOMTools.getNextSibling(verb);
-					if (synthesizeVerb !=null && synthesizeVerb.getLocalName().equals(VB_SYNTHESIZE) && !synthesizeVerb.getValue().toLowerCase().startsWith("react")){
+					if (synthesizeVerb != null && synthesizeVerb.getLocalName().equals(VB_SYNTHESIZE) && !synthesizeVerb.getValue().toLowerCase().startsWith("react")){
 						return XOMTools.getDescendantElementsWithTagNames(nounPhrase, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
 					}
 				}
@@ -332,29 +332,29 @@ public class ExperimentalStepParser {
 	private void resolveLocalBackReferencesAndChangeRoleIfNecessary(Set<Element> chemicals, List<Reaction> reactions) {
 		for (Element chemical : chemicals) {
 			Chemical chemChem = moleculeToChemicalMap.get(chemical);
-			if (chemChem.getEntityType() ==ChemicalEntityType.definiteReference){
-				if (chemChem.getSmiles() ==null && matchProductTextualAnaphora.matcher(chemChem.getName()).matches()){
-					if (titleCompound!=null){
+			if (chemChem.getEntityType() == ChemicalEntityType.definiteReference){
+				if (chemChem.getSmiles() == null && matchProductTextualAnaphora.matcher(chemChem.getName()).matches()){
+					if (titleCompound != null){
 						chemChem.setChemicalIdentifierPair(titleCompound.getChemicalIdentifierPair());
 					}
 					chemChem.setRole(ChemicalRole.product);
 				}
-				else if (XOMTools.getDescendantElementsWithTagNames(chemical, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size()==0){
-					//back referencing will not been attempted previously
+				else if (XOMTools.getDescendantElementsWithTagNames(chemical, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size() == 0){
+					//back referencing will not have been attempted previously
 					String smarts = chemChem.getSmarts();
-					if (smarts == null && chemChem.getSmiles()!=null){
+					if (smarts == null && chemChem.getSmiles() != null){
 						smarts = generateAromaticSmiles(chemChem.getSmiles());
 					}
 					if (smarts != null){
 						List<Chemical> chemicalsToMatchAgainst = getProductChemsFromReactions(reactions);
 						ChemicalRole role = chemChem.getRole();
-						if (ChemicalRole.product == role && targetCompound !=null){
+						if (ChemicalRole.product == role && targetCompound != null){
 							chemicalsToMatchAgainst.add(targetCompound);
 						}
 						List<Chemical> matches = findMatchesUsingSmarts(smarts, chemicalsToMatchAgainst);
-						if (matches.size()==1){
+						if (matches.size() == 1){
 							Chemical referencedChem = matches.get(0);
-							if (referencedChem.getInchi()==null || !referencedChem.getInchi().equals(chemChem.getInchi())){
+							if (referencedChem.getInchi() == null || !referencedChem.getInchi().equals(chemChem.getInchi())){
 								chemChem.setChemicalIdentifierPair(referencedChem.getChemicalIdentifierPair());
 								if (ChemicalRole.product != role){
 									chemChem.setRole(ChemicalRole.reactant);
@@ -369,13 +369,13 @@ public class ExperimentalStepParser {
 					}
 					//The  compound could also be specific
 					Element previous = Utils.getPreviousElement(chemical);
-					if (previous !=null && previous.getLocalName().equals(DT_THE)){
-						if (chemChem.getSmarts() !=null){
+					if (previous != null && previous.getLocalName().equals(DT_THE)){
+						if (chemChem.getSmarts() != null){
 							if (FunctionalGroupDefinitions.functionalGroupToSmartsMap.containsKey(chemChem.getName().toLowerCase())){
 								chemChem.setEntityType(ChemicalEntityType.exact);
 							}
 						}
-						else if (chemChem.getSmiles() !=null){
+						else if (chemChem.getSmiles() != null){
 							chemChem.setEntityType(ChemicalEntityType.exact);
 						}
 					}
@@ -390,9 +390,9 @@ public class ExperimentalStepParser {
 	 * @param chemical
 	 */
 	static void interpretPercentAsAyield(Element molOrUnnamedMolEl, Chemical chemical) {
-		if (chemical.getPercentYield()==null){
+		if (chemical.getPercentYield() == null){
 			List<Element> percents = XOMTools.getDescendantElementsWithTagName(molOrUnnamedMolEl, PERCENT_Container);
-			if (percents.size() ==1){
+			if (percents.size() == 1){
 				String value = percents.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
 				try{ 
 					double d = Double.parseDouble(value);
@@ -435,9 +435,9 @@ public class ExperimentalStepParser {
 			IndigoObject query = indigo.loadSmarts(smarts);
 			List<Chemical> chemicalMatches = new ArrayList<Chemical>();
 			for (Chemical chemical : chemicalsToMatchAgainst) {
-				if (chemical.getSmiles()!=null){
+				if (chemical.getSmiles() != null){
 					IndigoObject substructureMatcher = indigo.substructureMatcher(indigo.loadMolecule(chemical.getSmiles()));
-					if (substructureMatcher.match(query) !=null){
+					if (substructureMatcher.match(query) != null){
 						chemicalMatches.add(chemical);
 					}
 				}
@@ -457,7 +457,7 @@ public class ExperimentalStepParser {
 	 */
 	private boolean compoundIsProductOfAReaction(List<Reaction> reactions, Chemical potentialProduct) {
 		String inchi = potentialProduct.getInchi();
-		if (inchi==null){
+		if (inchi == null){
 			return false;
 		}
 		for (Reaction reaction : reactions) {
@@ -492,9 +492,9 @@ public class ExperimentalStepParser {
 
 	private void assignYieldToProduct(Reaction currentReaction, Element yield) {
 		List<Chemical> products = currentReaction.getProducts();
-		if (products.size()==1){
+		if (products.size() == 1){
 			Chemical product = products.get(0);
-			if (product.getPercentYield()==null){
+			if (product.getPercentYield() == null){
 				String value = yield.query(".//" + ChemicalTaggerTags.CD).get(0).getValue();
 				try{ 
 					double d = Double.parseDouble(value);
@@ -513,20 +513,20 @@ public class ExperimentalStepParser {
 	 * @return
 	 */
 	private boolean addTargetCompoundToLastReactionWithReactantsIfHasNoProduct(List<Reaction> reactions) {
-		for (int i = reactions.size()-1; i >=0; i--) {
+		for (int i = reactions.size() - 1; i >=0; i--) {
 			Reaction reaction = reactions.get(i);
-			if (reaction.getReactants().size()>0){
-				boolean hasReactantWithSmiles =false;
+			if (reaction.getReactants().size() > 0){
+				boolean hasReactantWithSmiles = false;
 				for (Chemical reactant : reaction.getReactants()) {
-					if (reactant.getSmiles()!=null){
-						hasReactantWithSmiles =true;
+					if (reactant.getSmiles() != null){
+						hasReactantWithSmiles = true;
 						break;
 					}
 				}
 				if (!hasReactantWithSmiles){
 					continue;
 				}
-				if (reaction.getProducts().size()==0){
+				if (reaction.getProducts().size() == 0){
 					reaction.addProduct(targetCompound);
 					return true;
 				}
@@ -544,13 +544,13 @@ public class ExperimentalStepParser {
 	}
 
 	private boolean productCouldBeTheTitleCompound(Reaction reaction) {
-		if(reaction.getProducts().size()==1){
+		if(reaction.getProducts().size() == 1){
 			Chemical product = reaction.getProducts().get(0);
-			if (product.getSmiles()==null){
+			if (product.getSmiles() == null){
 				Element el = moleculeToChemicalMap.inverse().get(product);
 				if (el.getLocalName().equals(UNNAMEDMOLECULE_Container)){
 					List<Element> references = XOMTools.getDescendantElementsWithTagName(el, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
-					if (references.size()==0){
+					if (references.size() == 0){
 						return true;
 					}
 				}
