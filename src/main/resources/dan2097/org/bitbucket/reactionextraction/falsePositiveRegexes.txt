@@ -3,7 +3,7 @@
 
 
 #parts of NMR patterns
-(?-i)\d+[\-]?H
+(?-i)(([1-9]\d*|0)\.)?\d+[\-]?H
 (?-i)13C
 .*nmr
 .*-d\d*
