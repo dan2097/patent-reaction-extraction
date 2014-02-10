@@ -20,7 +20,7 @@ public class ChemicalPropertyDetermination {
 
 	private static final Logger LOG = Logger.getLogger(ChemicalPropertyDetermination.class);
 	
-	static void determineProperties(Chemical chemical, Element molecule){
+	public static void determineProperties(Chemical chemical, Element molecule){
 	    List<Element> quantityElements = XOMTools.getDescendantElementsWithTagName(molecule, ChemicalTaggerTags.QUANTITY_Container);
 		for (Element quantityElement : quantityElements) {
 			determineVolume(chemical, quantityElement);
