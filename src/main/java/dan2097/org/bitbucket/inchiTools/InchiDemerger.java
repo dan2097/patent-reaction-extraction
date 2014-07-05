@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
+import dan2097.org.bitbucket.utility.StringUtils;
+
 
 public class InchiDemerger {
 
@@ -80,7 +81,7 @@ public class InchiDemerger {
 		}
 		List<String> demergedInChIs = new ArrayList<String>();
 		for (List<String> demergedInChIArray : demergedInChIArrays) {
-			demergedInChIs.add(StringTools.stringListToString(demergedInChIArray, "/"));
+			demergedInChIs.add(StringUtils.stringListToString(demergedInChIArray, "/"));
 		}
 		return demergedInChIs;
 	}

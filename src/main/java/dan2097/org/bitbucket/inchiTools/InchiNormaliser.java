@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
+import dan2097.org.bitbucket.utility.StringUtils;
+
 
 public class InchiNormaliser {
 
@@ -41,6 +42,6 @@ public class InchiNormaliser {
 				break;
 			}
 		}
-		return StringTools.stringListToString(retainedLayers, "/");
+		return StringUtils.stringListToString(retainedLayers, "/");
 	}
 }
