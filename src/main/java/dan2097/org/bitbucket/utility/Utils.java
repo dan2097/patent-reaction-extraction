@@ -161,7 +161,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
-		Set<String> inchis = OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getInchis(name);
+		Set<String> inchis = OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getStdInchis(name);
 		if (!inchis.isEmpty()){
 			return InchiNormaliser.normaliseInChI(inchis.iterator().next());
 		}
