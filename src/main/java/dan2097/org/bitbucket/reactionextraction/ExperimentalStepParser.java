@@ -2,6 +2,7 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+
 
 
 
@@ -395,9 +397,8 @@ public class ExperimentalStepParser {
 			List<Element> percents = XomUtils.getDescendantElementsWithTagName(molOrUnnamedMolEl, PERCENT_Container);
 			if (percents.size() == 1){
 				String value = percents.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
-				try{ 
-					double d = Double.parseDouble(value);
-					chemical.setPercentYield(d);
+				try {
+					chemical.setPercentYield(new BigDecimal(value));
 				}
 				catch (NumberFormatException e) {
 					LOG.debug("Percent was not a numeric percentage");
@@ -497,9 +498,8 @@ public class ExperimentalStepParser {
 			Chemical product = products.get(0);
 			if (product.getPercentYield() == null){
 				String value = yield.query(".//" + ChemicalTaggerTags.CD).get(0).getValue();
-				try{ 
-					double d = Double.parseDouble(value);
-					product.setPercentYield(d);
+				try {
+					product.setPercentYield(new BigDecimal(value));
 				}
 				catch (NumberFormatException e) {
 					LOG.debug("Yield was not a numeric percentage");

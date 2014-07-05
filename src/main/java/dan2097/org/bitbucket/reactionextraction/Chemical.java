@@ -1,5 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -23,10 +24,10 @@ public class Chemical{
 	private String molarityUnits;
 	private String volumeValue;
 	private String volumeUnits;
-	private Double equivalents;
+	private BigDecimal equivalents;
 	private String equivalentsUnits;
-	private Double pH;
-	private Double percentYield;
+	private BigDecimal pH;
+	private BigDecimal percentYield;
 	private Integer stoichiometry;
 	private String state;
 	private ChemicalRole role = null;
@@ -203,11 +204,11 @@ public class Chemical{
 		this.volumeUnits = volumeUnits;
 	}
 	
-	public Double getEquivalents() {
+	public BigDecimal getEquivalents() {
 		return equivalents;
 	}
 
-	void setEquivalents(Double equivalents) {
+	void setEquivalents(BigDecimal equivalents) {
 		this.equivalents = equivalents;
 	}
 
@@ -224,24 +225,24 @@ public class Chemical{
 		this.equivalentsUnits = equivalentsUnits;
 	}
 
-	public Double getpH() {
+	public BigDecimal getpH() {
 		return pH;
 	}
 
-	void setpH(Double pH) {
+	void setpH(BigDecimal pH) {
 		this.pH = pH;
 	}
 
 	/**
-	 * Gets the percent yield as a double
+	 * Gets the percent yield
 	 * (or null if unavailable)
 	 * @return
 	 */
-	public Double getPercentYield() {
+	public BigDecimal getPercentYield() {
 		return percentYield;
 	}
 
-	void setPercentYield(Double percentYield) {
+	void setPercentYield(BigDecimal percentYield) {
 		this.percentYield = percentYield;
 	}
 	
@@ -378,21 +379,21 @@ public class Chemical{
 
 		if (equivalents != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
-			amount.appendChild(String.valueOf(equivalents));
+			amount.appendChild(equivalents.toString());
 			amount.addAttribute(new Attribute("units", "unit:" + equivalentsUnits));
 			reactant.appendChild(amount);
 		}
 		
 		if (pH != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
-			amount.appendChild(String.valueOf(pH));
+			amount.appendChild(pH.toString());
 			amount.addAttribute(new Attribute("units", "unit:" + "pH"));
 			reactant.appendChild(amount);
 		}
 		
 		if (percentYield != null){
 			Element amount = new Element("amount", CML_NAMESPACE);
-			amount.appendChild(String.valueOf(percentYield));
+			amount.appendChild(percentYield.toString());
 			amount.addAttribute(new Attribute("units", "unit:percentYield"));
 			reactant.appendChild(amount);
 		}

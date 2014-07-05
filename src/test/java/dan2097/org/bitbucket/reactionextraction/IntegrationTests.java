@@ -113,7 +113,7 @@ public class IntegrationTests{
 		assertEquals(ChemicalEntityType.definiteReference, product.getEntityType());
 		assertEquals(null, product.getVolumeUnits());
 		assertEquals(null, product.getVolumeValue());
-		assertEquals(89d, product.getPercentYield(), 0.1d);
+		assertEquals("89", product.getPercentYield().toString());
 
 		assertEquals(2, reaction.getReactants().size());
 		Chemical reactant1 = reaction.getReactants().get(0);
