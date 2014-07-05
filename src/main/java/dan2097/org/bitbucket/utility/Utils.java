@@ -118,7 +118,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToSmiles(String name) {
-		return OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getShortestSmiles(name);
+		return OscarReliantFunctionality.getInstance().resolveNameToSmiles(name);
 	}
 	
 	/**
@@ -161,9 +161,9 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(String name) {
-		Set<String> inchis = OscarReliantFunctionality.getInstance().getChemNameDictRegistry().getStdInchis(name);
-		if (!inchis.isEmpty()){
-			return InchiNormaliser.normaliseInChI(inchis.iterator().next());
+		String inchi = OscarReliantFunctionality.getInstance().resolveNameToStdInchi(name);
+		if (inchi != null) {
+			return InchiNormaliser.normaliseInChI(inchi);
 		}
 		return null;
 	}

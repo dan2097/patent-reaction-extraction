@@ -2,6 +2,8 @@ package dan2097.org.bitbucket.utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistryPOSTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.OpenNLPTagger;
@@ -10,6 +12,11 @@ import uk.ac.cam.ch.wwmm.chemicaltagger.RegexTagger;
 import uk.ac.cam.ch.wwmm.chemicaltagger.Tagger;
 import uk.ac.cam.ch.wwmm.oscar.Oscar;
 import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ChemNameDictRegistry;
+import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.IChemNameDict;
+import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.ISMILESProvider;
+import uk.ac.cam.ch.wwmm.oscar.chemnamedict.core.IStdInChIProvider;
+import uk.ac.cam.ch.wwmm.oscar.chemnamedict.dictionaries.ChEBIDictionary;
+import uk.ac.cam.ch.wwmm.oscar.chemnamedict.dictionaries.DefaultDictionary;
 import uk.ac.cam.ch.wwmm.oscar.opsin.OpsinDictionary;
 import uk.ac.cam.ch.wwmm.oscarMEMM.MEMMRecogniser;
 import dan2097.org.bitbucket.chemicaltagging.CustomisedOscarTagger;
@@ -17,13 +24,19 @@ import dan2097.org.bitbucket.chemicaltagging.OpsinTagger;
 import dan2097.org.bitbucket.chemicaltagging.TrivialChemicalNameTagger;
 
 public class OscarReliantFunctionality {
-	private final ChemNameDictRegistry chemNameRegistry;
+	private final List<IChemNameDict> dictionaries;
 	private final ChemistryPOSTagger posTagger;
 	
 	private OscarReliantFunctionality() {
 		Oscar oscar = new Oscar();
-		chemNameRegistry = new ChemNameDictRegistry();
-		chemNameRegistry.register(new OpsinDictionary());
+		dictionaries = new ArrayList<IChemNameDict>();
+		dictionaries.add(new OpsinDictionary());
+		dictionaries.add(new DefaultDictionary());
+		dictionaries.add(ChEBIDictionary.getInstance());
+		ChemNameDictRegistry chemNameRegistry = new ChemNameDictRegistry(Locale.ENGLISH);
+		for (IChemNameDict dict : dictionaries) {
+			chemNameRegistry.register(dict);
+		}
 		oscar.setDictionaryRegistry(chemNameRegistry);
 		MEMMRecogniser recogniser = new MEMMRecogniser();
 		recogniser.setDeprioritiseOnts(true);
@@ -51,7 +64,30 @@ public class OscarReliantFunctionality {
 		return posTagger;
 	}
 	
-	public ChemNameDictRegistry getChemNameDictRegistry() {
-		return chemNameRegistry;
+	public String resolveNameToSmiles(String name) {
+		for (IChemNameDict dict : dictionaries) {
+			if (dict instanceof ISMILESProvider) {
+				String smiles = (((ISMILESProvider)dict).getShortestSmiles(name));
+				if (smiles != null){
+					smiles = smiles.trim();//work-around for bug in OSCAR 4.2.0
+					return smiles;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public String resolveNameToStdInchi(String name) {
+		for (IChemNameDict dict : dictionaries) {
+			if (dict instanceof IStdInChIProvider) {
+				Set<String> inchis = (((IStdInChIProvider)dict).getStdInchis(name));
+				if (!inchis.isEmpty()){
+					String inchi = inchis.iterator().next();
+					inchi = inchi.trim();//work-around for bug in OSCAR 4.2.0
+					return inchi;
+				}
+			}
+		}
+		return null;
 	}
 }
