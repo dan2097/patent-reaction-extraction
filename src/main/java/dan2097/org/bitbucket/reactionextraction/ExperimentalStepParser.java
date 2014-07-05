@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoException;
@@ -25,6 +25,7 @@ import com.google.common.collect.BiMap;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XomUtils;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -220,7 +221,7 @@ public class ExperimentalStepParser {
 	}
 
 	private Set<Element> findAllReagents(Element el) {
-		List<Element> mols = XOMTools.getDescendantElementsWithTagNames(el, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
+		List<Element> mols = XomUtils.getDescendantElementsWithTagNames(el, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
 		return new LinkedHashSet<Element>(mols);
 	}
 	
@@ -313,15 +314,15 @@ public class ExperimentalStepParser {
 		if (phrase.getLocalName().equals(NOUN_PHRASE_Container)){
 			nounPhrases.add(phrase);
 		}
-		nounPhrases.addAll(XOMTools.getDescendantElementsWithTagName(phrase, NOUN_PHRASE_Container));
+		nounPhrases.addAll(XomUtils.getDescendantElementsWithTagName(phrase, NOUN_PHRASE_Container));
 		for (Element nounPhrase : nounPhrases) {
-			Element adjacentVerbPhrase = (Element) XOMTools.getNextSibling(nounPhrase);
+			Element adjacentVerbPhrase = (Element) XomUtils.getNextSibling(nounPhrase);
 			if (adjacentVerbPhrase != null && adjacentVerbPhrase.getLocalName().equals(VERBPHRASE_Container)){
-				List<Element> verbs = XOMTools.getChildElementsWithTagNames(adjacentVerbPhrase, new String[]{VBD, VBP, VBZ});
+				List<Element> verbs = XomUtils.getChildElementsWithTagNames(adjacentVerbPhrase, new String[]{VBD, VBP, VBZ});
 				for (Element verb : verbs) {
-					Element synthesizeVerb = (Element) XOMTools.getNextSibling(verb);
+					Element synthesizeVerb = (Element) XomUtils.getNextSibling(verb);
 					if (synthesizeVerb != null && synthesizeVerb.getLocalName().equals(VB_SYNTHESIZE) && !synthesizeVerb.getValue().toLowerCase().startsWith("react")){
-						return XOMTools.getDescendantElementsWithTagNames(nounPhrase, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
+						return XomUtils.getDescendantElementsWithTagNames(nounPhrase, new String[]{MOLECULE_Container, UNNAMEDMOLECULE_Container});
 					}
 				}
 			}
@@ -339,7 +340,7 @@ public class ExperimentalStepParser {
 					}
 					chemChem.setRole(ChemicalRole.product);
 				}
-				else if (XOMTools.getDescendantElementsWithTagNames(chemical, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size() == 0){
+				else if (XomUtils.getDescendantElementsWithTagNames(chemical, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size() == 0){
 					//back referencing will not have been attempted previously
 					String smarts = chemChem.getSmarts();
 					if (smarts == null && chemChem.getSmiles() != null){
@@ -391,7 +392,7 @@ public class ExperimentalStepParser {
 	 */
 	static void interpretPercentAsAyield(Element molOrUnnamedMolEl, Chemical chemical) {
 		if (chemical.getPercentYield() == null){
-			List<Element> percents = XOMTools.getDescendantElementsWithTagName(molOrUnnamedMolEl, PERCENT_Container);
+			List<Element> percents = XomUtils.getDescendantElementsWithTagName(molOrUnnamedMolEl, PERCENT_Container);
 			if (percents.size() == 1){
 				String value = percents.get(0).getFirstChildElement(ChemicalTaggerTags.CD).getValue();
 				try{ 
@@ -471,7 +472,7 @@ public class ExperimentalStepParser {
 	}
 	
 	private Element findOrphanYieldInPhrase(Element phrase) {
-		List<Element> yields = XOMTools.getDescendantElementsWithTagName(phrase, YIELD_Container);
+		List<Element> yields = XomUtils.getDescendantElementsWithTagName(phrase, YIELD_Container);
 		//remove those that are in a molecule or unnamed molecule
 		yieldLoop: for (int i = yields.size() - 1; i >=0; i--) {
 			Element yield = yields.get(i);
@@ -549,7 +550,7 @@ public class ExperimentalStepParser {
 			if (product.getSmiles() == null){
 				Element el = moleculeToChemicalMap.inverse().get(product);
 				if (el.getLocalName().equals(UNNAMEDMOLECULE_Container)){
-					List<Element> references = XOMTools.getDescendantElementsWithTagName(el, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+					List<Element> references = XomUtils.getDescendantElementsWithTagName(el, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
 					if (references.size() == 0){
 						return true;
 					}

@@ -18,12 +18,12 @@ import org.apache.log4j.Logger;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.Formatter;
 import uk.ac.cam.ch.wwmm.opsin.StringTools;
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
+import dan2097.org.bitbucket.utility.XomUtils;
 
 public class ExperimentalSectionsCreator {
 	
@@ -92,7 +92,7 @@ public class ExperimentalSectionsCreator {
 	 * @return
 	 */
 	List<Element> extractNonFalsePositiveMoleculeEls(Element taggedDocRoot) {
-		List<Element> moleculesFound = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, MOLECULE_Container);
+		List<Element> moleculesFound = XomUtils.getDescendantElementsWithTagName(taggedDocRoot, MOLECULE_Container);
 		for (int i = moleculesFound.size() -1; i >= 0; i--) {
 			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(i));
 			String chemicalName = StringTools.stringListToString(nameComponents, " ");
@@ -281,7 +281,7 @@ public class ExperimentalSectionsCreator {
 	}
 
 	private List<Element> extractProcedureNames(Element taggedDocRoot) {
-		return XOMTools.getDescendantElementsWithTagName(taggedDocRoot, PROCEDURE_Container);
+		return XomUtils.getDescendantElementsWithTagName(taggedDocRoot, PROCEDURE_Container);
 	}
 	
 	/**
@@ -297,9 +297,9 @@ public class ExperimentalSectionsCreator {
 				return true;
 			}
 		}
-		List<Element> procedures = XOMTools.getDescendantElementsWithTagName(taggedDocRoot, PROCEDURE_Container);
+		List<Element> procedures = XomUtils.getDescendantElementsWithTagName(taggedDocRoot, PROCEDURE_Container);
 		if (procedures.size() == 1){
-			List<Element> methodAndExampleEls =  XOMTools.getDescendantElementsWithTagNames(procedures.get(0), new String[]{NN_METHOD, NN_EXAMPLE});
+			List<Element> methodAndExampleEls =  XomUtils.getDescendantElementsWithTagNames(procedures.get(0), new String[]{NN_METHOD, NN_EXAMPLE});
 			if (methodAndExampleEls.size() == 0){
 				return true;
 			}

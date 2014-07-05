@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
-
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
-
+import dan2097.org.bitbucket.utility.XomUtils;
 import nu.xom.Element;
 import nu.xom.Elements;
 
@@ -21,7 +19,7 @@ public class ChemicalPropertyDetermination {
 	private static final Logger LOG = Logger.getLogger(ChemicalPropertyDetermination.class);
 	
 	public static void determineProperties(Chemical chemical, Element molecule){
-	    List<Element> quantityElements = XOMTools.getDescendantElementsWithTagName(molecule, ChemicalTaggerTags.QUANTITY_Container);
+	    List<Element> quantityElements = XomUtils.getDescendantElementsWithTagName(molecule, ChemicalTaggerTags.QUANTITY_Container);
 		for (Element quantityElement : quantityElements) {
 			determineVolume(chemical, quantityElement);
 			determineAmount(chemical, quantityElement);
@@ -177,7 +175,7 @@ public class ChemicalPropertyDetermination {
 	}
 
 	private static void determineState(Chemical chemical, Element moleculeEl) {
-		List<Element> stateEls = XOMTools.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.NN_STATE);
+		List<Element> stateEls = XomUtils.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.NN_STATE);
 		if (stateEls.size() > 1){
 			LOG.debug("More than 1 state given for same chemical");
 		}

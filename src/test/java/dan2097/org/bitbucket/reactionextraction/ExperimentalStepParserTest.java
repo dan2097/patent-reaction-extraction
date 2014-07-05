@@ -9,12 +9,13 @@ import nu.xom.Element;
 
 import org.junit.Test;
 
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
+import dan2097.org.bitbucket.utility.XomUtils;
 
 public class ExperimentalStepParserTest {
 
@@ -72,7 +73,7 @@ public class ExperimentalStepParserTest {
 					"</NounPhrase>" +
 				"</PrepPhrase>" +
 			"</Sentence>");
-		List<Element> molecules = XOMTools.getDescendantElementsWithTagName(paragraph, ChemicalTaggerTags.MOLECULE_Container);
+		List<Element> molecules = XomUtils.getDescendantElementsWithTagName(paragraph, ChemicalTaggerTags.MOLECULE_Container);
 		assertEquals("unit test is broken", 2, molecules.size());
 		BiMap<Element, Chemical>  moleculeToChemicalMap = HashBiMap.create();
 		Chemical chem1 = new Chemical("cyclopropanoyl chloride");
@@ -114,7 +115,7 @@ public class ExperimentalStepParserTest {
 					"</PrepPhrase>" +
 				"</VerbPhrase>" +
 			"</Sentence>");
-		List<Element> molecules = XOMTools.getDescendantElementsWithTagName(paragraph, ChemicalTaggerTags.MOLECULE_Container);
+		List<Element> molecules = XomUtils.getDescendantElementsWithTagName(paragraph, ChemicalTaggerTags.MOLECULE_Container);
 		assertEquals("unit test is broken", 2, molecules.size());
 		BiMap<Element, Chemical>  moleculeToChemicalMap = HashBiMap.create();
 		Chemical chem1 = new Chemical("acetyl chloride");

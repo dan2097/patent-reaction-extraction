@@ -37,7 +37,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
 import uk.ac.cam.ch.wwmm.opsin.StringTools;
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
@@ -273,7 +272,7 @@ public class Utils {
 		if (!paragraphEl.getLocalName().equals(XMLTags.P)){
 			throw new IllegalArgumentException("A paragraph element was expected!");
 		}
-		List<Element> elsToDetach = XOMTools.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
+		List<Element> elsToDetach = XomUtils.getDescendantElementsWithTagNames(paragraphEl, new String[]{XMLTags.TABLE_EXTERNAL_DOC, XMLTags.TABLES, XMLTags.DL, XMLTags.OL, XMLTags.UL});
 		for (Element elToDetach : elsToDetach) {
 			elToDetach.detach();
 		}

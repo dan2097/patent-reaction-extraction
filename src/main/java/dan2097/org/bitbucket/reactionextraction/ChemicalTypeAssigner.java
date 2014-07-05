@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 import org.bitbucket.dan2097.structureExtractor.DocumentToStructures;
 import org.bitbucket.dan2097.structureExtractor.IdentifiedChemicalName;
 
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XomUtils;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import nu.xom.Element;
 
@@ -142,7 +142,7 @@ public class ChemicalTypeAssigner {
 	}
 
 	private static boolean hasQualifyingIdentifier(Element mol) {
-		return XOMTools.getDescendantElementsWithTagNames(mol, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size() > 0;
+		return XomUtils.getDescendantElementsWithTagNames(mol, new String[]{REFERENCETOCOMPOUND_Container, PROCEDURE_Container}).size() > 0;
 	}
 
 	private static boolean isTextualAnaphora(String chemicalName) {
@@ -152,13 +152,13 @@ public class ChemicalTypeAssigner {
 	private static boolean hasNoQuantitiesOrStructureAndUninterpretableByOpsinParser(Element mol, Chemical chem) {
 		return (chem.getSmiles() == null &&
 				chem.getInchi() == null &&
-				XOMTools.getDescendantElementsWithTagName(mol, QUANTITY_Container).size() == 0 &&
+						XomUtils.getDescendantElementsWithTagName(mol, QUANTITY_Container).size() == 0 &&
 				!ReactionExtractionMethods.isKnownTrivialNameWithNoCT(chem) &&
 				Utils.getSystematicChemicalNamesFromText(chem.getName()).size() == 0);
 	}
 
 	private static Element getElementAfterLastOSCARCM(Element mol) {
-		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
+		List<Element> oscarcms = XomUtils.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
 		if (oscarcms.size() > 0){
 			return Utils.getNextElement(oscarcms.get(oscarcms.size() - 1));
 		}
@@ -168,7 +168,7 @@ public class ChemicalTypeAssigner {
 	}
 	
 	private static Element getElementBeforeFirstOSCARCM(Element mol) {
-		List<Element> oscarcms = XOMTools.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
+		List<Element> oscarcms = XomUtils.getDescendantElementsWithTagNames(mol, new String[]{OSCARCM_Container});
 		if (oscarcms.size() > 0){
 			return Utils.getPreviousElement(oscarcms.get(0));
 		}

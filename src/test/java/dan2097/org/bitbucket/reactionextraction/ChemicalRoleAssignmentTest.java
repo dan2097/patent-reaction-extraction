@@ -10,9 +10,10 @@ import nu.xom.Element;
 
 import org.junit.Test;
 
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
+import dan2097.org.bitbucket.utility.XomUtils;
 
 public class ChemicalRoleAssignmentTest {
 
@@ -127,7 +128,7 @@ public class ChemicalRoleAssignmentTest {
 					"</PrepPhrase>" +
 					"<COMMA>,</COMMA>" +
 				"</Sentence>");
-		List<Element> molecules = XOMTools.getDescendantElementsWithTagName(sentence, MOLECULE_Container);
+		List<Element> molecules = XomUtils.getDescendantElementsWithTagName(sentence, MOLECULE_Container);
 		assertEquals("Problem with unit test", 2, molecules.size());
 		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(molecules.get(0), new Chemical("")));
 		assertEquals(ChemicalRole.solvent, ChemicalRoleAssigner.determineChemicalRole(molecules.get(1), new Chemical("")));
