@@ -1,8 +1,9 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.util.Locale;
+
 import nu.xom.Element;
 import nu.xom.Node;
-
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
@@ -20,7 +21,7 @@ class ChemicalRoleAssigner {
 	 * @return
 	 */
 	static ChemicalRole determineChemicalRole(Element chemicalEl, Chemical chemical) {
-		String lcName = chemical.getName().toLowerCase(); 
+		String lcName = chemical.getName().toLowerCase(Locale.ROOT); 
 		if (chemicalKnowledge.isKnownCatalystInChI(chemical.getInchi())){
 			return ChemicalRole.catalyst;
 		}

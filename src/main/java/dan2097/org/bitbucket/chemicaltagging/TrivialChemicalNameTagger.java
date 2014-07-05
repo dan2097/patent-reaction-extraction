@@ -3,6 +3,7 @@ package dan2097.org.bitbucket.chemicaltagging;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -105,7 +106,7 @@ public class TrivialChemicalNameTagger implements Tagger {
 			tagList.add("nil");
 		}
 		for (int i = 0; i < len; i++) {
-			String tokenStr = tokenList.get(i).getSurface().toLowerCase();
+			String tokenStr = tokenList.get(i).getSurface().toLowerCase(Locale.ROOT);
 			HashHolder currentHashHolder = wordToHashHolderMap.get(tokenStr);
 			if (currentHashHolder != null){
 				if (currentHashHolder.isTerminal()){
@@ -114,7 +115,7 @@ public class TrivialChemicalNameTagger implements Tagger {
 				for (int j = i + 1; j < len; j++) {
 					Map<String, HashHolder> wordToHashHolderMap = currentHashHolder.getWordToHashHolderMap();
 					if (wordToHashHolderMap != null){
-						currentHashHolder = wordToHashHolderMap.get(tokenList.get(j).getSurface().toLowerCase());
+						currentHashHolder = wordToHashHolderMap.get(tokenList.get(j).getSurface().toLowerCase(Locale.ROOT));
 						if (currentHashHolder != null){
 							if (currentHashHolder.isTerminal()){
 								for (int wordToTagIndice = i; wordToTagIndice <= j; wordToTagIndice++) {
