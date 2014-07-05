@@ -2,6 +2,7 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import dan2097.org.bitbucket.inchiTools.InchiDemerger;
 
@@ -59,7 +60,7 @@ public class ReactionExtractionMethods {
 	 * @return
 	 */
 	public static boolean isKnownTrivialNameWithNoCT(Chemical chem) {
-		String lcName = chem.getName().toLowerCase();
+		String lcName = chem.getName().toLowerCase(Locale.ROOT);
 		return chemicalKnowledge.getCatalystNames().contains(lcName) || lcName.contains("catalyst") || chemicalKnowledge.getSolventNames().contains(lcName);
 	}
 

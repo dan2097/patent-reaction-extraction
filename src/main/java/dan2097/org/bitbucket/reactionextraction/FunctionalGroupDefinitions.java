@@ -1,6 +1,7 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class FunctionalGroupDefinitions {
@@ -92,7 +93,7 @@ public class FunctionalGroupDefinitions {
 	 * @return
 	 */
 	public static String getSmartsFromChemicalName(String name) {
-		name = name.toLowerCase();
+		name = name.toLowerCase(Locale.ROOT);
 		if (functionalClassToSmartsMap.get(name)!=null){
 			return functionalClassToSmartsMap.get(name);
 		}
@@ -109,7 +110,7 @@ public class FunctionalGroupDefinitions {
 	 * @return
 	 */
 	public static String  getFunctionalClassSmartsFromChemicalName(String name) {
-		name = name.toLowerCase();
+		name = name.toLowerCase(Locale.ROOT);
 		if (functionalClassToSmartsMap.get(name)!=null){
 			return functionalClassToSmartsMap.get(name);
 		}

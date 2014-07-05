@@ -3,6 +3,7 @@ package dan2097.org.bitbucket.chemicaltagging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.OscarTagger;
@@ -45,7 +46,7 @@ public class CustomisedOscarTagger extends OscarTagger {
 			if (!ignoreOscarList.contains(neTypeName)) {
 				List<Token> tokens = ne.getTokens();
 				for (Token token : tokens) {
-					if (stopWords.contains(token.getSurface().toLowerCase()) && ne.getType().getName().equals("CM")){
+					if (stopWords.contains(token.getSurface().toLowerCase(Locale.ROOT)) && ne.getType().getName().equals("CM")){
 						continue;
 					}
 					if (token.getSurface().length()<=1){
