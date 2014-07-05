@@ -1,5 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -115,9 +116,8 @@ public class ChemicalPropertyDetermination {
 				if (possibleSymbol != null && !possibleSymbol.getValue().equals("=")){
 					return;
 				}
-				try{ 
-					double d = Double.parseDouble(ph);
-					chemical.setpH(d);
+				try {
+					chemical.setpH(new BigDecimal(ph));
 				}
 				catch (NumberFormatException e) {
 					LOG.debug("pH was not numeric!");
@@ -139,8 +139,7 @@ public class ChemicalPropertyDetermination {
 				Element equivalent = equivalentsEls.get(0);
 				String equivalentVal = equivalent.getFirstChildElement(ChemicalTaggerTags.CD).getValue();
 				try{ 
-					double d = Double.parseDouble(equivalentVal);
-					chemical.setEquivalents(d);
+					chemical.setEquivalents(new BigDecimal(equivalentVal));
 				}
 				catch (NumberFormatException e) {
 					LOG.debug("equivalents value was not numeric!");
@@ -164,8 +163,7 @@ public class ChemicalPropertyDetermination {
 				Element yield = yields.get(0);
 				String value = yield.query(".//" + ChemicalTaggerTags.CD).get(0).getValue();
 				try{ 
-					double d = Double.parseDouble(value);
-					chemical.setPercentYield(d);
+					chemical.setPercentYield(new BigDecimal(value));
 				}
 				catch (NumberFormatException e) {
 					LOG.debug("Yield was not a numeric percentage");

@@ -42,7 +42,7 @@ public class ExperimentalStepParserTest {
 		Chemical chem = new Chemical("title compound");
 		assertEquals(null, chem.getPercentYield());
 		ExperimentalStepParser.interpretPercentAsAyield(reference, chem);
-		assertEquals(83, chem.getPercentYield(), 0.5);
+		assertEquals("83", chem.getPercentYield().toString());
 	}
 	
 	@Test
