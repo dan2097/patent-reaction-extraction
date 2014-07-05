@@ -5,11 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
+
 
 import com.google.common.collect.BiMap;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerAtrs;
+import dan2097.org.bitbucket.utility.XomUtils;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.utility.Utils;
 import nu.xom.Document;
@@ -105,7 +106,7 @@ public class Paragraph {
 	 * @return
 	 */
 	private List<Element> getChildPhraseElements(Element sentence) {
-		return XOMTools.getChildElementsWithTagNames(sentence, CONTAINER_ELS);
+		return XomUtils.getChildElementsWithTagNames(sentence, CONTAINER_ELS);
 	}
 
 	private boolean phraseContainsMoleculeWithAmountEquivalentsOrYields(Element phrase, BiMap<Element, Chemical> moleculeToChemicalMap) {

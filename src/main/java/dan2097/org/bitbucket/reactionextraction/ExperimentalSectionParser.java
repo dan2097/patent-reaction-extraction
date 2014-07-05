@@ -13,12 +13,11 @@ import com.google.common.collect.HashBiMap;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
-
 import uk.ac.cam.ch.wwmm.opsin.StringTools;
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.Utils;
+import dan2097.org.bitbucket.utility.XomUtils;
 
 public class ExperimentalSectionParser {
 	private static Logger LOG = Logger.getLogger(ExperimentalSectionParser.class);
@@ -110,14 +109,14 @@ public class ExperimentalSectionParser {
 				return;
 			}
 		}
-		List<Element> references = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+		List<Element> references = XomUtils.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
 		if (references.size() == 1){
 			attemptToResolveReferenceToCompound(references.get(0), cm);
 		}
 		else if (references.size() > 0){
 			LOG.debug("Multiple referenceToCompounds present in : " + molOrUnnamedEl.toXML());
 		}
-		List<Element> procedures = XOMTools.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.PROCEDURE_Container);
+		List<Element> procedures = XomUtils.getDescendantElementsWithTagName(molOrUnnamedEl, ChemicalTaggerTags.PROCEDURE_Container);
 		if (procedures.size() == 1){
 			attemptToResolveReferenceToProcedure(procedures.get(0), cm);
 		}
@@ -195,7 +194,7 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	String getIdentifierFromReference(Element referenceEl) {
-		List<Element> identifierEls = XOMTools.getChildElementsWithTagNames(referenceEl, new String[]{CD, CD_ALPHANUM, NN_IDENTIFIER});
+		List<Element> identifierEls = XomUtils.getChildElementsWithTagNames(referenceEl, new String[]{CD, CD_ALPHANUM, NN_IDENTIFIER});
 		StringBuilder sb = new StringBuilder();
 		for (Element identifierEl : identifierEls) {
 			if (sb.length() != 0){
@@ -218,7 +217,7 @@ public class ExperimentalSectionParser {
 			return aliasToChemicalMap;
 		}
 		aliasToChemicalMap.putAll(extractSynonymousChemicalNameAliases(moleculeEl));
-		List<Element> references = XOMTools.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
+		List<Element> references = XomUtils.getDescendantElementsWithTagName(moleculeEl, ChemicalTaggerTags.REFERENCETOCOMPOUND_Container);
 		if (references.size() == 1){
 			String identifier = getIdentifierFromReference(references.get(0));
 			aliasToChemicalMap.put(identifier, moleculeToChemicalMap.get(moleculeEl));
@@ -238,7 +237,7 @@ public class ExperimentalSectionParser {
 	 */
 	private Map<String, Chemical> extractSynonymousChemicalNameAliases(Element moleculeEl) {
 		Map<String, Chemical> aliasToChemicalMap = new HashMap<String, Chemical>();
-		List<Element> oscarCMsAndMixtures = XOMTools.getChildElementsWithTagNames(moleculeEl, new String[]{OSCARCM_Container, MIXTURE_Container});
+		List<Element> oscarCMsAndMixtures = XomUtils.getChildElementsWithTagNames(moleculeEl, new String[]{OSCARCM_Container, MIXTURE_Container});
 		if (oscarCMsAndMixtures.size() == 2 && oscarCMsAndMixtures.get(0).getLocalName().equals(OSCARCM_Container)){
 			//typically only the first OscarCm is ever used. This method deals with the case where the second oscarCm is a synonym
 			Element firstOscarcm = oscarCMsAndMixtures.get(0);
@@ -294,9 +293,9 @@ public class ExperimentalSectionParser {
 		}
 		Element lrb = oscarCmOrMixture.getFirstChildElement(LRB);
 		if (lrb != null){
-			Element oscarcm = (Element) XOMTools.getNextSibling(lrb);
+			Element oscarcm = (Element) XomUtils.getNextSibling(lrb);
 			if (oscarcm != null && oscarcm.getLocalName().equals(OSCARCM_Container)){
-				Element delimiter = (Element) XOMTools.getNextSibling(oscarcm);
+				Element delimiter = (Element) XomUtils.getNextSibling(oscarcm);
 				if (delimiter != null && (delimiter.getLocalName().equals(COMMA) || delimiter.getLocalName().equals(COLON))){
 					return oscarcm;
 				}
@@ -328,7 +327,7 @@ public class ExperimentalSectionParser {
 	 */
 	private List<Element> findAllMolecules(Paragraph paragraph) {
 		Document chemicalTaggerResult =paragraph.getTaggedSentencesDocument();
-		return XOMTools.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), MOLECULE_Container);
+		return XomUtils.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), MOLECULE_Container);
 	}
 
 	/**
@@ -337,7 +336,7 @@ public class ExperimentalSectionParser {
 	 */
 	private List<Element> findAllUnnamedMolecules(Paragraph paragraph) {
 		Document chemicalTaggerResult =paragraph.getTaggedSentencesDocument();
-		return XOMTools.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), UNNAMEDMOLECULE_Container);
+		return XomUtils.getDescendantElementsWithTagName(chemicalTaggerResult.getRootElement(), UNNAMEDMOLECULE_Container);
 	}
 	
 	/**
@@ -373,7 +372,7 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	String getSectionIdentifier(Element procedureEl) {
-		List<Element> sectionIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
+		List<Element> sectionIdentifiers = XomUtils.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
 		if (sectionIdentifiers.size() == 1){
 			return sectionIdentifiers.get(0).getValue();
 		}
@@ -388,7 +387,7 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	String getStepIdentifier(Element procedureEl, String sectionIdentifier) {
-		List<Element> stepIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
+		List<Element> stepIdentifiers = XomUtils.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
 		if (stepIdentifiers.size()==1){
 			return stepIdentifiers.get(0).getValue();
 		}
@@ -406,7 +405,7 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	SectionAndStepIdentifier getSectionAndStepIdentifier(Element procedureEl) {
-		List<Element> stepIdentifiers = XOMTools.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
+		List<Element> stepIdentifiers = XomUtils.getDescendantElementsWithTagNames(procedureEl, new String[]{NN_IDENTIFIER, CD, CD_ALPHANUM});
 		if (stepIdentifiers.size() == 1){
 			Element stepIdentifier = stepIdentifiers.get(0);
 			if (isSectionIdentifier(stepIdentifier)){
@@ -440,7 +439,7 @@ public class ExperimentalSectionParser {
 	 * @return
 	 */
 	boolean isSectionIdentifier(Element stepIdentifier){
-		Element qualifier = (Element) XOMTools.getPreviousSibling(stepIdentifier);
+		Element qualifier = (Element) XomUtils.getPreviousSibling(stepIdentifier);
 		if (qualifier !=null && 
 				(qualifier.getLocalName().equals(NN_EXAMPLE) || qualifier.getLocalName().equals(NN_METHOD))
 				&& !ReactionExtractionMethods.isSynonymnOfStep(qualifier.getValue())){

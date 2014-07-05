@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 
 import nu.xom.Document;
 import nu.xom.Element;
-import uk.ac.cam.ch.wwmm.opsin.XOMTools;
 
 import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
@@ -19,6 +18,7 @@ import com.ggasoftware.indigo.IndigoObject;
 import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLTags;
+import dan2097.org.bitbucket.utility.XomUtils;
 
 public class ReactionExtractor {
 	
@@ -225,6 +225,6 @@ public class ReactionExtractor {
 		if (description == null){
 			throw new RuntimeException("Malformed USPTO patent, no \"description\" element found");
 		}
-		return XOMTools.getChildElementsWithTagNames(description, new String[]{XMLTags.HEADING, XMLTags.P});
+		return XomUtils.getChildElementsWithTagNames(description, new String[]{XMLTags.HEADING, XMLTags.P});
 	}
 }
