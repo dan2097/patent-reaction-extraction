@@ -36,7 +36,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
@@ -130,7 +129,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToSmiles(List<String> nameComponents) {
-		String completeSmiles = resolveNameToSmiles(StringTools.stringListToString(nameComponents, " "));
+		String completeSmiles = resolveNameToSmiles(StringUtils.stringListToString(nameComponents, " "));
 		if (completeSmiles == null){
 			if (nameComponents.size() > 1){
 				StringBuilder smilesSB = new StringBuilder();
@@ -177,7 +176,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String resolveNameToInchi(List<String> nameComponents) {
-		String completeInChI = resolveNameToInchi(StringTools.stringListToString(nameComponents, " "));
+		String completeInChI = resolveNameToInchi(StringUtils.stringListToString(nameComponents, " "));
 		if (completeInChI == null){
 			if (nameComponents.size() > 1){
 				List<String> partialInchis = new ArrayList<String>();
@@ -210,19 +209,19 @@ public class Utils {
 	private static List<String> splitNameIntoComponents(String nameComponent) {
 		String[] middleDotSeperatedStrs = matchMiddleDot.split(nameComponent);
 		if (middleDotSeperatedStrs.length > 1){
-			return StringTools.arrayToList(middleDotSeperatedStrs);
+			return StringUtils.arrayToList(middleDotSeperatedStrs);
 		}
 		String[] slashSeperatedStrs = matchForwardSlash.split(nameComponent);
 		if (slashSeperatedStrs.length > 1){
-			return StringTools.arrayToList(slashSeperatedStrs);
+			return StringUtils.arrayToList(slashSeperatedStrs);
 		}
 		String[] dotSeperatedStrs = matchDot.split(nameComponent);
 		if (dotSeperatedStrs.length > 1){
-			return StringTools.arrayToList(dotSeperatedStrs);
+			return StringUtils.arrayToList(dotSeperatedStrs);
 		}
 		String[] whiteSpaceSeperatedStrs = matchWhiteSpace.split(nameComponent);
 		if (whiteSpaceSeperatedStrs.length == 2){
-			return StringTools.arrayToList(whiteSpaceSeperatedStrs);
+			return StringUtils.arrayToList(whiteSpaceSeperatedStrs);
 		}
 		List<String> nameComponents = new ArrayList<String>();
 		nameComponents.add(nameComponent);
@@ -368,7 +367,7 @@ public class Utils {
 		if (nameComponents == null){
 			throw new IllegalArgumentException("Input nameComponents was null");
 		}
-		Chemical chem = new Chemical(StringTools.stringListToString(nameComponents, " "));
+		Chemical chem = new Chemical(StringUtils.stringListToString(nameComponents, " "));
 		chem.setChemicalIdentifierPair(new ChemicalIdentifierPair(resolveNameToSmiles(nameComponents), resolveNameToInchi(nameComponents)));
 		return chem;
 	}

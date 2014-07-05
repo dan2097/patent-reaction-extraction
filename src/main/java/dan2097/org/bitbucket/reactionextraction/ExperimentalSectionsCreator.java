@@ -17,9 +17,9 @@ import nu.xom.Nodes;
 import org.apache.log4j.Logger;
 
 import uk.ac.cam.ch.wwmm.chemicaltagger.Formatter;
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import dan2097.org.bitbucket.paragraphclassification.ParagraphClassifier;
 import dan2097.org.bitbucket.utility.ParagraphClassifierHolder;
+import dan2097.org.bitbucket.utility.StringUtils;
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XMLAtrs;
 import dan2097.org.bitbucket.utility.XMLTags;
@@ -95,7 +95,7 @@ public class ExperimentalSectionsCreator {
 		List<Element> moleculesFound = XomUtils.getDescendantElementsWithTagName(taggedDocRoot, MOLECULE_Container);
 		for (int i = moleculesFound.size() -1; i >= 0; i--) {
 			List<String> nameComponents = ChemTaggerOutputNameExtraction.findMoleculeName(moleculesFound.get(i));
-			String chemicalName = StringTools.stringListToString(nameComponents, " ");
+			String chemicalName = StringUtils.stringListToString(nameComponents, " ");
 			if (ChemicalTypeAssigner.isFalsePositive(chemicalName, moleculesFound.get(i))){
 				moleculesFound.remove(i);
 			}

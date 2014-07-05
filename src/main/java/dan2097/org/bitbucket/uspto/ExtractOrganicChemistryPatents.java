@@ -23,7 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
+import dan2097.org.bitbucket.utility.StringUtils;
 import dan2097.org.bitbucket.utility.Utils;
 
 public class ExtractOrganicChemistryPatents {
@@ -79,10 +79,10 @@ public class ExtractOrganicChemistryPatents {
 		FileUtils.forceMkdir(tempDirectory);
 		File archiveOutputDirectory = new File(outputDirectory.getAbsolutePath() +"/" + patentArchiveFile.getName());
 		FileUtils.forceMkdir(archiveOutputDirectory);
-		if (StringTools.endsWithCaseInsensitive(patentArchiveFile.getName(), "zip")){
+		if (StringUtils.endsWithCaseInsensitive(patentArchiveFile.getName(), "zip")){
 			extractCandidateZipFilesFromZipFile(patentArchiveFile, tempDirectory);
 		}
-		else if (StringTools.endsWithCaseInsensitive(patentArchiveFile.getName(), "tar")){
+		else if (StringUtils.endsWithCaseInsensitive(patentArchiveFile.getName(), "tar")){
 			extractCandidateZipFilesFromTarFile(patentArchiveFile, tempDirectory);
 		}
 		else{
@@ -103,7 +103,7 @@ public class ExtractOrganicChemistryPatents {
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while(entries.hasMoreElements()) {
 			ZipEntry zipEntry = entries.nextElement();
-			if(StringTools.endsWithCaseInsensitive(zipEntry.getName(), "zip")){
+			if(StringUtils.endsWithCaseInsensitive(zipEntry.getName(), "zip")){
 				InputStream inputStream =  zipFile.getInputStream(zipEntry);
 				File f = new File(tempDirectory +"/" + FilenameUtils.getName(zipEntry.getName()));
 				FileOutputStream fos = new FileOutputStream(f);
@@ -124,7 +124,7 @@ public class ExtractOrganicChemistryPatents {
 		TarArchiveInputStream tin = new TarArchiveInputStream(new FileInputStream(patentArchiveFile));
 		TarArchiveEntry tarEntry = tin.getNextTarEntry();
 		while(tarEntry !=null){
-			if(StringTools.endsWithCaseInsensitive(tarEntry.getName(), "zip")){
+			if(StringUtils.endsWithCaseInsensitive(tarEntry.getName(), "zip")){
 				File f = new File(tempDirectory +"/" + FilenameUtils.getName(tarEntry.getName()));
 				FileOutputStream fos = new FileOutputStream(f);
 				IOUtils.copy(tin, fos);
@@ -142,7 +142,7 @@ public class ExtractOrganicChemistryPatents {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while(entries.hasMoreElements()) {
 				ZipEntry zipEntry = entries.nextElement();
-				if(StringTools.endsWithCaseInsensitive(zipEntry.getName(), FilenameUtils.getBaseName(zipFile.getName()) + ".XML")){
+				if(StringUtils.endsWithCaseInsensitive(zipEntry.getName(), FilenameUtils.getBaseName(zipFile.getName()) + ".XML")){
 					InputStream inputStream =  zipFile.getInputStream(zipEntry);
 					Document doc;
 					try{

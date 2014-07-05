@@ -13,9 +13,9 @@ import com.google.common.collect.HashBiMap;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
-import uk.ac.cam.ch.wwmm.opsin.StringTools;
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
+import dan2097.org.bitbucket.utility.StringUtils;
 import dan2097.org.bitbucket.utility.Utils;
 import dan2097.org.bitbucket.utility.XomUtils;
 
@@ -256,10 +256,10 @@ public class ExperimentalSectionParser {
 			}
 			List<String> nameComponents1 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(firstOscarcm);
 			String smiles1 = Utils.resolveNameToSmiles(nameComponents1);
-			String name1 = StringTools.stringListToString(nameComponents1, " ");
+			String name1 = StringUtils.stringListToString(nameComponents1, " ");
 			List<String> nameComponents2 = ChemTaggerOutputNameExtraction.findMoleculeNameFromOscarCM(secondOscarcm);
 			String smiles2 = Utils.resolveNameToSmiles(nameComponents2);
-			String name2 = StringTools.stringListToString(nameComponents2, " ");
+			String name2 = StringUtils.stringListToString(nameComponents2, " ");
 
 			if (smiles1 != null && smiles2 == null){
 				Chemical cm = new Chemical(name2);
