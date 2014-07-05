@@ -1,7 +1,6 @@
 package dan2097.org.bitbucket.reactionextraction;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import nu.xom.Attribute;
@@ -15,7 +14,6 @@ public class Chemical{
 	private final String name;
 	private ChemicalIdentifierPair chemicalIdentifierPair = new ChemicalIdentifierPair(null, null);
 	private String smarts;
-	private List<String> inchiComponents;
 	private String massValue;
 	private String massUnits;
 	private String amountValue;
@@ -80,25 +78,13 @@ public class Chemical{
 		return smarts;
 	}
 	
-	public void setSmarts(String smarts) {
+	void setSmarts(String smarts) {
 		this.smarts = smarts;
 	}
-	
-	/**
-	 * Used internally to assist in handling delimited mixtures e.g. octanol/water
-	 * @return
-	 */
-	List<String> getInchiComponents() {
-		return inchiComponents;
-	}
 
-	void setInchiComponents(List<String> inchiComponents) {
-		this.inchiComponents = inchiComponents;
-	}
-	
 	/**
 	 * Gets a value for the mass. Meaningless without reference to mass units
-	 * Typically, but not always, this can be expressed as a float
+	 * Typically, but not always, this can be expressed as a {@link BigDecimal}
 	 * (or null if unavailable)
 	 * @return
 	 */
@@ -125,7 +111,7 @@ public class Chemical{
 	
 	/**
 	 * Gets a value for the amount. Meaningless without reference to amount units
-	 * Typically, but not always, this can be expressed as a float
+	 * Typically, but not always, this can be expressed as a {@link BigDecimal}
 	 * (or null if unavailable)
 	 * @return
 	 */
@@ -152,7 +138,7 @@ public class Chemical{
 	
 	/**
 	 * Gets a value for the concentration. Assumed to be in moles
-	 * Typically, but not always, this can be expressed as a float
+	 * Typically, but not always, this can be expressed as a {@link BigDecimal}
 	 * (or null if unavailable)
 	 * @return
 	 */
@@ -179,7 +165,7 @@ public class Chemical{
 
 	/**
 	 * Gets a value for the volume. Meaningless without reference to volume units
-	 * Typically, but not always, this can be expressed as a float
+	 * Typically, but not always, this can be expressed as a {@link BigDecimal}
 	 * (or null if unavailable)
 	 * @return
 	 */
@@ -225,6 +211,11 @@ public class Chemical{
 		this.equivalentsUnits = equivalentsUnits;
 	}
 
+	/**
+	 * Gets an associated pH value (typically relevant for solutions)
+	 * (or null if unavailable)
+	 * @return
+	 */
 	public BigDecimal getpH() {
 		return pH;
 	}
