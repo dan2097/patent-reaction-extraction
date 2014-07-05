@@ -2,8 +2,9 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Deque;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -110,11 +111,11 @@ public class ExperimentalSectionsCreator {
 	 */
 	 void correctCompoundWithSpecialCase(List<Element> moleculesFound, Element taggedDocRoot) {
 		if (moleculesFound.size() == 2){
-			LinkedList<Element> stack = new LinkedList<Element>();
+			Deque<Element> stack = new ArrayDeque<Element>();
 			stack.add(taggedDocRoot);
 			List<Element> interveningElements = new ArrayList<Element>();
 			boolean seenMolecule = false;
-			while (stack.size() > 0){
+			while (!stack.isEmpty()){
 				Element currentElement =stack.removeLast();
 				Elements children =currentElement.getChildElements();
 				if (seenMolecule && children.size() == 0){

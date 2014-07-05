@@ -2,10 +2,11 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +25,6 @@ import com.google.common.collect.BiMap;
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;
 import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;
-
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -174,12 +174,12 @@ public class ExperimentalStepParser {
 	
 	void markReplacedChemicalsAsFalsePositives(Document taggedParagraph) {
 		List<Element> moleculesToIgnore = new ArrayList<Element>();
-		LinkedList<Element> stack = new LinkedList<Element>();
+		Deque<Element> stack = new ArrayDeque<Element>();
 		stack.add(taggedParagraph.getRootElement());
 		StringBuilder sb = new StringBuilder();
 		Element tempMoleculeThatWasReplaced = null;
 		boolean seenMolecule = false;
-		while (stack.size() > 0){
+		while (!stack.isEmpty()){
 			Element currentElement =stack.removeLast();
 			Elements children =currentElement.getChildElements();
 			if (children.size() == 0){

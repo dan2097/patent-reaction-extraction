@@ -1,14 +1,10 @@
 package dan2097.org.bitbucket.reactionextraction;
 
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.MOLECULE_Container;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.OSCARCM_Container;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.OSCAR_ASE;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.OSCAR_CM;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.REFERENCETOCOMPOUND_Container;
-import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.UNNAMEDMOLECULE_Container;
+import static dan2097.org.bitbucket.utility.ChemicalTaggerTags.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Deque;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -119,7 +115,7 @@ public class ChemTaggerOutputNameExtraction {
 	 */
 	private static StringBuilder getStringContent(Element startingEl) {
 		StringBuilder builder = new StringBuilder();
-		LinkedList<Element> stack = new LinkedList<Element>();
+		Deque<Element> stack = new ArrayDeque<Element>();
 		stack.add(startingEl);
 		while (!stack.isEmpty()) {
 			Element currentEl = stack.removeFirst();
