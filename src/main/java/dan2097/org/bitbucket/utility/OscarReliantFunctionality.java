@@ -69,7 +69,6 @@ public class OscarReliantFunctionality {
 			if (dict instanceof ISMILESProvider) {
 				String smiles = (((ISMILESProvider)dict).getShortestSmiles(name));
 				if (smiles != null){
-					smiles = smiles.trim();//work-around for bug in OSCAR 4.2.0
 					return smiles;
 				}
 			}
@@ -83,7 +82,6 @@ public class OscarReliantFunctionality {
 				Set<String> inchis = (((IStdInChIProvider)dict).getStdInchis(name));
 				if (!inchis.isEmpty()){
 					String inchi = inchis.iterator().next();
-					inchi = inchi.trim();//work-around for bug in OSCAR 4.2.0
 					return inchi;
 				}
 			}
