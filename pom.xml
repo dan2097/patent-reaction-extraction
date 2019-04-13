@@ -26,22 +26,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <distributionManagement>
-    <repository>
-      <id>ucc-releases</id>
-      <name>UCC Release Repository</name>
-      <url>https://maven.ch.cam.ac.uk/content/repositories/releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>ucc-snapshots</id>
-      <name>UCC Snapshot Repository</name>
-      <url>https://maven.ch.cam.ac.uk/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   <developers>
     <developer>
       <name>Daniel Lowe</name>
-      <email>daniel@nextmovesoftware.com</email>
       <url>http://bitbucket.org/dan2097</url>
       <organization>University of Cambridge</organization>
       <organizationUrl>http://www.cam.ac.uk</organizationUrl>
@@ -52,8 +39,8 @@
   </developers>
   <repositories>
     <repository>
-      <id>ucc-repo</id>
-      <url>https://maven.ch.cam.ac.uk/m2repo</url>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
   <build>
@@ -78,14 +65,14 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>uk.ac.cam.ch</groupId>
-      <artifactId>chemicalTagger</artifactId>
-      <version>1.3.1</version>
+      <groupId>com.github.dan2097</groupId>
+      <artifactId>chemicaltagger1.3.1</artifactId>
+      <version>154f41c851</version>
     </dependency>
     <dependency>
-      <groupId>uk.ac.cam.ch.opsin</groupId>
+      <groupId>com.github.dan2097</groupId>
       <artifactId>opsin-document-extractor</artifactId>
-      <version>1.0.3</version>
+      <version>opsin-document-extractor-1.0.3</version>
     </dependency>
     <dependency>
       <groupId>uk.ac.cam.ch.wwmm.oscar</groupId>
@@ -98,9 +85,9 @@
       <version>4.2.2</version>
     </dependency>
     <dependency>
-      <groupId>net.sf</groupId>
-      <artifactId>Classifier4J</artifactId>
-      <version>0.6</version>
+      <groupId>com.github.yaraju</groupId>
+      <artifactId>classifier4j</artifactId>
+      <version>1a388e048a</version>
     </dependency>
     <dependency><!-- required for Classifier4J -->
       <groupId>commons-logging</groupId>
