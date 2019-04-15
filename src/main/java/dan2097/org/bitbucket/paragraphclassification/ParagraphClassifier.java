@@ -1,72 +1,45 @@
 package dan2097.org.bitbucket.paragraphclassification;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.net.URL;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import net.sf.classifier4J.ClassifierException;
 import net.sf.classifier4J.bayesian.BayesianClassifier;
 import net.sf.classifier4J.bayesian.WordsDataSourceException;
-import nu.xom.Builder;
-import nu.xom.Document;
+
+import org.apache.commons.io.IOUtils;
 
 public class ParagraphClassifier {
 
-	private static final URL EXPERIMENTAL_URL = ClassLoader.getSystemResource("dan2097/org/bitbucket/paragraphclassification/experimental");
-	private static final URL NON_EXPERIMENTAL_URL = ClassLoader.getSystemResource("dan2097/org/bitbucket/paragraphclassification/non-experimental");
-	private static final Pattern matchWhiteSpace = Pattern.compile("\\s+");
-
 	private final BayesianClassifier bayesianClassifier = new BayesianClassifier(); 
 
-	private static class xmlFileFilter implements FileFilter {
-		public boolean accept(File f) {
-			if (f.getName().endsWith(".xml")) {
-				return true;
-			}
-			return false;
-		}
-	}
-	
 	public ParagraphClassifier(){
-		File[] expFiles = getXMLFiles(EXPERIMENTAL_URL);
-		File[] nonExpFiles = getXMLFiles(NON_EXPERIMENTAL_URL);
-		if (expFiles.length != nonExpFiles.length) {
-			throw new RuntimeException("need same number of experimental and non experimental paragraphs");
-		}
-		List<String> experimentalParas = readData(expFiles);
-		List<String> nonExperimentalParas = readData(nonExpFiles);
-		trainClassifier(experimentalParas, nonExperimentalParas);
-	}
-
-	private File[] getXMLFiles(URL url){
-		File directory;
 		try {
-			directory = new File(url.toURI());
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to read paragraph classifier training data", e);
+			List<String> experimentalParas;
+			InputStream experimentalIs = ParagraphClassifier.class.getResourceAsStream("experimental.txt");
+			try {
+				experimentalParas = IOUtils.readLines(experimentalIs, "UTF-8");
+			}
+			finally {
+				IOUtils.closeQuietly(experimentalIs);
+			}
+			
+			List<String> nonExperimentalParas;
+			InputStream nonExperimentalIs = ParagraphClassifier.class.getResourceAsStream("non-experimental.txt");
+			try {
+				nonExperimentalParas = IOUtils.readLines(nonExperimentalIs, "UTF-8");
+			}
+			finally {
+				IOUtils.closeQuietly(nonExperimentalIs);
+			}
+			trainClassifier(experimentalParas, nonExperimentalParas);
 		}
-		File [] files = directory.listFiles(new xmlFileFilter());
-		return files;
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	private List<String> readData(File[] files){
-		Builder builder = new Builder();
-		List<String> data = new ArrayList<String>();
-		for (File file : files) {
-			Document doc;
-			try {
-				doc = builder.build(file);
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to read paragraph classifier training data", e);
-			}
-			data.add(matchWhiteSpace.matcher(doc.getValue()).replaceAll(" "));
-		}
-		return data;
-	}
-	
 	private void trainClassifier(List<String> experimentalParas, List<String> nonExperimentalParas){
 		try{
 			for (String expText : experimentalParas) {
