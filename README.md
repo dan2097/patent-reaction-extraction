@@ -44,3 +44,5 @@ ExtractOrganicChemistryPatents may be used filter patents downloaded from Google
 Performance can be adjusted by using `extractor.setIndigoAtomMappingTimeout`
 
 This sets how long, at maximum, may be spent atom mapping a reaction
+
+[![Build Status](https://travis-ci.com/dan2097/patent-reaction-extraction.svg?branch=master)](https://travis-ci.com/dan2097/patent-reaction-extraction)
