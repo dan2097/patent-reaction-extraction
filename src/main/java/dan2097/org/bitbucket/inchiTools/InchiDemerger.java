@@ -20,7 +20,7 @@ public class InchiDemerger {
 	/**
 	 * Input the inchi you would like to partition into inchis for each component
 	 * e.g. InChI=1/C8H18O.H2O/c1-2-3-4-5-6-7-8-9;/h9H,2-8H2,1H3;1H2
-	 * --> InChI=1/C8H18O/c1-2-3-4-5-6-7-8-9/h9H,2-8H2,1H3 and InChI=1/H2O/h1H2
+	 * --&gt; InChI=1/C8H18O/c1-2-3-4-5-6-7-8-9/h9H,2-8H2,1H3 and InChI=1/H2O/h1H2
 	 * @param inchi
 	 */
 	public InchiDemerger(String inchi) {
