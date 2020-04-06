@@ -95,9 +95,9 @@ public class TrivialChemicalNameTagger implements Tagger {
 	
 	/***********************************************
 	 * Runs the trivial chemical name tagger over the token list and tags matched tokens
-	 * @param tokenList (List<Token>)
-	 * @param inputSentence (String)
-	 * @return tagList (List<String>)
+	 * @param tokenList
+	 * @param inputSentence
+	 * @return tagList
 	 ***********************************************/
 	public List<String> runTagger(List<Token> tokenList, String inputSentence) {
 		List<String> tagList = new ArrayList<String>();

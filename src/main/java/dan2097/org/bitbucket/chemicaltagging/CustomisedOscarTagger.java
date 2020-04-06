@@ -28,8 +28,9 @@ public class CustomisedOscarTagger extends OscarTagger {
 	/***********************************************
 	 * Runs OSCAR over a list of tokens and returns a list of tags
 	 * Differs from chemcial tagger's implementation due to inclusion of overlapping entities and use of stop words
-	 * @param tokenList (List<Token>)
-	 * @return tagList (List<String>)
+	 * @param tokenList
+	 * @param inputSentence
+	 * @return tagList
 	 ***********************************************/
 	public List<String> runTagger(List<Token> tokenList, String inputSentence) {
 		ChemicalEntityRecogniser recogniser = oscar.getRecogniser();

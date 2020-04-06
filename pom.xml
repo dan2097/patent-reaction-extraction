@@ -45,13 +45,23 @@
   </repositories>
   <build>
     <plugins>
-      <!-- Use Java 1.6 -->
+      <!-- Use Java 1.7 -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.8.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      <!-- See JDK-8212233 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <source>7</source>
         </configuration>
       </plugin>
       <plugin>
@@ -61,6 +71,42 @@
           <argLine>-Xmx1024m</argLine>
         </configuration>
       </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.0.0</version>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                      <finalName>reactionextractor</finalName>
+                      <transformers>
+                          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                              <manifestEntries>
+                                  <X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
+                                  <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
+                              </manifestEntries>
+                          </transformer>
+                          <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                      </transformers>
+                      <filters><!--Avoid "Invalid signature file digest for Manifest main attributes" error -->
+                        <filter>
+                          <artifact>*:*</artifact>
+                          <excludes>
+                            <exclude>META-INF/*.SF</exclude>
+                            <exclude>META-INF/*.DSA</exclude>
+                            <exclude>META-INF/*.RSA</exclude>
+                          </excludes>
+                        </filter>
+                      </filters>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+ 
     </plugins>
   </build>
   <dependencies>

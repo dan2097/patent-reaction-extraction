@@ -89,7 +89,7 @@ public class Utils {
 	
 	/**
 	 * Convenience method to tag and parse a string of text using ChemicalTagger
-	 * @param tagged
+	 * @param text
 	 * @return
 	 */
 	public static Document runChemicalTagger(String text) {
@@ -360,7 +360,7 @@ public class Utils {
 	/**
 	 * Creates a chemical from a list of name components with if possible resolved smiles and InChI
 	 * Each component would be expected to be a standalone chemical entity
-	 * @param name
+	 * @param nameComponents
 	 * @return
 	 */
 	public static Chemical createChemicalFromName(List<String> nameComponents) {
