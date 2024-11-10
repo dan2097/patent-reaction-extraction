@@ -1,6 +1,6 @@
 package dan2097.org.bitbucket.utility;
 
-import com.ggasoftware.indigo.Indigo;
+import com.epam.indigo.Indigo;
 
 public class IndigoHolder {
 	private IndigoHolder() {}

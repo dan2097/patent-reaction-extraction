@@ -2,9 +2,9 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import java.io.File;
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.IndigoRenderer;
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoObject;
+import com.epam.indigo.IndigoRenderer;
 
 import dan2097.org.bitbucket.utility.IndigoHolder;
 

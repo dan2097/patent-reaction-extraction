@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
 
 
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoException;
-import com.ggasoftware.indigo.IndigoObject;
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoException;
+import com.epam.indigo.IndigoObject;
 import com.google.common.collect.BiMap;
 
 import dan2097.org.bitbucket.utility.ChemicalTaggerTags;

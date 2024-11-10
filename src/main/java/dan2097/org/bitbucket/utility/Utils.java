@@ -37,8 +37,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import uk.ac.cam.ch.wwmm.chemicaltagger.ChemistrySentenceParser;
 import uk.ac.cam.ch.wwmm.chemicaltagger.POSContainer;
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoObject;
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.inchiTools.InchiMerger;
 import dan2097.org.bitbucket.inchiTools.InchiNormaliser;

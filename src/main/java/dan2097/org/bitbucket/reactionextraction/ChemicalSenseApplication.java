@@ -10,9 +10,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoException;
-import com.ggasoftware.indigo.IndigoObject;
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoException;
+import com.epam.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.IndigoHolder;
 import dan2097.org.bitbucket.utility.Utils;

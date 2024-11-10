@@ -141,14 +141,14 @@
       <version>1.1.1</version>
     </dependency>
     <dependency>
-      <groupId>com.ggasoftware</groupId>
+      <groupId>com.epam.indigo</groupId>
       <artifactId>indigo</artifactId>
-      <version>1.1.12</version>
+      <version>1.24.0</version>
     </dependency>
     <dependency>
-      <groupId>com.ggasoftware.indigo</groupId>
+      <groupId>com.epam.indigo</groupId>
       <artifactId>indigo-renderer</artifactId>
-      <version>1.1.12</version>
+      <version>1.24.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

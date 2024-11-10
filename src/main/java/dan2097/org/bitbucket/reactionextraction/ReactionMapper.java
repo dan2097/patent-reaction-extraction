@@ -2,8 +2,8 @@ package dan2097.org.bitbucket.reactionextraction;
 
 import org.apache.log4j.Logger;
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoObject;
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoObject;
 
 public class ReactionMapper {
 	private static final Logger LOG = Logger.getLogger(ReactionMapper.class);

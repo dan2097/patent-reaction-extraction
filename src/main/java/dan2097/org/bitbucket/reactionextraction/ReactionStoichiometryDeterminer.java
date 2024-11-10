@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ggasoftware.indigo.IndigoObject;
+import com.epam.indigo.IndigoObject;
 
 
 

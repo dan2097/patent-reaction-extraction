@@ -8,7 +8,7 @@ import nu.xom.Document;
 
 import org.junit.Test;
 
-import com.ggasoftware.indigo.IndigoObject;
+import com.epam.indigo.IndigoObject;
 
 import dan2097.org.bitbucket.utility.Utils;
 

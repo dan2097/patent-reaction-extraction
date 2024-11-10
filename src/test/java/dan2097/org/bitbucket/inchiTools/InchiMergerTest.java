@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import dan2097.org.bitbucket.inchiTools.InchiMerger;
-
 public class InchiMergerTest {
 
 	@Test

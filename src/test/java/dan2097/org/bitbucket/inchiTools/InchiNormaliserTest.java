@@ -2,8 +2,6 @@ package dan2097.org.bitbucket.inchiTools;
 
 import org.junit.Test;
 
-import dan2097.org.bitbucket.inchiTools.InchiNormaliser;
-
 import static junit.framework.Assert.*;
 
 public class InchiNormaliserTest {
