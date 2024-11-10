@@ -7,20 +7,20 @@
   <packaging>jar</packaging>
   <name>Patent Reaction Extraction</name>
   <description>Tool for extracting chemical reactions from chemical text especially patents</description>
-  <url>http://bitbucket.org/dan2097/patent-reaction-extraction</url>
+  <url>https://github.com/dan2097/patent-reaction-extraction</url>
   <licenses>
     <license>
-      <name>GNU General Public License, version 3</name>
-      <url>http://www.opensource.org/licenses/GPL-3.0</url>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
     </license>
   </licenses>
   <scm>
-    <url>http://bitbucket.org/dan2097/patent-reaction-extraction/</url>
+    <url>https://github.com/dan2097/patent-reaction-extraction/</url>
     <connection>
-      scm:hg:http://bitbucket.org/dan2097/patent-reaction-extraction
+      scm:git:https://github.com/dan2097/patent-reaction-extraction
     </connection>
     <developerConnection>
-      scm:hg:http://bitbucket.org/dan2097/patent-reaction-extraction
+      scm:git:https://github.com/dan2097/patent-reaction-extraction
     </developerConnection>
   </scm>
   <properties>
@@ -29,9 +29,9 @@
   <developers>
     <developer>
       <name>Daniel Lowe</name>
-      <url>http://bitbucket.org/dan2097</url>
+      <url>https://github.com/dan2097</url>
       <organization>University of Cambridge</organization>
-      <organizationUrl>http://www.cam.ac.uk</organizationUrl>
+      <organizationUrl>https://www.cam.ac.uk</organizationUrl>
       <roles>
          <role>Lead Programmer</role>
       </roles>

@@ -8,7 +8,7 @@ NextMove Software commercially provides an up to date database of automatically 
 
 Older results from this software are available [here](https://figshare.com/articles/Legacy_reaction_extraction_data_1976-2013_/12084729)
 
-This software is licensed under the GPLv3 for compatibility with Epam's [Indigo](https://lifescience.opensource.epam.com/indigo/) toolkit
+This software is licensed under the [MIT License](https://opensource.org/license/MIT)
 
 ---
 
